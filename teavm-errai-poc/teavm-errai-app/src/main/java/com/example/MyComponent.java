@@ -2,12 +2,17 @@ package com.example;
 
 import com.example.errai.api.DataField;
 import com.example.errai.api.Templated;
+import com.example.errai.api.PostConstruct;
 import org.teavm.jso.dom.html.HTMLButtonElement;
 import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.browser.Window;
+import javax.inject.Inject;
 
 @Templated
 public class MyComponent {
+
+    @Inject
+    public HelloService helloService;
 
     @DataField
     public HTMLButtonElement submit;
@@ -15,15 +20,9 @@ public class MyComponent {
     @DataField
     public HTMLElement output;
 
+    @PostConstruct
     public void init() {
-        // In a real app, DI would handle this.
-        // Here we invoke the generated Binder manually.
-        HTMLElement root = MyComponent_Binder.bind(this);
-
-        Window.current().getDocument().getBody().appendChild(root);
-
-        submit.addEventListener("click", evt -> {
-            output.setInnerHTML("Hello from TeaVM! Time: " + System.currentTimeMillis());
-        });
+         // The @Templated annotation ensures that fields annotated with @DataField
+         // are bound to the corresponding DOM elements in the HTML template.
     }
 }
