@@ -24,11 +24,11 @@ public class DashboardPage {
 
     public HTMLElement element;
 
-    @DataField
-    public HTMLButtonElement backBtn;
+    @Inject @DataField
+    public BootstrapButton backBtn;
 
-    @DataField
-    public HTMLButtonElement userBtn;
+    @Inject @DataField
+    public BootstrapButton userBtn;
 
     @DataField
     public HTMLElement content;
@@ -36,9 +36,14 @@ public class DashboardPage {
     @PageShowing
     public void onShow() {
         content.setInnerHTML("Welcome! " + service.getGreeting());
-        backBtn.addEventListener("click", e -> navigation.goTo("login"));
 
-        userBtn.addEventListener("click", e -> {
+        backBtn.setText("Logout (Bootstrap)");
+        backBtn.addStyle("btn-danger");
+        backBtn.addClickListener(e -> navigation.goTo("login"));
+
+        userBtn.setText("Go to User Profile (Bootstrap)");
+        userBtn.addStyle("btn-success");
+        userBtn.addClickListener(e -> {
             Map<String, String> params = new HashMap<>();
             params.put("userId", "12345");
             params.put("name", "TeaVM User");

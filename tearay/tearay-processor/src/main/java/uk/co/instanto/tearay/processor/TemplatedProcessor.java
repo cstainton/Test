@@ -91,10 +91,41 @@ public class TemplatedProcessor extends AbstractProcessor {
                     "[data-field='" + dataFieldName + "']");
 
                 bindMethod.beginControlFlow("if (el_$L != null)", field.getSimpleName());
-                bindMethod.addStatement("target.$L = ($T) el_$L",
-                    field.getSimpleName(),
-                    com.squareup.javapoet.TypeName.get(field.asType()),
-                    field.getSimpleName());
+
+                // Check if the field type is HTMLElement
+                if (processingEnv.getTypeUtils().isAssignable(field.asType(), processingEnv.getElementUtils().getTypeElement("org.teavm.jso.dom.html.HTMLElement").asType())) {
+                    bindMethod.addStatement("target.$L = ($T) el_$L",
+                        field.getSimpleName(),
+                        com.squareup.javapoet.TypeName.get(field.asType()),
+                        field.getSimpleName());
+                } else {
+                    // Assume it is a nested component.
+                    // 1. Check if the component is injected. (If not, we might need to instantiate it, but let's assume IOC handles it)
+                    // The IOCProcessor injects the bean. Here we just need to SWAP the element.
+                    // But wait, if we are in the Binder, 'target' is already instantiated.
+                    // 'target.field' should be populated by IOC if it has @Inject.
+
+                    // Logic:
+                    // 1. Get the component instance from the field.
+                    // 2. Access its 'element' field (Convention!).
+                    // 3. Replace 'el_field' with 'component.element' in the DOM.
+
+                    bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
+                    // We need to access target.field.element.
+                    // Since we don't know the exact type structure at compile time easily without reflection or strict rules,
+                    // we will cast to a convention or assume public field 'element'.
+                    // For this PoC, we assume the component has a public 'element' field of type HTMLElement.
+                    // We can't easily check fields of other classes in APT without full TypeMirror resolution, which is doable but verbose.
+                    // Let's generate code that assumes it exists.
+
+                    bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
+                    bindMethod.beginControlFlow("if (widgetElement != null)");
+                    bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
+                    bindMethod.endControlFlow();
+
+                    bindMethod.endControlFlow();
+                }
+
                 bindMethod.endControlFlow();
             }
         }
