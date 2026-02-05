@@ -36,6 +36,11 @@
       <groupId>org.teavm</groupId>
       <artifactId>teavm-jso-apis</artifactId>
     </dependency>
+    <dependency>
+      <groupId>uk.co.instanto.tearay</groupId>
+      <artifactId>tearay-widgets</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -75,6 +80,25 @@
         <configuration>
             <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
+      </plugin>
+      <!-- Assembly Plugin for GitHub Pages -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/gh-pages.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
