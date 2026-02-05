@@ -6,11 +6,13 @@ import com.example.errai.api.DataField;
 import com.example.errai.api.Navigation;
 import com.example.errai.api.PageShowing;
 import com.example.errai.api.PageState;
+import com.example.errai.api.RestrictedAccess;
 import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.dom.html.HTMLButtonElement;
 import javax.inject.Inject;
 
 @Page(role = "user-profile")
+@RestrictedAccess(roles = "admin")
 @Templated
 public class UserProfilePage {
 

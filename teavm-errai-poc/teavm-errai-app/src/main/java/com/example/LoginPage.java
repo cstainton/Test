@@ -17,13 +17,27 @@ public class LoginPage {
     @Inject
     public Navigation navigation;
 
+    @Inject
+    public AppSecurityProvider securityProvider;
+
     public HTMLElement element;
 
     @DataField
     public HTMLButtonElement loginBtn;
 
+    @DataField
+    public HTMLButtonElement adminLoginBtn;
+
     @PageShowing
     public void onShow() {
-        loginBtn.addEventListener("click", e -> navigation.goTo("dashboard"));
+        loginBtn.addEventListener("click", e -> {
+            securityProvider.setRoles("user");
+            navigation.goTo("dashboard");
+        });
+
+        adminLoginBtn.addEventListener("click", e -> {
+            securityProvider.setRoles("admin");
+            navigation.goTo("dashboard");
+        });
     }
 }

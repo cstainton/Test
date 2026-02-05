@@ -4,13 +4,17 @@ import com.example.errai.api.Page;
 import com.example.errai.api.PageShowing;
 import com.example.errai.api.PageHidden;
 import com.example.errai.api.PageState;
+import com.example.errai.api.RestrictedAccess;
+import com.example.errai.api.ApplicationScoped;
 import com.squareup.javapoet.*;
 import com.google.auto.service.AutoService;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.Collections;
@@ -19,13 +23,17 @@ import java.util.Map;
 import java.util.Set;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes({"com.example.errai.api.Page", "com.example.errai.api.PageState"})
+@SupportedAnnotationTypes({"com.example.errai.api.Page", "com.example.errai.api.PageState", "com.example.errai.api.ApplicationScoped"})
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class NavigationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Set<? extends Element> pages = roundEnv.getElementsAnnotatedWith(Page.class);
+
+        // We also need to find the SecurityProvider
+        TypeElement securityProviderImpl = findSecurityProvider(roundEnv);
+
         if (pages.isEmpty()) return false;
 
         // Only generate once
@@ -34,7 +42,7 @@ public class NavigationProcessor extends AbstractProcessor {
         }
 
         try {
-            generateNavigationImpl(pages);
+            generateNavigationImpl(pages, securityProviderImpl);
         } catch (IOException e) {
             e.printStackTrace();
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error generating NavigationImpl: " + e.getMessage());
@@ -43,8 +51,23 @@ public class NavigationProcessor extends AbstractProcessor {
         return false;
     }
 
-    private void generateNavigationImpl(Set<? extends Element> pages) throws IOException {
+    private TypeElement findSecurityProvider(RoundEnvironment roundEnv) {
+        TypeMirror securityProviderInterface = processingEnv.getElementUtils().getTypeElement("com.example.errai.api.SecurityProvider").asType();
+        Types types = processingEnv.getTypeUtils();
+
+        for (Element element : roundEnv.getElementsAnnotatedWith(ApplicationScoped.class)) {
+            if (element.getKind() == ElementKind.CLASS) {
+                if (types.isAssignable(element.asType(), securityProviderInterface)) {
+                    return (TypeElement) element;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void generateNavigationImpl(Set<? extends Element> pages, TypeElement securityProviderImpl) throws IOException {
         ClassName navigationInterface = ClassName.get("com.example.errai.api", "Navigation");
+        ClassName securityProviderInterface = ClassName.get("com.example.errai.api", "SecurityProvider");
         ClassName htmlElementClass = ClassName.get("org.teavm.jso.dom.html", "HTMLElement");
         ClassName windowClass = ClassName.get("org.teavm.jso.browser", "Window");
 
@@ -61,6 +84,13 @@ public class NavigationProcessor extends AbstractProcessor {
         navBuilder.addField(FieldSpec.builder(Object.class, "currentPage")
                 .addModifiers(Modifier.PRIVATE)
                 .build());
+
+        // Security Provider field
+        if (securityProviderImpl != null) {
+            navBuilder.addField(FieldSpec.builder(securityProviderInterface, "securityProvider")
+                    .addModifiers(Modifier.PUBLIC) // Public for factory injection
+                    .build());
+        }
 
         // goTo(role) - default implementation delegation
         MethodSpec.Builder goToSimple = MethodSpec.methodBuilder("goTo")
@@ -99,6 +129,17 @@ public class NavigationProcessor extends AbstractProcessor {
             String varName = role.replaceAll("[^a-zA-Z0-9_]", "_");
 
             goToMethod.addCode("case $S:\n", role);
+
+            // Security Check
+            RestrictedAccess restricted = typeElement.getAnnotation(RestrictedAccess.class);
+            if (restricted != null && securityProviderImpl != null) {
+                goToMethod.addCode("  if (this.securityProvider != null) {\n");
+                for (String reqRole : restricted.roles()) {
+                    goToMethod.addStatement("    if (!this.securityProvider.hasRole($S)) { $T.alert($S); return; }",
+                        reqRole, windowClass, "Access Denied: Missing role " + reqRole);
+                }
+                goToMethod.addCode("  }\n");
+            }
 
             // Instantiate
             ClassName factoryClass = ClassName.bestGuess(typeElement.getQualifiedName().toString() + "_Factory");
@@ -144,24 +185,33 @@ public class NavigationProcessor extends AbstractProcessor {
                 .writeTo(processingEnv.getFiler());
 
         // Generate the Factory for NavigationImpl
-        generateNavigationFactory();
+        generateNavigationFactory(securityProviderImpl);
     }
 
-    private void generateNavigationFactory() throws IOException {
+    private void generateNavigationFactory(TypeElement securityProviderImpl) throws IOException {
         ClassName navImplClass = ClassName.get("com.example.errai.impl", "NavigationImpl");
+
+        MethodSpec.Builder getInstance = MethodSpec.methodBuilder("getInstance")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(navImplClass);
+
+        getInstance.beginControlFlow("if (instance == null)")
+                .addStatement("instance = new $T()", navImplClass);
+
+        if (securityProviderImpl != null) {
+            ClassName providerFactory = ClassName.bestGuess(securityProviderImpl.getQualifiedName().toString() + "_Factory");
+            getInstance.addStatement("instance.securityProvider = $T.getInstance()", providerFactory);
+        }
+
+        getInstance.endControlFlow()
+                .addStatement("return instance");
+
         TypeSpec factory = TypeSpec.classBuilder("NavigationImpl_Factory")
                 .addModifiers(Modifier.PUBLIC)
                 .addField(FieldSpec.builder(navImplClass, "instance")
                         .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
                         .build())
-                .addMethod(MethodSpec.methodBuilder("getInstance")
-                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .returns(navImplClass)
-                        .beginControlFlow("if (instance == null)")
-                        .addStatement("instance = new $T()", navImplClass)
-                        .endControlFlow()
-                        .addStatement("return instance")
-                        .build())
+                .addMethod(getInstance.build())
                 .build();
 
         JavaFile.builder("com.example.errai.impl", factory)
