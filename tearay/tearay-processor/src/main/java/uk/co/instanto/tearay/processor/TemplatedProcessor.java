@@ -120,6 +120,29 @@ public class TemplatedProcessor extends AbstractProcessor {
 
                     bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
                     bindMethod.beginControlFlow("if (widgetElement != null)");
+
+                    // Merge attributes from placeholder to widget
+                    // 1. Merge CSS classes
+                    bindMethod.addStatement("String currentClasses = widgetElement.getClassName()");
+                    bindMethod.addStatement("String placeholderClasses = el_$L.getClassName()", field.getSimpleName());
+                    bindMethod.beginControlFlow("if (placeholderClasses != null && !placeholderClasses.isEmpty())");
+                    bindMethod.addStatement("widgetElement.setClassName((currentClasses != null ? currentClasses + \" \" : \"\") + placeholderClasses)");
+                    bindMethod.endControlFlow();
+
+                    // 2. Copy ID if present on placeholder
+                    bindMethod.addStatement("String placeholderId = el_$L.getAttribute(\"id\")", field.getSimpleName());
+                    bindMethod.beginControlFlow("if (placeholderId != null && !placeholderId.isEmpty())");
+                    bindMethod.addStatement("widgetElement.setAttribute(\"id\", placeholderId)");
+                    bindMethod.endControlFlow();
+
+                    // 3. Copy Style
+                    bindMethod.addStatement("String placeholderStyle = el_$L.getAttribute(\"style\")", field.getSimpleName());
+                    bindMethod.beginControlFlow("if (placeholderStyle != null && !placeholderStyle.isEmpty())");
+                    // Simple concatenation for style string; robust parsing is too complex for this PoC
+                    bindMethod.addStatement("String currentStyle = widgetElement.getAttribute(\"style\")");
+                    bindMethod.addStatement("widgetElement.setAttribute(\"style\", (currentStyle != null ? currentStyle + \";\" : \"\") + placeholderStyle)");
+                    bindMethod.endControlFlow();
+
                     bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
                     bindMethod.endControlFlow();
 
