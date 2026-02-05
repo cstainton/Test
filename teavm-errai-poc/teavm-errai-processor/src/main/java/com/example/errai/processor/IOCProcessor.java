@@ -4,6 +4,7 @@ import com.example.errai.api.ApplicationScoped;
 import com.example.errai.api.EntryPoint;
 import com.example.errai.api.PostConstruct;
 import com.example.errai.api.Templated;
+import com.example.errai.api.Page;
 import com.squareup.javapoet.*;
 import com.google.auto.service.AutoService;
 
@@ -22,17 +23,19 @@ import java.util.stream.Collectors;
 @SupportedAnnotationTypes({
     "com.example.errai.api.ApplicationScoped",
     "com.example.errai.api.EntryPoint",
-    "com.example.errai.api.Templated"
+    "com.example.errai.api.Templated",
+    "com.example.errai.api.Page"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class IOCProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        // Collect all beans: @ApplicationScoped, @EntryPoint, and @Templated (which implies bean)
+        // Collect all beans: @ApplicationScoped, @EntryPoint, @Templated, and @Page (which implies bean)
         Set<Element> beans = roundEnv.getElementsAnnotatedWith(ApplicationScoped.class).stream().collect(Collectors.toSet());
         beans.addAll(roundEnv.getElementsAnnotatedWith(EntryPoint.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Templated.class));
+        beans.addAll(roundEnv.getElementsAnnotatedWith(Page.class));
 
         for (Element element : beans) {
             if (element.getKind() != ElementKind.CLASS) continue;
@@ -70,6 +73,11 @@ public class IOCProcessor extends AbstractProcessor {
         TypeSpec.Builder factoryBuilder = TypeSpec.classBuilder(factoryName)
                 .addModifiers(Modifier.PUBLIC);
 
+        // Treat Page as Singleton for this PoC (could be Dependent)
+        if (typeElement.getAnnotation(Page.class) != null) {
+            isSingleton = true;
+        }
+
         // Singleton Instance Holder
         if (isSingleton) {
             factoryBuilder.addField(FieldSpec.builder(typeName, "instance")
@@ -106,7 +114,12 @@ public class IOCProcessor extends AbstractProcessor {
                 // Assumes fieldType is a class that has a generated factory.
                 // For interfaces, this simple PoC fails (would need a resolution map).
                 // We assume concrete classes for now.
-                ClassName dependencyFactory = ClassName.bestGuess(fieldType.toString() + "_Factory");
+                ClassName dependencyFactory;
+                if (fieldType.toString().equals("com.example.errai.api.Navigation")) {
+                    dependencyFactory = ClassName.get("com.example.errai.impl", "NavigationImpl_Factory");
+                } else {
+                    dependencyFactory = ClassName.bestGuess(fieldType.toString() + "_Factory");
+                }
                 createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
             }
         }
