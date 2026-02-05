@@ -66,6 +66,15 @@ public class TemplatedProcessor extends AbstractProcessor {
         String escapedHtml = htmlContent.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ");
         bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
 
+        // Assign root if a field "element" exists (Convention for this PoC)
+        // In a real framework, we'd look for an interface like IsWidget or a specific annotation.
+        for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
+             if (field.getSimpleName().toString().equals("element") &&
+                 com.squareup.javapoet.TypeName.get(field.asType()).equals(htmlElementClass)) {
+                 bindMethod.addStatement("target.element = root");
+             }
+        }
+
         for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
             DataField dataField = field.getAnnotation(DataField.class);
             if (dataField != null) {

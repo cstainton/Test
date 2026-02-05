@@ -14,16 +14,14 @@ public class App {
 
     @PostConstruct
     public void onModuleLoad() {
-        // Manually attach the component to the DOM for this demonstration.
-        // In a full implementation, the framework would handle attaching the root view.
-        // Re-binding here to get the root element.
-        HTMLElement root = MyComponent_Binder.bind(component);
-        Window.current().getDocument().getBody().appendChild(root);
-
-        // Demonstrate usage of the injected service
-        component.submit.addEventListener("click", evt -> {
-             component.output.setInnerHTML(component.helloService.getGreeting());
-        });
+        // The bootstrapper calls this.
+        // We simply attach the component's element.
+        // No manual binding or generated code visible here.
+        if (component.element != null) {
+            Window.current().getDocument().getBody().appendChild(component.element);
+        } else {
+            Window.alert("Error: Component element is null!");
+        }
     }
 
     public static void main(String[] args) {

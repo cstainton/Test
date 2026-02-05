@@ -14,6 +14,9 @@ public class MyComponent {
     @Inject
     public HelloService helloService;
 
+    // The 'element' field is populated by the generated binder with the root of the template
+    public HTMLElement element;
+
     @DataField
     public HTMLButtonElement submit;
 
@@ -22,7 +25,9 @@ public class MyComponent {
 
     @PostConstruct
     public void init() {
-         // The @Templated annotation ensures that fields annotated with @DataField
-         // are bound to the corresponding DOM elements in the HTML template.
+         // Logic is now contained here.
+         submit.addEventListener("click", evt -> {
+             output.setInnerHTML(helloService.getGreeting());
+         });
     }
 }

@@ -140,7 +140,8 @@ public class IOCProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addMethod(MethodSpec.methodBuilder("run")
                         .addModifiers(Modifier.PUBLIC)
-                        .addStatement("$T.getInstance()", entryPointFactory)
+                        .addStatement("$T instance = $T.getInstance()", ClassName.get(entryPoint), entryPointFactory)
+                        .addStatement("instance.onModuleLoad()")
                         .build())
                 .build();
 
