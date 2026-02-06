@@ -153,8 +153,10 @@ public class NavigationProcessor extends AbstractProcessor {
                     String paramName = pageState.value();
                     if (paramName.isEmpty()) paramName = field.getSimpleName().toString();
 
-                    goToMethod.addStatement("  if (state.containsKey($S)) page_$L.$L = state.get($S)",
-                        paramName, varName, field.getSimpleName(), paramName);
+                    goToMethod.addCode("  {\n");
+                    goToMethod.addStatement("    String val = state.get($S)", paramName);
+                    goToMethod.addStatement("    if (val != null) page_$L.$L = val", varName, field.getSimpleName());
+                    goToMethod.addCode("  }\n");
                 }
             }
 
