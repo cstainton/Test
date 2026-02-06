@@ -1,4 +1,4 @@
-package uk.co.instanto.tearay.api;
+package uk.co.instanto.tearay.api.cdi;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

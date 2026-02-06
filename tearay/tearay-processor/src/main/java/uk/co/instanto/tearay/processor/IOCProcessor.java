@@ -1,14 +1,14 @@
 package uk.co.instanto.tearay.processor;
 
-import uk.co.instanto.tearay.api.ApplicationScoped;
-import uk.co.instanto.tearay.api.Dependent;
+import uk.co.instanto.tearay.api.cdi.ApplicationScoped;
+import uk.co.instanto.tearay.api.cdi.Dependent;
 import uk.co.instanto.tearay.api.EntryPoint;
-import uk.co.instanto.tearay.api.PostConstruct;
-import uk.co.instanto.tearay.api.SessionScoped;
+import uk.co.instanto.tearay.api.cdi.PostConstruct;
+import uk.co.instanto.tearay.api.cdi.SessionScoped;
 import uk.co.instanto.tearay.api.Templated;
 import uk.co.instanto.tearay.api.Page;
-import uk.co.instanto.tearay.api.Observes;
-import uk.co.instanto.tearay.api.Event;
+import uk.co.instanto.tearay.api.cdi.Observes;
+import uk.co.instanto.tearay.api.cdi.Event;
 import uk.co.instanto.tearay.api.impl.EventBus;
 import uk.co.instanto.tearay.api.impl.SessionContext;
 import com.squareup.javapoet.*;
@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({
-    "uk.co.instanto.tearay.api.ApplicationScoped",
-    "uk.co.instanto.tearay.api.Dependent",
-    "uk.co.instanto.tearay.api.SessionScoped",
+    "uk.co.instanto.tearay.api.cdi.ApplicationScoped",
+    "uk.co.instanto.tearay.api.cdi.Dependent",
+    "uk.co.instanto.tearay.api.cdi.SessionScoped",
     "uk.co.instanto.tearay.api.EntryPoint",
     "uk.co.instanto.tearay.api.Templated",
     "uk.co.instanto.tearay.api.Page"

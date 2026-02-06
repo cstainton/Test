@@ -1,6 +1,6 @@
 package uk.co.instanto.tearay.sample;
 
-import uk.co.instanto.tearay.api.SessionScoped;
+import uk.co.instanto.tearay.api.cdi.SessionScoped;
 
 @SessionScoped
 public class SessionBean {

@@ -1,6 +1,6 @@
 package uk.co.instanto.tearay.sample;
 
-import uk.co.instanto.tearay.api.ApplicationScoped;
+import uk.co.instanto.tearay.api.cdi.ApplicationScoped;
 import uk.co.instanto.tearay.api.SecurityProvider;
 import java.util.HashSet;
 import java.util.Set;

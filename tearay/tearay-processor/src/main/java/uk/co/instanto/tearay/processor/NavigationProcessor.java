@@ -5,7 +5,7 @@ import uk.co.instanto.tearay.api.PageShowing;
 import uk.co.instanto.tearay.api.PageHidden;
 import uk.co.instanto.tearay.api.PageState;
 import uk.co.instanto.tearay.api.RestrictedAccess;
-import uk.co.instanto.tearay.api.ApplicationScoped;
+import uk.co.instanto.tearay.api.cdi.ApplicationScoped;
 import com.squareup.javapoet.*;
 import com.google.auto.service.AutoService;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes({"uk.co.instanto.tearay.api.Page", "uk.co.instanto.tearay.api.PageState", "uk.co.instanto.tearay.api.ApplicationScoped"})
+@SupportedAnnotationTypes({"uk.co.instanto.tearay.api.Page", "uk.co.instanto.tearay.api.PageState", "uk.co.instanto.tearay.api.cdi.ApplicationScoped"})
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class NavigationProcessor extends AbstractProcessor {
 

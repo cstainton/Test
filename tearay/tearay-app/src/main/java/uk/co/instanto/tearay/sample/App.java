@@ -1,7 +1,7 @@
 package uk.co.instanto.tearay.sample;
 
 import uk.co.instanto.tearay.api.EntryPoint;
-import uk.co.instanto.tearay.api.PostConstruct;
+import uk.co.instanto.tearay.api.cdi.PostConstruct;
 import uk.co.instanto.tearay.api.Navigation;
 import javax.inject.Inject;
 

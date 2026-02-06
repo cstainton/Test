@@ -1,6 +1,6 @@
 package uk.co.instanto.tearay.sample;
 
-import uk.co.instanto.tearay.api.Dependent;
+import uk.co.instanto.tearay.api.cdi.Dependent;
 
 @Dependent
 public class DependentBean {

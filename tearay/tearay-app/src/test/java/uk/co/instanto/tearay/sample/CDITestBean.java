@@ -1,8 +1,8 @@
 package uk.co.instanto.tearay.sample;
 
-import uk.co.instanto.tearay.api.ApplicationScoped;
-import uk.co.instanto.tearay.api.Event;
-import uk.co.instanto.tearay.api.Observes;
+import uk.co.instanto.tearay.api.cdi.ApplicationScoped;
+import uk.co.instanto.tearay.api.cdi.Event;
+import uk.co.instanto.tearay.api.cdi.Observes;
 
 import javax.inject.Inject;
 
