@@ -62,11 +62,9 @@ public class TemplatedProcessor extends AbstractProcessor {
         bindMethod.addStatement("$T doc = $T.current().getDocument()", documentClass, windowClass);
         bindMethod.addStatement("$T root = doc.createElement($S)", htmlElementClass, "div");
 
-        // Simple escaping for the demo.
-        // NOTE: JavaPoet $S handles quoting, but we need to flatten newlines to keep the string cleaner in generated source.
-        // We do NOT escape quotes manually because JavaPoet does that.
-        String escapedHtml = htmlContent.replace("\n", " ");
-        bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
+        // We rely on JavaPoet's $S to handle escaping (quotes, newlines, etc.) correctly.
+        // This ensures robust handling of HTML content including scripts and preformatted text.
+        bindMethod.addStatement("root.setInnerHTML($S)", htmlContent);
 
         // Assign root if a field "element" exists (Convention for this PoC)
         // In a real framework, we'd look for an interface like IsWidget or a specific annotation.
