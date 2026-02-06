@@ -5,6 +5,9 @@ import uk.co.instanto.tearay.api.EntryPoint;
 import uk.co.instanto.tearay.api.PostConstruct;
 import uk.co.instanto.tearay.api.Templated;
 import uk.co.instanto.tearay.api.Page;
+import uk.co.instanto.tearay.api.Observes;
+import uk.co.instanto.tearay.api.Event;
+import uk.co.instanto.tearay.api.impl.EventBus;
 import com.squareup.javapoet.*;
 import com.google.auto.service.AutoService;
 
@@ -12,10 +15,12 @@ import javax.annotation.processing.*;
 import javax.inject.Inject;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -107,22 +112,47 @@ public class IOCProcessor extends AbstractProcessor {
 
         createMethod.addStatement("$T bean = new $T()", typeName, typeName);
 
+        ClassName eventBusClass = ClassName.get(EventBus.class);
+        ClassName eventInterfaceClass = ClassName.get(Event.class);
+
         // Injection
         for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
             if (field.getAnnotation(Inject.class) != null) {
                 TypeMirror fieldType = field.asType();
-                // Assumes fieldType is a class that has a generated factory.
-                // For interfaces, this simple PoC fails (would need a resolution map).
-                // We assume concrete classes for now.
-                ClassName dependencyFactory;
-                if (fieldType.toString().equals("uk.co.instanto.tearay.api.Navigation")) {
-                    dependencyFactory = ClassName.get("uk.co.instanto.tearay.impl", "NavigationImpl_Factory");
+                String fieldTypeStr = fieldType.toString();
+
+                if (fieldTypeStr.equals("uk.co.instanto.tearay.api.Navigation")) {
+                    ClassName dependencyFactory = ClassName.get("uk.co.instanto.tearay.impl", "NavigationImpl_Factory");
                     createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
-                } else if (fieldType.toString().startsWith("uk.co.instanto.tearay.widgets.")) {
-                    // Direct instantiation for widgets
-                    createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(fieldType.toString()));
+                } else if (fieldTypeStr.startsWith("uk.co.instanto.tearay.widgets.")) {
+                    createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(fieldTypeStr));
+                } else if (fieldTypeStr.startsWith(Event.class.getName())) {
+                    // Inject Event<T>
+                    // Extract T
+                    TypeMirror genericType = null;
+                    if (fieldType instanceof DeclaredType) {
+                        List<? extends TypeMirror> args = ((DeclaredType) fieldType).getTypeArguments();
+                        if (!args.isEmpty()) {
+                            genericType = args.get(0);
+                        }
+                    }
+
+                    // Create anonymous implementation of Event
+                    TypeSpec eventImpl = TypeSpec.anonymousClassBuilder("")
+                            .addSuperinterface(ParameterizedTypeName.get(eventInterfaceClass,
+                                (genericType != null ? TypeName.get(genericType) : TypeName.OBJECT)))
+                            .addMethod(MethodSpec.methodBuilder("fire")
+                                    .addModifiers(Modifier.PUBLIC)
+                                    .addAnnotation(Override.class)
+                                    .addParameter(genericType != null ? TypeName.get(genericType) : TypeName.OBJECT, "event")
+                                    .addStatement("$T.getInstance().fire(event)", eventBusClass)
+                                    .build())
+                            .build();
+
+                    createMethod.addStatement("bean.$L = $L", field.getSimpleName(), eventImpl);
+
                 } else {
-                    dependencyFactory = ClassName.bestGuess(fieldType.toString() + "_Factory");
+                    ClassName dependencyFactory = ClassName.bestGuess(fieldTypeStr + "_Factory");
                     createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
                 }
             }
@@ -132,6 +162,19 @@ public class IOCProcessor extends AbstractProcessor {
         if (isTemplated) {
             ClassName binderClass = ClassName.get(packageName, typeElement.getSimpleName() + "_Binder");
             createMethod.addStatement("$T.bind(bean)", binderClass);
+        }
+
+        // Observer Registration
+        for (ExecutableElement method : ElementFilter.methodsIn(typeElement.getEnclosedElements())) {
+             for (VariableElement param : method.getParameters()) {
+                 if (param.getAnnotation(Observes.class) != null) {
+                     TypeMirror eventType = param.asType();
+                     createMethod.addStatement("$T.getInstance().subscribe($T.class, (e) -> bean.$L(e))",
+                         eventBusClass,
+                         TypeName.get(eventType),
+                         method.getSimpleName());
+                 }
+             }
         }
 
         // PostConstruct
