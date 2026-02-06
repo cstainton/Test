@@ -2,10 +2,12 @@ package uk.co.instanto.tearay.sample;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.teavm.junit.SkipJVM;
 import org.teavm.junit.TeaVMTestRunner;
 import static org.junit.Assert.*;
 
 @RunWith(TeaVMTestRunner.class)
+@SkipJVM // Skip JVM execution as these tests rely on JSO (Window, Document) available only in JS environment
 public class DITest {
 
     @Test

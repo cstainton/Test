@@ -2,6 +2,7 @@ package uk.co.instanto.tearay.sample;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.teavm.junit.SkipJVM;
 import org.teavm.junit.TeaVMTestRunner;
 import uk.co.instanto.tearay.impl.NavigationImpl;
 import uk.co.instanto.tearay.impl.NavigationImpl_Factory;
@@ -10,6 +11,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 @RunWith(TeaVMTestRunner.class)
+@SkipJVM // Skip JVM execution as these tests rely on JSO (Window, Document) available only in JS environment
 public class NavigationTest {
 
     @Test
