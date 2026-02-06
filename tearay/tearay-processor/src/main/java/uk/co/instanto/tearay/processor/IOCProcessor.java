@@ -4,11 +4,13 @@ import uk.co.instanto.tearay.api.ApplicationScoped;
 import uk.co.instanto.tearay.api.Dependent;
 import uk.co.instanto.tearay.api.EntryPoint;
 import uk.co.instanto.tearay.api.PostConstruct;
+import uk.co.instanto.tearay.api.SessionScoped;
 import uk.co.instanto.tearay.api.Templated;
 import uk.co.instanto.tearay.api.Page;
 import uk.co.instanto.tearay.api.Observes;
 import uk.co.instanto.tearay.api.Event;
 import uk.co.instanto.tearay.api.impl.EventBus;
+import uk.co.instanto.tearay.api.impl.SessionContext;
 import com.squareup.javapoet.*;
 import com.google.auto.service.AutoService;
 
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 @SupportedAnnotationTypes({
     "uk.co.instanto.tearay.api.ApplicationScoped",
     "uk.co.instanto.tearay.api.Dependent",
+    "uk.co.instanto.tearay.api.SessionScoped",
     "uk.co.instanto.tearay.api.EntryPoint",
     "uk.co.instanto.tearay.api.Templated",
     "uk.co.instanto.tearay.api.Page"
@@ -38,9 +41,10 @@ public class IOCProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        // Collect all beans: @ApplicationScoped, @Dependent, @EntryPoint, @Templated, and @Page (which implies bean)
+        // Collect all beans: @ApplicationScoped, @Dependent, @SessionScoped, @EntryPoint, @Templated, and @Page
         Set<Element> beans = roundEnv.getElementsAnnotatedWith(ApplicationScoped.class).stream().collect(Collectors.toSet());
         beans.addAll(roundEnv.getElementsAnnotatedWith(Dependent.class));
+        beans.addAll(roundEnv.getElementsAnnotatedWith(SessionScoped.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(EntryPoint.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Templated.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Page.class));
@@ -75,17 +79,14 @@ public class IOCProcessor extends AbstractProcessor {
         ClassName factoryClassName = ClassName.get(packageName, factoryName);
 
         boolean isDependent = typeElement.getAnnotation(Dependent.class) != null;
+        boolean isSessionScoped = typeElement.getAnnotation(SessionScoped.class) != null;
         boolean isApplicationScoped = typeElement.getAnnotation(ApplicationScoped.class) != null;
         boolean isEntryPoint = typeElement.getAnnotation(EntryPoint.class) != null;
         boolean isPage = typeElement.getAnnotation(Page.class) != null;
         boolean isTemplated = typeElement.getAnnotation(Templated.class) != null;
 
-        // Determine scope. Defaulting to Prototype if @Dependent is present.
-        // If conflicting annotations exist (e.g. @ApplicationScoped and @Dependent), explicit @Dependent wins or we can error.
-        // For simplicity:
-        // Singleton = (@ApplicationScoped OR @EntryPoint OR @Page) AND NOT @Dependent
-
-        boolean isSingleton = (isApplicationScoped || isEntryPoint || isPage) && !isDependent;
+        // Singleton if (@ApplicationScoped OR @EntryPoint OR @Page) AND NOT @Dependent AND NOT @SessionScoped
+        boolean isSingleton = (isApplicationScoped || isEntryPoint || isPage) && !isDependent && !isSessionScoped;
 
         TypeSpec.Builder factoryBuilder = TypeSpec.classBuilder(factoryName)
                 .addModifiers(Modifier.PUBLIC);
@@ -106,6 +107,9 @@ public class IOCProcessor extends AbstractProcessor {
                     .addStatement("instance = createInstance()")
                     .endControlFlow()
                     .addStatement("return instance");
+        } else if (isSessionScoped) {
+            ClassName sessionContextClass = ClassName.get(SessionContext.class);
+            getMethod.addStatement("return $T.getInstance().get($T.class, () -> createInstance())", sessionContextClass, typeName);
         } else {
             getMethod.addStatement("return createInstance()");
         }
@@ -135,7 +139,6 @@ public class IOCProcessor extends AbstractProcessor {
                     createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(fieldTypeStr));
                 } else if (fieldTypeStr.startsWith(Event.class.getName())) {
                     // Inject Event<T>
-                    // Extract T
                     TypeMirror genericType = null;
                     if (fieldType instanceof DeclaredType) {
                         List<? extends TypeMirror> args = ((DeclaredType) fieldType).getTypeArguments();
@@ -144,7 +147,6 @@ public class IOCProcessor extends AbstractProcessor {
                         }
                     }
 
-                    // Create anonymous implementation of Event
                     TypeSpec eventImpl = TypeSpec.anonymousClassBuilder("")
                             .addSuperinterface(ParameterizedTypeName.get(eventInterfaceClass,
                                 (genericType != null ? TypeName.get(genericType) : TypeName.OBJECT)))
