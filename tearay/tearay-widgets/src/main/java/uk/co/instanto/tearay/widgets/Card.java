@@ -1,7 +1,9 @@
 package uk.co.instanto.tearay.widgets;
 
+import java.util.List;
 import org.teavm.jso.browser.Window;
 import org.teavm.jso.dom.html.HTMLElement;
+import org.teavm.jso.dom.xml.DocumentFragment;
 
 public class Card extends Widget {
 
@@ -38,5 +40,25 @@ public class Card extends Widget {
         if (widget.element != null) {
             body.appendChild(widget.element);
         }
+    }
+
+    public void addContents(List<Widget> widgets) {
+        DocumentFragment fragment = Window.current().getDocument().createDocumentFragment();
+        for (Widget widget : widgets) {
+            if (widget.element != null) {
+                fragment.appendChild(widget.element);
+            }
+        }
+        body.appendChild(fragment);
+    }
+
+    public void addContents(Widget... widgets) {
+        DocumentFragment fragment = Window.current().getDocument().createDocumentFragment();
+        for (Widget widget : widgets) {
+            if (widget.element != null) {
+                fragment.appendChild(widget.element);
+            }
+        }
+        body.appendChild(fragment);
     }
 }
