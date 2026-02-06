@@ -1,6 +1,7 @@
 package uk.co.instanto.tearay.processor;
 
 import uk.co.instanto.tearay.api.ApplicationScoped;
+import uk.co.instanto.tearay.api.Dependent;
 import uk.co.instanto.tearay.api.EntryPoint;
 import uk.co.instanto.tearay.api.PostConstruct;
 import uk.co.instanto.tearay.api.Templated;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({
     "uk.co.instanto.tearay.api.ApplicationScoped",
+    "uk.co.instanto.tearay.api.Dependent",
     "uk.co.instanto.tearay.api.EntryPoint",
     "uk.co.instanto.tearay.api.Templated",
     "uk.co.instanto.tearay.api.Page"
@@ -36,8 +38,9 @@ public class IOCProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        // Collect all beans: @ApplicationScoped, @EntryPoint, @Templated, and @Page (which implies bean)
+        // Collect all beans: @ApplicationScoped, @Dependent, @EntryPoint, @Templated, and @Page (which implies bean)
         Set<Element> beans = roundEnv.getElementsAnnotatedWith(ApplicationScoped.class).stream().collect(Collectors.toSet());
+        beans.addAll(roundEnv.getElementsAnnotatedWith(Dependent.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(EntryPoint.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Templated.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Page.class));
@@ -71,17 +74,21 @@ public class IOCProcessor extends AbstractProcessor {
         ClassName typeName = ClassName.get(typeElement);
         ClassName factoryClassName = ClassName.get(packageName, factoryName);
 
-        boolean isSingleton = typeElement.getAnnotation(ApplicationScoped.class) != null ||
-                              typeElement.getAnnotation(EntryPoint.class) != null;
+        boolean isDependent = typeElement.getAnnotation(Dependent.class) != null;
+        boolean isApplicationScoped = typeElement.getAnnotation(ApplicationScoped.class) != null;
+        boolean isEntryPoint = typeElement.getAnnotation(EntryPoint.class) != null;
+        boolean isPage = typeElement.getAnnotation(Page.class) != null;
         boolean isTemplated = typeElement.getAnnotation(Templated.class) != null;
+
+        // Determine scope. Defaulting to Prototype if @Dependent is present.
+        // If conflicting annotations exist (e.g. @ApplicationScoped and @Dependent), explicit @Dependent wins or we can error.
+        // For simplicity:
+        // Singleton = (@ApplicationScoped OR @EntryPoint OR @Page) AND NOT @Dependent
+
+        boolean isSingleton = (isApplicationScoped || isEntryPoint || isPage) && !isDependent;
 
         TypeSpec.Builder factoryBuilder = TypeSpec.classBuilder(factoryName)
                 .addModifiers(Modifier.PUBLIC);
-
-        // Treat Page as Singleton for this PoC (could be Dependent)
-        if (typeElement.getAnnotation(Page.class) != null) {
-            isSingleton = true;
-        }
 
         // Singleton Instance Holder
         if (isSingleton) {
