@@ -142,6 +142,9 @@ public class IOCProcessor extends AbstractProcessor {
                 if (fieldTypeName.equals("uk.co.instanto.tearay.api.Navigation")) {
                     dependencyFactory = ClassName.get("uk.co.instanto.tearay.impl", "NavigationImpl_Factory");
                     createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
+                } else if (fieldTypeName.equals("uk.co.instanto.tearay.ui.Scheduler")) {
+                    dependencyFactory = ClassName.get("uk.co.instanto.tearay.ui", "SchedulerImpl_Factory");
+                    createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
                 } else if (fieldTypeName.startsWith("uk.co.instanto.tearay.widgets.")) {
                     // Direct instantiation for widgets
                     createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(fieldTypeName));

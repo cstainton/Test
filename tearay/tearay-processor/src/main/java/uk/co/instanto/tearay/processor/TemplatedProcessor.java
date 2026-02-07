@@ -109,8 +109,6 @@ public class TemplatedProcessor extends AbstractProcessor {
         String escapedHtml = htmlContent.replace("\n", " ").replace("\"", "\\\"");
         bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
 
-        List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
-
         // Assign root to 'element' field if exists
         // Assign root if a field "element" exists (Convention for this PoC)
         // In a real framework, we'd look for an interface like IsWidget or a specific annotation.
@@ -159,47 +157,6 @@ public class TemplatedProcessor extends AbstractProcessor {
                 bindMethod.addStatement("  el_$L = candidate", field.getSimpleName());
             }
             bindMethod.addStatement("  break");
-            if (field.getAnnotation(DataField.class) != null) {
-                dataFields.add(field);
-                bindMethod.addStatement("$T el_$L = null", htmlElementClass, field.getSimpleName());
-            }
-        }
-
-        if (!dataFields.isEmpty()) {
-            bindMethod.addStatement("$T<$T> nodes = root.querySelectorAll($S)",
-                    nodeListClass,
-                    WildcardTypeName.subtypeOf(elementClass),
-                    "[data-field]");
-
-            bindMethod.beginControlFlow("for (int i = 0; i < nodes.getLength(); i++)");
-            bindMethod.addStatement("$T candidate = ($T) nodes.item(i)", htmlElementClass, htmlElementClass);
-            bindMethod.addStatement("String attr = candidate.getAttribute($S)", "data-field");
-
-            bindMethod.beginControlFlow("switch (attr)");
-
-            for (VariableElement field : dataFields) {
-                DataField dataField = field.getAnnotation(DataField.class);
-                String name = dataField.value();
-                if (name.isEmpty()) {
-                    name = field.getSimpleName().toString();
-                }
-
-                // Query element
-                bindMethod.addStatement("$T el_$L = ($T) root.querySelector($S)",
-                        htmlElementClass, field.getSimpleName(), htmlElementClass, "[data-field='" + dataFieldName + "']");
-
-                bindMethod.beginControlFlow("if (el_$L != null)", field.getSimpleName());
-
-                // Check if field is HTMLElement
-                 TypeElement htmlElementType = processingEnv.getElementUtils().getTypeElement("org.teavm.jso.dom.html.HTMLElement");
-                 if (htmlElementType != null && processingEnv.getTypeUtils().isAssignable(field.asType(), htmlElementType.asType())) {
-                bindMethod.addCode("case $S:\n", name);
-                bindMethod.addStatement("  el_$L = candidate", field.getSimpleName());
-                bindMethod.addStatement("  break");
-            }
-
-            bindMethod.endControlFlow(); // switch
-            bindMethod.endControlFlow(); // for
         }
         bindMethod.endControlFlow(); // switch
         bindMethod.endControlFlow(); // for
@@ -225,22 +182,6 @@ public class TemplatedProcessor extends AbstractProcessor {
                         field.getSimpleName(),
                         com.squareup.javapoet.TypeName.get(field.asType()),
                         field.getSimpleName());
-                 } else {
-                     // Assume Widget or Component with 'element' field
-                     // Check if target field is not null (initialized)
-                     bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
-                     // Assume target.$L has .element field or .getElement() method?
-                     // Convention: .element field access or IsWidget interface?
-                     // I'll assume .element field for now based on previous code.
-                     bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
-
-                     bindMethod.beginControlFlow("if (widgetElement != null)");
-                     bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
-                     bindMethod.endControlFlow();
-
-                     bindMethod.endControlFlow();
-                 }
-
                 } else {
                     // Nested component
                     bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());

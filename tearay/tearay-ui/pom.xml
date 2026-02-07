@@ -21,6 +21,12 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>uk.co.instanto.tearay</groupId>
+      <artifactId>tearay-processor</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.teavm</groupId>
       <artifactId>teavm-jso</artifactId>
     </dependency>

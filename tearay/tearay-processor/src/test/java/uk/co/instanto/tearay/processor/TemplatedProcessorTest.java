@@ -48,7 +48,7 @@ public class TemplatedProcessorTest {
         assertThat(compilation)
             .generatedSourceFile("uk.co.instanto.tearay.processor.SimplePage_Binder")
             .contentsAsUtf8String()
-            .contains("switch (attr)");
+            .contains("switch (key)");
 
         assertThat(compilation)
             .generatedSourceFile("uk.co.instanto.tearay.processor.SimplePage_Binder")
