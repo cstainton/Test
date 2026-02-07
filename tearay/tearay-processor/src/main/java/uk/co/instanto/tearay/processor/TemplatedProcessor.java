@@ -16,6 +16,8 @@ import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 
 @AutoService(Processor.class)
@@ -165,17 +167,28 @@ public class TemplatedProcessor extends AbstractProcessor {
                 .writeTo(processingEnv.getFiler());
     }
 
+    private final Map<String, String> templateCache = new HashMap<>();
+
     private String readTemplate(TypeElement typeElement, String templateName) {
          String packageName = processingEnv.getElementUtils().getPackageOf(typeElement).getQualifiedName().toString();
+         String cacheKey = packageName + ":" + templateName;
+         if (templateCache.containsKey(cacheKey)) {
+             return templateCache.get(cacheKey);
+         }
+
          // Try SOURCE_PATH first as it is more likely for sources
          try {
              FileObject resource = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, packageName, templateName);
-             return resource.getCharContent(true).toString();
+             String content = resource.getCharContent(true).toString();
+             templateCache.put(cacheKey, content);
+             return content;
          } catch (Exception e) {
              // Try CLASS_PATH
              try {
                  FileObject resource = processingEnv.getFiler().getResource(StandardLocation.CLASS_PATH, packageName, templateName);
-                 return resource.getCharContent(true).toString();
+                 String content = resource.getCharContent(true).toString();
+                 templateCache.put(cacheKey, content);
+                 return content;
              } catch (Exception ex) {
                  processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not find template: " + templateName + " in package " + packageName, typeElement);
                  return null;
