@@ -15,7 +15,7 @@ public abstract class ListWidget<M, W extends IsWidget & HasModel<M>> extends Wi
     private final HTMLElement listElement;
 
     @Inject
-    protected Provider<W> itemWidgetProvider;
+    public Provider<W> itemWidgetProvider;
 
     private List<M> items = new ArrayList<>();
 

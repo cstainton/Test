@@ -4,7 +4,9 @@ import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.browser.Window;
 import uk.co.instanto.tearay.widgets.Widget;
 import uk.co.instanto.tearay.ui.HasModel;
+import uk.co.instanto.tearay.api.Dependent;
 
+@Dependent
 public class TaskWidget extends Widget implements HasModel<Task> {
 
     private Task model;
