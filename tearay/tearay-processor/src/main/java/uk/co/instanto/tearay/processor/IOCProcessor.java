@@ -93,11 +93,6 @@ public class IOCProcessor extends AbstractProcessor {
         TypeSpec.Builder factoryBuilder = TypeSpec.classBuilder(factoryName)
                 .addModifiers(Modifier.PUBLIC);
 
-        // Treat Page as Singleton for this PoC (could be Dependent)
-        if (typeElement.getAnnotation(Page.class) != null) {
-            isSingleton = true;
-        }
-
         // Singleton Instance Holder
         if (isSingleton) {
             factoryBuilder.addField(FieldSpec.builder(typeName, "instance")
