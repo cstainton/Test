@@ -170,6 +170,7 @@ public class TemplatedProcessor extends AbstractProcessor {
 
         if (modelField != null) {
             TypeElement modelType = (TypeElement) processingEnv.getTypeUtils().asElement(modelField.asType());
+            java.util.Set<String> boundProperties = new java.util.HashSet<>();
 
             for (VariableElement field : fields) {
                 Bound bound = field.getAnnotation(Bound.class);
@@ -178,6 +179,7 @@ public class TemplatedProcessor extends AbstractProcessor {
                     if (propertyName.isEmpty()) {
                         propertyName = field.getSimpleName().toString();
                     }
+                    boundProperties.add(propertyName);
 
                     // Capitalize for getter/setter
                     String capProp = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
@@ -249,6 +251,52 @@ public class TemplatedProcessor extends AbstractProcessor {
 
                     bindMethod.endControlFlow();
                 }
+            }
+
+            // Detect Unbound Properties
+            java.util.Set<String> allProperties = new java.util.HashSet<>();
+            for (ExecutableElement method : ElementFilter.methodsIn(processingEnv.getElementUtils().getAllMembers(modelType))) {
+                String methodName = method.getSimpleName().toString();
+                if (method.getParameters().isEmpty() && !method.getModifiers().contains(javax.lang.model.element.Modifier.STATIC) && method.getModifiers().contains(javax.lang.model.element.Modifier.PUBLIC)) {
+                    if (methodName.startsWith("get") && methodName.length() > 3) {
+                         String prop = methodName.substring(3);
+                         prop = prop.substring(0, 1).toLowerCase() + prop.substring(1);
+                         // Check for corresponding setter
+                         boolean setterExists = false;
+                         String targetSetter = "set" + methodName.substring(3);
+                         for (ExecutableElement m : ElementFilter.methodsIn(processingEnv.getElementUtils().getAllMembers(modelType))) {
+                             if (m.getSimpleName().toString().equals(targetSetter) && m.getParameters().size() == 1) {
+                                 setterExists = true;
+                                 break;
+                             }
+                         }
+                         if (setterExists && !prop.equals("class")) {
+                             allProperties.add(prop);
+                         }
+                    } else if (methodName.startsWith("is") && methodName.length() > 2) {
+                         String prop = methodName.substring(2);
+                         prop = prop.substring(0, 1).toLowerCase() + prop.substring(1);
+                          // Check for corresponding setter
+                         boolean setterExists = false;
+                         String targetSetter = "set" + methodName.substring(2);
+                         for (ExecutableElement m : ElementFilter.methodsIn(processingEnv.getElementUtils().getAllMembers(modelType))) {
+                             if (m.getSimpleName().toString().equals(targetSetter) && m.getParameters().size() == 1) {
+                                 setterExists = true;
+                                 break;
+                             }
+                         }
+                         if (setterExists) {
+                             allProperties.add(prop);
+                         }
+                    }
+                }
+            }
+
+            allProperties.removeAll(boundProperties);
+            if (!allProperties.isEmpty()) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                    "The following properties in model " + modelType.getSimpleName() + " are not bound: " + allProperties,
+                    typeElement);
             }
         }
 
