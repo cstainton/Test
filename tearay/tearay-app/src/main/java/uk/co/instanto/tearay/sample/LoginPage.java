@@ -5,6 +5,7 @@ import uk.co.instanto.tearay.api.Templated;
 import uk.co.instanto.tearay.api.DataField;
 import uk.co.instanto.tearay.api.Navigation;
 import uk.co.instanto.tearay.api.PageShowing;
+import uk.co.instanto.tearay.api.RootElement;
 import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.dom.html.HTMLButtonElement;
 import org.teavm.jso.browser.Window;
@@ -22,6 +23,7 @@ public class LoginPage {
     @Inject
     public AppSecurityProvider securityProvider;
 
+    @RootElement
     public HTMLElement element;
 
     @DataField

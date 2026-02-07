@@ -15,5 +15,9 @@
           <artifactId>javax.inject</artifactId>
           <version>1</version>
       </dependency>
+      <dependency>
+          <groupId>org.teavm</groupId>
+          <artifactId>teavm-jso-apis</artifactId>
+      </dependency>
   </dependencies>
 </project>
