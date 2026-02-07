@@ -1606,12 +1606,16 @@
     function jl_Long__clinit_() {
         jl_Long_TYPE = $rt_cls($rt_longcls());
     }
+    var ucita_IsWidget = $rt_classWithoutFields(0);
     function ucitw_Widget() {
         jl_Object.call(this);
         this.$element = null;
     }
     function ucitw_Widget__init_($this) {
         jl_Object__init_0($this);
+    }
+    function ucitw_Widget_getElement($this) {
+        return $this.$element;
     }
     var otj_TestEntryPoint$Launcher = $rt_classWithoutFields(0);
     var otj_TestEntryPoint$LauncherImpl1 = $rt_classWithoutFields();
@@ -1624,7 +1628,7 @@
         jl_Object__init_0(var$0);
     }
     function otj_TestEntryPoint$LauncherImpl1_launch(var$0, var$1) {
-        ucits_DITest_testDashboardInjection($rt_nullCheck($rt_castToClass(var$1, ucits_DITest)));
+        ucits_DITest_testAppInjection($rt_nullCheck($rt_castToClass(var$1, ucits_DITest)));
     }
     var otj_TestEntryPoint$LauncherImpl0 = $rt_classWithoutFields();
     function otj_TestEntryPoint$LauncherImpl0__init_() {
@@ -1636,7 +1640,7 @@
         jl_Object__init_0(var$0);
     }
     function otj_TestEntryPoint$LauncherImpl0_launch(var$0, var$1) {
-        ucits_DITest_testAppInjection($rt_nullCheck($rt_castToClass(var$1, ucits_DITest)));
+        ucits_DITest_testDashboardInjection($rt_nullCheck($rt_castToClass(var$1, ucits_DITest)));
     }
     var ucitw_Button = $rt_classWithoutFields(ucitw_Widget);
     function ucitw_Button__init_() {
@@ -3433,7 +3437,7 @@
         $target.$element0 = $root;
         $el_container = $root.querySelector("[data-field=\'container\']");
         if ($el_container !== null && $target.$container !== null) {
-            $widgetElement = $rt_nullCheck($target.$container).$element;
+            $widgetElement = $rt_nullCheck($target.$container).$getElement();
             if ($widgetElement !== null) {
                 $currentClasses = $rt_str($widgetElement.className);
                 $placeholderClasses = $rt_str($el_container.className);
@@ -5004,7 +5008,8 @@
     ju_TemplateCollections$AbstractImmutableMap, 0, ju_AbstractMap, [], 1, 0, 0, 0, ["$_init_", $rt_wrapFunction0(ju_TemplateCollections$AbstractImmutableMap__init_)],
     ju_Collections$2, 0, ju_TemplateCollections$AbstractImmutableMap, [], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(ju_Collections$2__init_0), "$entrySet", $rt_wrapFunction0(ju_Collections$2_entrySet), "$get", $rt_wrapFunction1(ju_Collections$2_get), "$containsKey", $rt_wrapFunction1(ju_Collections$2_containsKey)],
     jl_Long, 0, jl_Number, [jl_Comparable], 0, 3, 0, jl_Long_$callClinit, 0,
-    ucitw_Widget, 0, jl_Object, [], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
+    ucita_IsWidget, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_), "$getElement", $rt_wrapFunction0(ucitw_Widget_getElement)],
     otj_TestEntryPoint$Launcher, 0, jl_Object, [], 3, 0, 0, 0, 0,
     otj_TestEntryPoint$LauncherImpl1, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl1__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl1_launch)],
     otj_TestEntryPoint$LauncherImpl0, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl0__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl0_launch)],
@@ -5014,9 +5019,9 @@
     otjde_GamepadEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
     jl_CharSequence, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_Error, 0, jl_Throwable, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_Error__init_0), "$_init_0", $rt_wrapFunction1(jl_Error__init_2)],
-    jl_LinkageError, 0, jl_Error, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_LinkageError__init_0)],
-    otjde_LoadEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0]);
-    $rt_metadata([ju_Comparator, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    jl_LinkageError, 0, jl_Error, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_LinkageError__init_0)]]);
+    $rt_metadata([otjde_LoadEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
+    ju_Comparator, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_String$_clinit_$lambda$_93_0, 0, jl_Object, [ju_Comparator], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_String$_clinit_$lambda$_93_0__init_0)],
     jl_StringIndexOutOfBoundsException, "StringIndexOutOfBoundsException", 2, jl_IndexOutOfBoundsException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_StringIndexOutOfBoundsException__init_0)],
     ju_Collections$_clinit_$lambda$_59_0, 0, jl_Object, [ju_Comparator], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_Collections$_clinit_$lambda$_59_0__init_0)],
@@ -5069,9 +5074,9 @@
     jl_NumberFormatException, "NumberFormatException", 2, jl_IllegalArgumentException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_NumberFormatException__init_2), "$_init_0", $rt_wrapFunction1(jl_NumberFormatException__init_1)],
     jl_ArrayIndexOutOfBoundsException, 0, jl_IndexOutOfBoundsException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayIndexOutOfBoundsException__init_0)],
     jl_Enum, 0, jl_Object, [jl_Comparable, ji_Serializable], 1, 3, 0, 0, ["$_init_7", $rt_wrapFunction2(jl_Enum__init_)],
-    ucitw_Button$Type, 0, jl_Enum, [], 12, 3, 0, ucitw_Button$Type_$callClinit, ["$getCssClass", $rt_wrapFunction0(ucitw_Button$Type_getCssClass)],
-    ju_AbstractList$1, 0, jl_Object, [ju_Iterator], 0, 0, 0, 0, ["$_init_2", $rt_wrapFunction1(ju_AbstractList$1__init_0), "$hasNext", $rt_wrapFunction0(ju_AbstractList$1_hasNext), "$next", $rt_wrapFunction0(ju_AbstractList$1_next)]]);
-    $rt_metadata([ucits_LoginPage$onShow$lambda$_1_1, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_18", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1__init_0), "$handleEvent", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1_handleEvent$exported$0)],
+    ucitw_Button$Type, 0, jl_Enum, [], 12, 3, 0, ucitw_Button$Type_$callClinit, ["$getCssClass", $rt_wrapFunction0(ucitw_Button$Type_getCssClass)]]);
+    $rt_metadata([ju_AbstractList$1, 0, jl_Object, [ju_Iterator], 0, 0, 0, 0, ["$_init_2", $rt_wrapFunction1(ju_AbstractList$1__init_0), "$hasNext", $rt_wrapFunction0(ju_AbstractList$1_hasNext), "$next", $rt_wrapFunction0(ju_AbstractList$1_next)],
+    ucits_LoginPage$onShow$lambda$_1_1, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_18", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1__init_0), "$handleEvent", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1_handleEvent$exported$0)],
     ucits_LoginPage$onShow$lambda$_1_0, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_18", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0__init_0), "$handleEvent", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0_handleEvent$exported$0)],
     ucits_DashboardPage$onShow$lambda$_1_3, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage$onShow$lambda$_1_3__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_3_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_3_handleEvent$exported$0)],
     ucits_DashboardPage$onShow$lambda$_1_4, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage$onShow$lambda$_1_4__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_4_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_4_handleEvent$exported$0)],
@@ -5120,9 +5125,9 @@
     ucitw_Row, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Row__init_0)],
     jl_NoClassDefFoundError, 0, jl_LinkageError, [], 0, 3, 0, 0, 0,
     ju_NoSuchElementException, "NoSuchElementException", 1, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_NoSuchElementException__init_0)],
-    otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
-    otci_CharFlow, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_15", $rt_wrapFunction1(otci_CharFlow__init_)]]);
-    $rt_metadata([otjc_JSFinalizationRegistry, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
+    otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0]);
+    $rt_metadata([otci_CharFlow, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_15", $rt_wrapFunction1(otci_CharFlow__init_)],
+    otjc_JSFinalizationRegistry, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otj_TestJsEntryPoint, 0, jl_Object, [], 4, 0, 0, 0, 0,
     ucitw_Slider, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Slider__init_0), "$setMin", $rt_wrapFunction1(ucitw_Slider_setMin), "$setMax", $rt_wrapFunction1(ucitw_Slider_setMax), "$getValue1", $rt_wrapFunction0(ucitw_Slider_getValue), "$setValue", $rt_wrapFunction1(ucitw_Slider_setValue), "$addChangeHandler", $rt_wrapFunction1(ucitw_Slider_addChangeHandler)],
     jl_Class, 0, jl_Object, [jlr_AnnotatedElement, jlr_Type], 0, 3, 0, 0, ["$getPlatformClass", $rt_wrapFunction0(jl_Class_getPlatformClass), "$isInstance", $rt_wrapFunction1(jl_Class_isInstance), "$getName", $rt_wrapFunction0(jl_Class_getName), "$isPrimitive", $rt_wrapFunction0(jl_Class_isPrimitive), "$getComponentType", $rt_wrapFunction0(jl_Class_getComponentType)],
@@ -5166,7 +5171,7 @@
     });
     $rt_stringPool(["Either src or dest is null", "String is null", "String is empty", "String contains invalid digits: ", "String contains digits out of radix ", ": ", "The value is too big for int type: ", "Illegal radix: ", "btn ", "alert ", "null", ";", "=", "dashboard", "user-profile", "login", "username", "admin", "userId", "name", "Unknown page role: ", "N/A", "Unknown Source", ")", "App instance should not be null", "Navigation should be injected", "DashboardPage should not be null", "HelloService should be injected",
     "Container widget should be injected", "Hello", "col-", "PRIMARY", "btn-primary", "SUCCESS", "btn-success", "DANGER", "btn-danger", "WARNING", "btn-warning", "INFO", "btn-info", "", "Tearay App", "Home", "Profile", "Guest", "Welcome ", "Go to User Profile", "options", "Option A", "Option B", "This is an info alert from the Widget library!", "Logout", "Enable Notifications", "I agree to the terms", "Logout (Disabled)", "Logout (Enabled)", "OFF", "ON", "Notifications: ", "Slider value: ", "12345", "TeaVM User",
-    "0", " sticky-top", "uk.co.instanto.tearay.sample.DITest.testAppInjection()V", "uk.co.instanto.tearay.sample.DITest.testDashboardInjection()V", "Invalid test name", "Hello from Injected Service! Time: ", "Administrator", "user", "RegularUser", "object", "function", "string", "number", "undefined", "\n", "\tat ", "Caused by: ", "alert-primary", "alert-success", "alert-danger", "alert-warning", "alert-info"]);
+    "0", " sticky-top", "uk.co.instanto.tearay.sample.DITest.testDashboardInjection()V", "uk.co.instanto.tearay.sample.DITest.testAppInjection()V", "Invalid test name", "Hello from Injected Service! Time: ", "Administrator", "user", "RegularUser", "object", "function", "string", "number", "undefined", "\n", "\tat ", "Caused by: ", "alert-primary", "alert-success", "alert-danger", "alert-warning", "alert-info"]);
     jl_String.prototype.toString = function() {
         return $rt_ustr(this);
     };

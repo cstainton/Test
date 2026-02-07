@@ -1606,12 +1606,16 @@
     function jl_Long__clinit_() {
         jl_Long_TYPE = $rt_cls($rt_longcls());
     }
+    var ucita_IsWidget = $rt_classWithoutFields(0);
     function ucitw_Widget() {
         jl_Object.call(this);
         this.$element = null;
     }
     function ucitw_Widget__init_($this) {
         jl_Object__init_0($this);
+    }
+    function ucitw_Widget_getElement($this) {
+        return $this.$element;
     }
     var otj_TestEntryPoint$Launcher = $rt_classWithoutFields(0);
     var otj_TestEntryPoint$LauncherImpl0 = $rt_classWithoutFields();
@@ -3385,7 +3389,7 @@
         $target.$element0 = $root;
         $el_container = $root.querySelector("[data-field=\'container\']");
         if ($el_container !== null && $target.$container !== null) {
-            $widgetElement = $rt_nullCheck($target.$container).$element;
+            $widgetElement = $rt_nullCheck($target.$container).$getElement();
             if ($widgetElement !== null) {
                 $currentClasses = $rt_str($widgetElement.className);
                 $placeholderClasses = $rt_str($el_container.className);
@@ -4935,7 +4939,8 @@
     ju_TemplateCollections$AbstractImmutableMap, 0, ju_AbstractMap, [], 1, 0, 0, 0, ["$_init_", $rt_wrapFunction0(ju_TemplateCollections$AbstractImmutableMap__init_)],
     ju_Collections$2, 0, ju_TemplateCollections$AbstractImmutableMap, [], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(ju_Collections$2__init_0), "$entrySet", $rt_wrapFunction0(ju_Collections$2_entrySet), "$get", $rt_wrapFunction1(ju_Collections$2_get), "$containsKey", $rt_wrapFunction1(ju_Collections$2_containsKey)],
     jl_Long, 0, jl_Number, [jl_Comparable], 0, 3, 0, jl_Long_$callClinit, 0,
-    ucitw_Widget, 0, jl_Object, [], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
+    ucita_IsWidget, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_), "$getElement", $rt_wrapFunction0(ucitw_Widget_getElement)],
     otj_TestEntryPoint$Launcher, 0, jl_Object, [], 3, 0, 0, 0, 0,
     otj_TestEntryPoint$LauncherImpl0, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl0__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl0_launch)],
     ucitw_Button, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Button__init_0), "$setText", $rt_wrapFunction1(ucitw_Button_setText), "$setType", $rt_wrapFunction1(ucitw_Button_setType), "$addClickListener", $rt_wrapFunction1(ucitw_Button_addClickListener)],
@@ -4945,9 +4950,9 @@
     jl_CharSequence, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_Error, 0, jl_Throwable, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_Error__init_0), "$_init_0", $rt_wrapFunction1(jl_Error__init_2)],
     jl_LinkageError, 0, jl_Error, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_LinkageError__init_0)],
-    otjde_LoadEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
-    ju_Comparator, 0, jl_Object, [], 3, 3, 0, 0, 0]);
-    $rt_metadata([jl_String$_clinit_$lambda$_93_0, 0, jl_Object, [ju_Comparator], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_String$_clinit_$lambda$_93_0__init_0)],
+    otjde_LoadEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0]);
+    $rt_metadata([ju_Comparator, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    jl_String$_clinit_$lambda$_93_0, 0, jl_Object, [ju_Comparator], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_String$_clinit_$lambda$_93_0__init_0)],
     jl_StringIndexOutOfBoundsException, "StringIndexOutOfBoundsException", 2, jl_IndexOutOfBoundsException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_StringIndexOutOfBoundsException__init_0)],
     otjde_EventListener, 0, jl_Object, [otj_JSObject], 3, 3, 0, 0, 0,
     ucits_UserProfilePage$onShow$lambda$_1_0, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_6", $rt_wrapFunction1(ucits_UserProfilePage$onShow$lambda$_1_0__init_0), "$handleEvent", $rt_wrapFunction1(ucits_UserProfilePage$onShow$lambda$_1_0_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_UserProfilePage$onShow$lambda$_1_0_handleEvent$exported$0)],
@@ -5000,9 +5005,9 @@
     ucitw_Button$Type, 0, jl_Enum, [], 12, 3, 0, ucitw_Button$Type_$callClinit, ["$getCssClass", $rt_wrapFunction0(ucitw_Button$Type_getCssClass)],
     ju_AbstractList$1, 0, jl_Object, [ju_Iterator], 0, 0, 0, 0, ["$_init_2", $rt_wrapFunction1(ju_AbstractList$1__init_0), "$hasNext", $rt_wrapFunction0(ju_AbstractList$1_hasNext), "$next", $rt_wrapFunction0(ju_AbstractList$1_next)],
     ucits_LoginPage$onShow$lambda$_1_1, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_18", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1__init_0), "$handleEvent", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_1_handleEvent$exported$0)],
-    ucits_LoginPage$onShow$lambda$_1_0, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_18", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0__init_0), "$handleEvent", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0_handleEvent$exported$0)],
-    ucits_DashboardPage$onShow$lambda$_1_3, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage$onShow$lambda$_1_3__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_3_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_3_handleEvent$exported$0)]]);
-    $rt_metadata([ucits_DashboardPage$onShow$lambda$_1_4, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage$onShow$lambda$_1_4__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_4_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_4_handleEvent$exported$0)],
+    ucits_LoginPage$onShow$lambda$_1_0, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_18", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0__init_0), "$handleEvent", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_LoginPage$onShow$lambda$_1_0_handleEvent$exported$0)]]);
+    $rt_metadata([ucits_DashboardPage$onShow$lambda$_1_3, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage$onShow$lambda$_1_3__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_3_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_3_handleEvent$exported$0)],
+    ucits_DashboardPage$onShow$lambda$_1_4, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage$onShow$lambda$_1_4__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_4_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_4_handleEvent$exported$0)],
     ucits_DashboardPage$onShow$lambda$_1_1, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_10", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_1__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_1_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_1_handleEvent$exported$0)],
     ucits_DashboardPage$onShow$lambda$_1_2, 0, jl_Object, [otjde_EventListener], 0, 3, 0, 0, ["$_init_10", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_2__init_0), "$handleEvent", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_2_handleEvent), "$handleEvent$exported$0", $rt_wrapFunction1(ucits_DashboardPage$onShow$lambda$_1_2_handleEvent$exported$0)],
     oj_Assert, 0, jl_Object, [], 0, 3, 0, 0, 0,
@@ -5051,9 +5056,9 @@
     otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otci_CharFlow, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_15", $rt_wrapFunction1(otci_CharFlow__init_)],
     otjc_JSFinalizationRegistry, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
-    otj_TestJsEntryPoint, 0, jl_Object, [], 4, 0, 0, 0, 0,
-    ucitw_Slider, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Slider__init_0), "$setMin", $rt_wrapFunction1(ucitw_Slider_setMin), "$setMax", $rt_wrapFunction1(ucitw_Slider_setMax), "$getValue1", $rt_wrapFunction0(ucitw_Slider_getValue), "$setValue", $rt_wrapFunction1(ucitw_Slider_setValue), "$addChangeHandler", $rt_wrapFunction1(ucitw_Slider_addChangeHandler)]]);
-    $rt_metadata([jl_Class, 0, jl_Object, [jlr_AnnotatedElement, jlr_Type], 0, 3, 0, 0, ["$getPlatformClass", $rt_wrapFunction0(jl_Class_getPlatformClass), "$isInstance", $rt_wrapFunction1(jl_Class_isInstance), "$getName", $rt_wrapFunction0(jl_Class_getName), "$isPrimitive", $rt_wrapFunction0(jl_Class_isPrimitive), "$getComponentType", $rt_wrapFunction0(jl_Class_getComponentType)],
+    otj_TestJsEntryPoint, 0, jl_Object, [], 4, 0, 0, 0, 0]);
+    $rt_metadata([ucitw_Slider, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Slider__init_0), "$setMin", $rt_wrapFunction1(ucitw_Slider_setMin), "$setMax", $rt_wrapFunction1(ucitw_Slider_setMax), "$getValue1", $rt_wrapFunction0(ucitw_Slider_getValue), "$setValue", $rt_wrapFunction1(ucitw_Slider_setValue), "$addChangeHandler", $rt_wrapFunction1(ucitw_Slider_addChangeHandler)],
+    jl_Class, 0, jl_Object, [jlr_AnnotatedElement, jlr_Type], 0, 3, 0, 0, ["$getPlatformClass", $rt_wrapFunction0(jl_Class_getPlatformClass), "$isInstance", $rt_wrapFunction1(jl_Class_isInstance), "$getName", $rt_wrapFunction0(jl_Class_getName), "$isPrimitive", $rt_wrapFunction0(jl_Class_isPrimitive), "$getComponentType", $rt_wrapFunction0(jl_Class_getComponentType)],
     ucitw_Switch, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(ucitw_Switch__init_0), "$isChecked", $rt_wrapFunction0(ucitw_Switch_isChecked), "$addChangeHandler", $rt_wrapFunction1(ucitw_Switch_addChangeHandler)],
     ju_HashMap$EntryIterator, 0, ju_HashMap$AbstractMapIterator, [ju_Iterator], 0, 0, 0, 0, ["$_init_16", $rt_wrapFunction1(ju_HashMap$EntryIterator__init_0), "$next1", $rt_wrapFunction0(ju_HashMap$EntryIterator_next), "$next", $rt_wrapFunction0(ju_HashMap$EntryIterator_next0)],
     ucitw_RadioButton, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_11", $rt_wrapFunction2(ucitw_RadioButton__init_0), "$addChangeHandler", $rt_wrapFunction1(ucitw_RadioButton_addChangeHandler)],

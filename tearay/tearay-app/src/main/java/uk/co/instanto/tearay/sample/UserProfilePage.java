@@ -7,6 +7,7 @@ import uk.co.instanto.tearay.api.Navigation;
 import uk.co.instanto.tearay.api.PageShowing;
 import uk.co.instanto.tearay.api.PageState;
 import uk.co.instanto.tearay.api.RestrictedAccess;
+import uk.co.instanto.tearay.api.RootElement;
 import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.dom.html.HTMLButtonElement;
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ public class UserProfilePage {
     @Inject
     public Navigation navigation;
 
+    @RootElement
     public HTMLElement element;
 
     @PageState

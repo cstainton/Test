@@ -2,6 +2,8 @@ package uk.co.instanto.tearay.processor;
 
 import uk.co.instanto.tearay.api.DataField;
 import uk.co.instanto.tearay.api.Templated;
+import uk.co.instanto.tearay.api.RootElement;
+import uk.co.instanto.tearay.api.IsWidget;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;

@@ -21,6 +21,7 @@ public class DashboardPage {
     @PageState
     public String username;
 
+    @RootElement
     public HTMLElement element;
 
     @Inject @DataField

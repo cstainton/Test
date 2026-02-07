@@ -1404,12 +1404,16 @@
         $x0 = $rt_nullCheck($x0);
         return $x0.$contextLength;
     }
+    var ucita_IsWidget = $rt_classWithoutFields(0);
     function ucitw_Widget() {
         jl_Object.call(this);
         this.$element0 = null;
     }
     function ucitw_Widget__init_($this) {
         jl_Object__init_0($this);
+    }
+    function ucitw_Widget_getElement($this) {
+        return $this.$element0;
     }
     var ju_Map = $rt_classWithoutFields(0);
     var otj_TestEntryPoint$Launcher = $rt_classWithoutFields(0);
@@ -2451,7 +2455,7 @@
             $fragment.appendChild(var$4);
         }
         if ($el_container !== null && $target.$container !== null) {
-            $widgetElement = $rt_nullCheck($target.$container).$element0;
+            $widgetElement = $rt_nullCheck($target.$container).$getElement();
             if ($widgetElement !== null) {
                 $currentClasses = $rt_str($widgetElement.className);
                 $placeholderClasses = $rt_str($el_container.className);
@@ -3085,7 +3089,8 @@
     jl_Character, 0, jl_Object, [jl_Comparable], 0, 3, 0, jl_Character_$callClinit, 0,
     ucita_Navigation, 0, jl_Object, [], 3, 3, 0, 0, 0,
     oj_ComparisonFailure$ComparisonCompactor, 0, jl_Object, [], 0, 0, 0, 0, ["$_init_8", $rt_wrapFunction3(oj_ComparisonFailure$ComparisonCompactor__init_0), "$compact", $rt_wrapFunction1(oj_ComparisonFailure$ComparisonCompactor_compact)],
-    ucitw_Widget, 0, jl_Object, [], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
+    ucita_IsWidget, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_), "$getElement", $rt_wrapFunction0(ucitw_Widget_getElement)],
     ju_Map, 0, jl_Object, [], 3, 3, 0, 0, 0,
     otj_TestEntryPoint$Launcher, 0, jl_Object, [], 3, 0, 0, 0, 0,
     otj_TestEntryPoint$LauncherImpl0, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl0__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl0_launch)],
@@ -3118,9 +3123,9 @@
     otjde_KeyboardEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
     otjb_WindowEventTarget, 0, jl_Object, [otjde_EventTarget, otjde_FocusEventTarget, otjde_MouseEventTarget, otjde_KeyboardEventTarget, otjde_LoadEventTarget, otjde_GamepadEventTarget], 3, 3, 0, 0, 0,
     jl_AssertionError, "AssertionError", 2, jl_Error, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_AssertionError__init_0), "$_init_6", $rt_wrapFunction1(jl_AssertionError__init_2)],
-    jl_ClassCastException, "ClassCastException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ClassCastException__init_0)],
-    ju_AbstractCollection, 0, jl_Object, [ju_Collection], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractCollection__init_)]]);
-    $rt_metadata([ju_SequencedCollection, 0, jl_Object, [ju_Collection], 3, 3, 0, 0, 0,
+    jl_ClassCastException, "ClassCastException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ClassCastException__init_0)]]);
+    $rt_metadata([ju_AbstractCollection, 0, jl_Object, [ju_Collection], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractCollection__init_)],
+    ju_SequencedCollection, 0, jl_Object, [ju_Collection], 3, 3, 0, 0, 0,
     ju_List, 0, jl_Object, [ju_SequencedCollection], 3, 3, 0, 0, 0,
     ju_AbstractList, 0, ju_AbstractCollection, [ju_List], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractList__init_), "$iterator", $rt_wrapFunction0(ju_AbstractList_iterator)],
     jl_Cloneable, 0, jl_Object, [], 3, 3, 0, 0, 0,
@@ -3170,9 +3175,9 @@
     ju_HashMap, 0, ju_AbstractMap, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$newElementArray", $rt_wrapFunction1(ju_HashMap_newElementArray), "$_init_", $rt_wrapFunction0(ju_HashMap__init_0), "$_init_2", $rt_wrapFunction1(ju_HashMap__init_2), "$_init_10", $rt_wrapFunction2(ju_HashMap__init_4)],
     otji_JSWrapper, "JSWrapper", 7, jl_Object, [], 4, 3, 0, otji_JSWrapper_$callClinit, ["$equals", $rt_wrapFunction1(otji_JSWrapper_equals), "$toString", $rt_wrapFunction0(otji_JSWrapper_toString)],
     otjc_JSMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
-    ju_HashSet, 0, ju_AbstractSet, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_HashSet__init_0), "$_init_12", $rt_wrapFunction1(ju_HashSet__init_2)],
-    otp_Platform, 0, jl_Object, [], 4, 3, 0, 0, 0]);
-    $rt_metadata([jl_NoClassDefFoundError, 0, jl_LinkageError, [], 0, 3, 0, 0, 0,
+    ju_HashSet, 0, ju_AbstractSet, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_HashSet__init_0), "$_init_12", $rt_wrapFunction1(ju_HashSet__init_2)]]);
+    $rt_metadata([otp_Platform, 0, jl_Object, [], 4, 3, 0, 0, 0,
+    jl_NoClassDefFoundError, 0, jl_LinkageError, [], 0, 3, 0, 0, 0,
     otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otjc_JSFinalizationRegistry, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     jl_IllegalArgumentException, "IllegalArgumentException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_IllegalArgumentException__init_1), "$_init_0", $rt_wrapFunction1(jl_IllegalArgumentException__init_2)],
