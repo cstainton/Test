@@ -1,6 +1,7 @@
 package uk.co.instanto.tearay.processor;
 
 import uk.co.instanto.tearay.api.ApplicationScoped;
+import uk.co.instanto.tearay.api.Dependent;
 import uk.co.instanto.tearay.api.EntryPoint;
 import uk.co.instanto.tearay.api.PostConstruct;
 import uk.co.instanto.tearay.api.Templated;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({
     "uk.co.instanto.tearay.api.ApplicationScoped",
+    "uk.co.instanto.tearay.api.Dependent",
     "uk.co.instanto.tearay.api.EntryPoint",
     "uk.co.instanto.tearay.api.Templated",
     "uk.co.instanto.tearay.api.Page"
@@ -35,6 +37,7 @@ public class IOCProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // Collect all beans: @ApplicationScoped, @EntryPoint, @Templated, and @Page (which implies bean)
         Set<Element> beans = roundEnv.getElementsAnnotatedWith(ApplicationScoped.class).stream().collect(Collectors.toSet());
+        beans.addAll(roundEnv.getElementsAnnotatedWith(Dependent.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(EntryPoint.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Templated.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Page.class));
@@ -88,6 +91,7 @@ public class IOCProcessor extends AbstractProcessor {
 
         boolean isSingleton = typeElement.getAnnotation(ApplicationScoped.class) != null ||
                               typeElement.getAnnotation(EntryPoint.class) != null;
+        // Dependent beans are not singletons (default behavior, but explicit check good for clarity)
         boolean isTemplated = typeElement.getAnnotation(Templated.class) != null;
 
         TypeSpec.Builder factoryBuilder = TypeSpec.classBuilder(factoryName)

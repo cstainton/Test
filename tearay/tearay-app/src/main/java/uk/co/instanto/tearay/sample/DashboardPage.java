@@ -27,10 +27,18 @@ public class DashboardPage {
     @Inject @DataField
     public Container container;
 
+    @Inject @DataField
+    public TaskListWidget taskList;
+
+    @Inject @DataField
+    public TableWidget userTable;
+
     @PageShowing
     public void onShow() {
         // Clear previous content if re-used
         container.element.setInnerText("");
+        taskList.setValue(null); // Clear list
+        userTable.clearBody();
 
         // Navbar
         Navbar navbar = new Navbar();
@@ -115,5 +123,18 @@ public class DashboardPage {
             }
         });
         col2.element.appendChild(agree.element);
+
+        // Populate List Widget (Model Binding)
+        java.util.List<Task> tasks = new java.util.ArrayList<>();
+        tasks.add(new Task("Review Code PR #101", false));
+        tasks.add(new Task("Update Documentation", true));
+        tasks.add(new Task("Deploy to Staging", false));
+        taskList.setValue(tasks);
+
+        // Populate Table Widget
+        userTable.setHeaders("ID", "Name", "Role", "Status");
+        userTable.addRow("1", "Alice", "Admin", "Active");
+        userTable.addRow("2", "Bob", "User", "Inactive");
+        userTable.addRow("3", "Charlie", "Developer", "Active");
     }
 }
