@@ -1123,6 +1123,52 @@
         }
         return $result;
     }
+    var jlr_Array = $rt_classWithoutFields();
+    function jlr_Array_getLength(var$1) {
+        if (var$1 === null || var$1.constructor.$meta.item === undefined) {
+            $rt_throw(jl_IllegalArgumentException__init_());
+        }
+        return var$1.data.length;
+    }
+    function jlr_Array_newInstance($componentType, $length) {
+        if ($componentType === null)
+            $rt_throw(jl_NullPointerException__init_());
+        if ($componentType === $rt_cls($rt_voidcls()))
+            $rt_throw(jl_IllegalArgumentException__init_());
+        if ($length < 0)
+            $rt_throw(jl_NegativeArraySizeException__init_());
+        return jlr_Array_newInstanceImpl($rt_nullCheck($rt_castToClass($componentType, jl_Class)).$getPlatformClass(), $length);
+    }
+    function jlr_Array_newInstanceImpl(var$1, var$2) {
+        if (var$1.$meta.primitive) {
+            if (var$1 == $rt_bytecls()) {
+                return $rt_createByteArray(var$2);
+            }
+            if (var$1 == $rt_shortcls()) {
+                return $rt_createShortArray(var$2);
+            }
+            if (var$1 == $rt_charcls()) {
+                return $rt_createCharArray(var$2);
+            }
+            if (var$1 == $rt_intcls()) {
+                return $rt_createIntArray(var$2);
+            }
+            if (var$1 == $rt_longcls()) {
+                return $rt_createLongArray(var$2);
+            }
+            if (var$1 == $rt_floatcls()) {
+                return $rt_createFloatArray(var$2);
+            }
+            if (var$1 == $rt_doublecls()) {
+                return $rt_createDoubleArray(var$2);
+            }
+            if (var$1 == $rt_booleancls()) {
+                return $rt_createBooleanArray(var$2);
+            }
+        } else {
+            return $rt_createArray(var$1, var$2)
+        }
+    }
     var jl_System = $rt_classWithoutFields();
     function jl_System_arraycopy($src, $srcPos, $dest, $destPos, $length) {
         var var$6, $srcType, $targetType, $srcArray, $i, var$11, var$12, $elem;
@@ -1208,43 +1254,26 @@
             }
         }
     }
-    var ucita_SecurityProvider = $rt_classWithoutFields(0);
-    function ucits_AppSecurityProvider() {
-        jl_Object.call(this);
-        this.$roles = null;
+    function jl_System_currentTimeMillis() {
+        return Long_fromNumber(new Date().getTime());
     }
-    function ucits_AppSecurityProvider__init_() {
-        var var_0 = new ucits_AppSecurityProvider();
-        ucits_AppSecurityProvider__init_0(var_0);
-        return var_0;
-    }
-    function ucits_AppSecurityProvider__init_0($this) {
-        jl_Object__init_0($this);
-        $this.$roles = ju_HashSet__init_();
-    }
-    var ucits_TemplatedTest = $rt_classWithoutFields();
-    function ucits_TemplatedTest__init_() {
-        var var_0 = new ucits_TemplatedTest();
-        ucits_TemplatedTest__init_0(var_0);
-        return var_0;
-    }
-    function ucits_TemplatedTest__init_0($this) {
+    var jl_Iterable = $rt_classWithoutFields(0);
+    var ju_Collection = $rt_classWithoutFields(0);
+    var ju_AbstractCollection = $rt_classWithoutFields();
+    function ju_AbstractCollection__init_($this) {
         jl_Object__init_0($this);
     }
-    function ucits_TemplatedTest_testTemplatingBinding($this) {
-        var $page, $root, var$3;
-        $page = ucits_DashboardPage_Factory_getInstance();
-        $page = $rt_nullCheck($page);
-        oj_Assert_assertNull(otji_JSWrapper_wrap($page.$element));
-        $root = ucits_DashboardPage_Binder_bind($page);
-        oj_Assert_assertNotNull($rt_s(1), otji_JSWrapper_wrap($root));
-        var$3 = $page.$element;
-        oj_Assert_assertEquals($rt_s(2), otji_JSWrapper_wrap($root), otji_JSWrapper_wrap(var$3));
-        oj_Assert_assertTrue($rt_nullCheck($rt_str($root.innerHTML)).$contains($rt_s(3)));
-        oj_Assert_assertNotNull0($page.$container);
-        oj_Assert_assertNotNull0(otji_JSWrapper_wrap($rt_nullCheck($page.$container).$element0));
-        oj_Assert_assertNotNull0(otji_JSWrapper_wrap($rt_nullCheck($page.$container).$element0.parentNode));
-        oj_Assert_assertEquals0($rt_s(4), $rt_str($rt_nullCheck($page.$container).$element0.className));
+    var ju_SequencedCollection = $rt_classWithoutFields(0);
+    var ju_List = $rt_classWithoutFields(0);
+    function ju_AbstractList() {
+        ju_AbstractCollection.call(this);
+        this.$modCount = 0;
+    }
+    function ju_AbstractList__init_($this) {
+        ju_AbstractCollection__init_($this);
+    }
+    function ju_AbstractList_iterator($this) {
+        return ju_AbstractList$1__init_($this);
     }
     var ji_Serializable = $rt_classWithoutFields(0);
     var jl_Number = $rt_classWithoutFields();
@@ -1292,6 +1321,23 @@
     function jl_Integer__clinit_() {
         jl_Integer_TYPE = $rt_cls($rt_intcls());
     }
+    var jl_NullPointerException = $rt_classWithoutFields(jl_RuntimeException);
+    function jl_NullPointerException__init_0(var_0) {
+        var var_1 = new jl_NullPointerException();
+        jl_NullPointerException__init_1(var_1, var_0);
+        return var_1;
+    }
+    function jl_NullPointerException__init_() {
+        var var_0 = new jl_NullPointerException();
+        jl_NullPointerException__init_2(var_0);
+        return var_0;
+    }
+    function jl_NullPointerException__init_1($this, $message) {
+        jl_RuntimeException__init_2($this, $message);
+    }
+    function jl_NullPointerException__init_2($this) {
+        jl_RuntimeException__init_1($this);
+    }
     var jl_CloneNotSupportedException = $rt_classWithoutFields(jl_Exception);
     function jl_CloneNotSupportedException__init_() {
         var var_0 = new jl_CloneNotSupportedException();
@@ -1300,6 +1346,42 @@
     }
     function jl_CloneNotSupportedException__init_0($this) {
         jl_Exception__init_0($this);
+    }
+    var jl_Error = $rt_classWithoutFields(jl_Throwable);
+    function jl_Error__init_(var_0) {
+        var var_1 = new jl_Error();
+        jl_Error__init_0(var_1, var_0);
+        return var_1;
+    }
+    function jl_Error__init_0($this, $message) {
+        jl_Throwable__init_2($this, $message);
+    }
+    var jl_LinkageError = $rt_classWithoutFields(jl_Error);
+    function jl_LinkageError__init_(var_0) {
+        var var_1 = new jl_LinkageError();
+        jl_LinkageError__init_0(var_1, var_0);
+        return var_1;
+    }
+    function jl_LinkageError__init_0($this, $message) {
+        jl_Error__init_0($this, $message);
+    }
+    var jl_IncompatibleClassChangeError = $rt_classWithoutFields(jl_LinkageError);
+    function jl_IncompatibleClassChangeError__init_(var_0) {
+        var var_1 = new jl_IncompatibleClassChangeError();
+        jl_IncompatibleClassChangeError__init_0(var_1, var_0);
+        return var_1;
+    }
+    function jl_IncompatibleClassChangeError__init_0($this, $message) {
+        jl_LinkageError__init_0($this, $message);
+    }
+    var jl_NoSuchFieldError = $rt_classWithoutFields(jl_IncompatibleClassChangeError);
+    function jl_NoSuchFieldError__init_(var_0) {
+        var var_1 = new jl_NoSuchFieldError();
+        jl_NoSuchFieldError__init_0(var_1, var_0);
+        return var_1;
+    }
+    function jl_NoSuchFieldError__init_0($this, $message) {
+        jl_IncompatibleClassChangeError__init_0($this, $message);
     }
     var jl_Character = $rt_classWithoutFields();
     var jl_Character_TYPE = null;
@@ -1328,90 +1410,59 @@
         jl_Character_TYPE = $rt_cls($rt_charcls());
         jl_Character_characterCache = $rt_createArray(jl_Character, 128);
     }
-    var ucita_Navigation = $rt_classWithoutFields(0);
-    function oj_ComparisonFailure$ComparisonCompactor() {
-        var a = this; jl_Object.call(a);
-        a.$contextLength = 0;
-        a.$expected = null;
-        a.$actual = null;
-    }
-    function oj_ComparisonFailure$ComparisonCompactor__init_(var_0, var_1, var_2) {
-        var var_3 = new oj_ComparisonFailure$ComparisonCompactor();
-        oj_ComparisonFailure$ComparisonCompactor__init_0(var_3, var_0, var_1, var_2);
-        return var_3;
-    }
-    function oj_ComparisonFailure$ComparisonCompactor__init_0($this, $contextLength, $expected, $actual) {
-        jl_Object__init_0($this);
-        $this.$contextLength = $contextLength;
-        $this.$expected = $expected;
-        $this.$actual = $actual;
-    }
-    function oj_ComparisonFailure$ComparisonCompactor_compact($this, $message) {
-        var $extractor, $compactedPrefix, $compactedSuffix;
-        if ($this.$expected !== null && $this.$actual !== null && !$rt_nullCheck($this.$expected).$equals($this.$actual)) {
-            $extractor = oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_($this, null);
-            $compactedPrefix = $extractor.$compactPrefix();
-            $compactedSuffix = $extractor.$compactSuffix();
-            return oj_Assert_format($message, $rt_nullCheck($rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($compactedPrefix)).$append1($extractor.$expectedDiff())).$append1($compactedSuffix)).$toString(), $rt_nullCheck($rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($compactedPrefix)).$append1($extractor.$actualDiff())).$append1($compactedSuffix)).$toString());
+    var otci_IntegerUtil = $rt_classWithoutFields();
+    function otci_IntegerUtil_toUnsignedLogRadixString($value, $radixLog2) {
+        var $radix, $mask, $sz, $chars, $pos, $target, var$9, $target_0, var$11;
+        if (!$value)
+            return $rt_s(1);
+        $radix = 1 << $radixLog2;
+        $mask = $radix - 1 | 0;
+        $sz = (((32 - jl_Integer_numberOfLeadingZeros($value) | 0) + $radixLog2 | 0) - 1 | 0) / $radixLog2 | 0;
+        $chars = $rt_createCharArray($sz);
+        $pos = $rt_imul($sz - 1 | 0, $radixLog2);
+        $target = 0;
+        while ($pos >= 0) {
+            var$9 = $chars.data;
+            $target_0 = $target + 1 | 0;
+            var$11 = jl_Character_forDigit(($value >>> $pos | 0) & $mask, $radix);
+            $target = $rt_checkBounds($target, var$9);
+            var$9[$target] = var$11;
+            $pos = $pos - $radixLog2 | 0;
+            $target = $target_0;
         }
-        return oj_Assert_format($message, $this.$expected, $this.$actual);
+        return jl_String__init_($chars);
     }
-    function oj_ComparisonFailure$ComparisonCompactor_sharedPrefix($this) {
-        var $end, $i;
-        $end = jl_Math_min($rt_nullCheck($this.$expected).$length(), $rt_nullCheck($this.$actual).$length());
-        $i = 0;
-        while ($i < $end) {
-            if ($rt_nullCheck($this.$expected).$charAt($i) != $rt_nullCheck($this.$actual).$charAt($i))
-                return $rt_nullCheck($this.$expected).$substring(0, $i);
-            $i = $i + 1 | 0;
-        }
-        return $rt_nullCheck($this.$expected).$substring(0, $end);
+    var jl_Long = $rt_classWithoutFields(jl_Number);
+    var jl_Long_TYPE = null;
+    function jl_Long_$callClinit() {
+        jl_Long_$callClinit = $rt_eraseClinit(jl_Long);
+        jl_Long__clinit_();
     }
-    function oj_ComparisonFailure$ComparisonCompactor_sharedSuffix($this, $prefix) {
-        var $suffixLength, var$3, $maxSuffixLength;
-        $suffixLength = 0;
-        var$3 = $rt_nullCheck($this.$expected).$length();
-        $prefix = $rt_nullCheck($prefix);
-        $maxSuffixLength = jl_Math_min(var$3 - $prefix.$length() | 0, $rt_nullCheck($this.$actual).$length() - $prefix.$length() | 0) - 1 | 0;
-        a: {
-            while (true) {
-                if ($suffixLength > $maxSuffixLength)
-                    break a;
-                if ($rt_nullCheck($this.$expected).$charAt(($rt_nullCheck($this.$expected).$length() - 1 | 0) - $suffixLength | 0) != $rt_nullCheck($this.$actual).$charAt(($rt_nullCheck($this.$actual).$length() - 1 | 0) - $suffixLength | 0))
-                    break;
-                $suffixLength = $suffixLength + 1 | 0;
-            }
-        }
-        return $rt_nullCheck($this.$expected).$substring0($rt_nullCheck($this.$expected).$length() - $suffixLength | 0);
+    function jl_Long_divideUnsigned(var$1, var$2) {
+        return Long_udiv(var$1, var$2);
     }
-    function oj_ComparisonFailure$ComparisonCompactor_access$100($x0) {
-        $x0 = $rt_nullCheck($x0);
-        return oj_ComparisonFailure$ComparisonCompactor_sharedPrefix($x0);
+    function jl_Long_remainderUnsigned(var$1, var$2) {
+        return Long_urem(var$1, var$2);
     }
-    function oj_ComparisonFailure$ComparisonCompactor_access$200($x0, $x1) {
-        $x0 = $rt_nullCheck($x0);
-        return oj_ComparisonFailure$ComparisonCompactor_sharedSuffix($x0, $x1);
+    function jl_Long_compareUnsigned(var$1, var$2) {
+        return Long_ucompare(var$1, var$2);
     }
-    function oj_ComparisonFailure$ComparisonCompactor_access$300($x0) {
-        $x0 = $rt_nullCheck($x0);
-        return $x0.$expected;
+    function jl_Long__clinit_() {
+        jl_Long_TYPE = $rt_cls($rt_longcls());
     }
-    function oj_ComparisonFailure$ComparisonCompactor_access$400($x0) {
-        $x0 = $rt_nullCheck($x0);
-        return $x0.$actual;
+    var jl_Math = $rt_classWithoutFields();
+    function jl_Math_min($a, $b) {
+        if ($a < $b)
+            $b = $a;
+        return $b;
     }
-    function oj_ComparisonFailure$ComparisonCompactor_access$500($x0) {
-        $x0 = $rt_nullCheck($x0);
-        return $x0.$contextLength;
+    function jl_Math_max($a, $b) {
+        if ($a > $b)
+            $b = $a;
+        return $b;
     }
-    function ucitw_Widget() {
-        jl_Object.call(this);
-        this.$element0 = null;
-    }
-    function ucitw_Widget__init_($this) {
-        jl_Object__init_0($this);
-    }
-    var ju_Map = $rt_classWithoutFields(0);
+    var otj_JSObject = $rt_classWithoutFields(0);
+    var otjc_JSWeakMap = $rt_classWithoutFields();
     var otj_TestEntryPoint$Launcher = $rt_classWithoutFields(0);
     var otj_TestEntryPoint$LauncherImpl0 = $rt_classWithoutFields();
     function otj_TestEntryPoint$LauncherImpl0__init_() {
@@ -1423,38 +1474,97 @@
         jl_Object__init_0(var$0);
     }
     function otj_TestEntryPoint$LauncherImpl0_launch(var$0, var$1) {
-        ucits_TemplatedTest_testTemplatingBinding($rt_nullCheck($rt_castToClass(var$1, ucits_TemplatedTest)));
+        ucits_PerformanceTest_testInnerHTMLVsInnerText($rt_nullCheck($rt_castToClass(var$1, ucits_PerformanceTest)));
     }
-    var otj_JSObject = $rt_classWithoutFields(0);
+    var otjc_JSObjects = $rt_classWithoutFields();
+    var jl_Cloneable = $rt_classWithoutFields(0);
     var otjde_EventTarget = $rt_classWithoutFields(0);
     var otjde_GamepadEventTarget = $rt_classWithoutFields(0);
+    var otji_JS = $rt_classWithoutFields();
+    function otji_JS_function(var$1, var$2) {
+        var name = 'jso$functor$' + var$2;
+        if (!var$1[name]) {
+            var fn = function() {
+                return var$1[var$2].apply(var$1, arguments);
+            };
+            var$1[name] = function() {
+                return fn;
+            };
+        }
+        return var$1[name]();
+    }
+    function otji_JS_functionAsObject(var$1, var$2) {
+        if (typeof var$1 !== "function") return var$1;
+        var result = {};
+        result[var$2] = var$1;
+        return result;
+    }
     var jl_CharSequence = $rt_classWithoutFields(0);
-    var jl_Error = $rt_classWithoutFields(jl_Throwable);
-    function jl_Error__init_() {
-        var var_0 = new jl_Error();
-        jl_Error__init_0(var_0);
-        return var_0;
+    var otj_TestEntryPoint = $rt_classWithoutFields();
+    var otj_TestEntryPoint_testCase = null;
+    function otj_TestEntryPoint_run($name) {
+        var $launchers, var$3, $launcher, var$5, $e, $$je;
+        $launchers = ju_ArrayList__init_();
+        otj_TestEntryPoint_testCase = otj_TestEntryPoint_createTestCase();
+        otj_TestEntryPoint_launchers($name, $launchers);
+        var$3 = $launchers.$iterator();
+        while (true) {
+            var$3 = $rt_nullCheck(var$3);
+            if (!var$3.$hasNext())
+                break;
+            $launcher = $rt_castToInterface(var$3.$next(), otj_TestEntryPoint$Launcher);
+            otj_TestEntryPoint_before();
+            try {
+                var$5 = otj_TestEntryPoint_testCase;
+                $launcher = $rt_nullCheck($launcher);
+                $launcher.$launch(var$5);
+            } catch ($$e) {
+                $$je = $rt_wrapException($$e);
+                var$3 = $$je;
+                a: {
+                    try {
+                        otj_TestEntryPoint_after();
+                        break a;
+                    } catch ($$e) {
+                        $$je = $rt_wrapException($$e);
+                        if ($$je instanceof jl_Throwable) {
+                            $e = $$je;
+                        } else {
+                            throw $$e;
+                        }
+                    }
+                    $e.$printStackTrace();
+                }
+                $rt_throw(var$3);
+
+            }
+            b: {
+                try {
+                    otj_TestEntryPoint_after();
+                    break b;
+                } catch ($$e) {
+                    $$je = $rt_wrapException($$e);
+                    if ($$je instanceof jl_Throwable) {
+                        $e = $$je;
+                    } else {
+                        throw $$e;
+                    }
+                }
+                $e.$printStackTrace();
+            }
+        }
     }
-    function jl_Error__init_1(var_0) {
-        var var_1 = new jl_Error();
-        jl_Error__init_2(var_1, var_0);
-        return var_1;
+    function otj_TestEntryPoint_createTestCase() {
+        return ucits_PerformanceTest__init_();
     }
-    function jl_Error__init_0($this) {
-        jl_Throwable__init_0($this);
+    function otj_TestEntryPoint_before() {}
+    function otj_TestEntryPoint_launchers(var$1, var$2) {
+        if (!jl_String_equals($rt_nullCheck(var$1), $rt_s(2)))
+            $rt_throw(jl_IllegalArgumentException__init_0($rt_s(3)));
+        var$1 = otj_TestEntryPoint$LauncherImpl0__init_();
+        $rt_nullCheck(var$2).$add(var$1);
     }
-    function jl_Error__init_2($this, $message) {
-        jl_Throwable__init_2($this, $message);
-    }
-    var jl_LinkageError = $rt_classWithoutFields(jl_Error);
-    function jl_LinkageError__init_(var_0) {
-        var var_1 = new jl_LinkageError();
-        jl_LinkageError__init_0(var_1, var_0);
-        return var_1;
-    }
-    function jl_LinkageError__init_0($this, $message) {
-        jl_Error__init_2($this, $message);
-    }
+    function otj_TestEntryPoint_after() {}
     var otjde_LoadEventTarget = $rt_classWithoutFields(0);
     var ju_Comparator = $rt_classWithoutFields(0);
     var jl_String$_clinit_$lambda$_93_0 = $rt_classWithoutFields();
@@ -1475,25 +1585,56 @@
     function jl_StringIndexOutOfBoundsException__init_0($this) {
         jl_IndexOutOfBoundsException__init_0($this);
     }
-    var jl_Iterable = $rt_classWithoutFields(0);
-    var ju_Collection = $rt_classWithoutFields(0);
-    var ju_Set = $rt_classWithoutFields(0);
-    var ucits_HelloService_Factory = $rt_classWithoutFields();
-    var ucits_HelloService_Factory_instance = null;
-    function ucits_HelloService_Factory_getInstance() {
-        if (ucits_HelloService_Factory_instance === null)
-            ucits_HelloService_Factory_instance = ucits_HelloService_Factory_createInstance();
-        return ucits_HelloService_Factory_instance;
+    var ucits_PerformanceTest = $rt_classWithoutFields();
+    function ucits_PerformanceTest__init_() {
+        var var_0 = new ucits_PerformanceTest();
+        ucits_PerformanceTest__init_0(var_0);
+        return var_0;
     }
-    function ucits_HelloService_Factory_createInstance() {
-        var $bean;
-        $bean = ucits_HelloService__init_();
-        return $bean;
+    function ucits_PerformanceTest__init_0($this) {
+        jl_Object__init_0($this);
     }
+    function ucits_PerformanceTest_testInnerHTMLVsInnerText($this) {
+        var $div, $text, $i, var$4, $startHTML, $endHTML, $durationHTML, $startText, $endText, $durationText, var$11;
+        $div = $rt_globals.window.document.createElement("div");
+        $text = $rt_s(4);
+        $i = 0;
+        while ($i < 1000) {
+            var$4 = $rt_ustr($text);
+            $div.innerHTML = var$4;
+            var$4 = $rt_ustr($text);
+            $div.innerText = var$4;
+            $i = $i + 1 | 0;
+        }
+        $startHTML = jl_System_currentTimeMillis();
+        $i = 0;
+        while ($i < 100000) {
+            var$4 = $rt_ustr($text);
+            $div.innerHTML = var$4;
+            $i = $i + 1 | 0;
+        }
+        $endHTML = jl_System_currentTimeMillis();
+        $durationHTML = Long_sub($endHTML, $startHTML);
+        $startText = jl_System_currentTimeMillis();
+        $i = 0;
+        while ($i < 100000) {
+            var$4 = $rt_ustr($text);
+            $div.innerText = var$4;
+            $i = $i + 1 | 0;
+        }
+        $endText = jl_System_currentTimeMillis();
+        $durationText = Long_sub($endText, $startText);
+        var$4 = new jl_RuntimeException;
+        var$11 = jl_StringBuilder__init_();
+        jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append1($rt_nullCheck(jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append1($rt_nullCheck(jl_StringBuilder_append(var$11, $rt_s(5))), $durationHTML)), $rt_s(6))), $durationText)), $rt_s(7));
+        jl_RuntimeException__init_2(var$4, jl_StringBuilder_toString(var$11));
+        $rt_throw(var$4);
+    }
+    var jlr_Type = $rt_classWithoutFields(0);
     function jl_AbstractStringBuilder() {
         var a = this; jl_Object.call(a);
         a.$buffer = null;
-        a.$length0 = 0;
+        a.$length = 0;
     }
     function jl_AbstractStringBuilder__init_() {
         var var_0 = new jl_AbstractStringBuilder();
@@ -1513,23 +1654,23 @@
         $this.$buffer = $rt_createCharArray($capacity);
     }
     function jl_AbstractStringBuilder_append($this, $obj) {
-        return $this.$insert($this.$length0, $obj);
+        return $this.$insert($this.$length, $obj);
     }
     function jl_AbstractStringBuilder_append0($this, $string) {
-        return $this.$insert0($this.$length0, $string);
+        return $this.$insert0($this.$length, $string);
     }
     function jl_AbstractStringBuilder_insert($this, $index, $string) {
         var $i, var$4, var$5, var$6, var$7;
-        if ($index >= 0 && $index <= $this.$length0) {
+        if ($index >= 0 && $index <= $this.$length) {
             if ($string === null)
-                $string = $rt_s(5);
+                $string = $rt_s(8);
             else if ($string.$isEmpty())
                 return $this;
-            $this.$ensureCapacity($this.$length0 + $string.$length() | 0);
-            $i = $this.$length0 - 1 | 0;
+            $this.$ensureCapacity($this.$length + $string.$length0() | 0);
+            $i = $this.$length - 1 | 0;
             while ($i >= $index) {
                 var$4 = $this.$buffer;
-                var$5 = $i + $string.$length() | 0;
+                var$5 = $i + $string.$length0() | 0;
                 var$6 = $rt_nullCheck($this.$buffer).data;
                 $i = $rt_checkBounds($i, var$6);
                 var$7 = var$6[$i];
@@ -1537,9 +1678,9 @@
                 var$4[$rt_checkBounds(var$5, var$4)] = var$7;
                 $i = $i + (-1) | 0;
             }
-            $this.$length0 = $this.$length0 + $string.$length() | 0;
+            $this.$length = $this.$length + $string.$length0() | 0;
             $i = 0;
-            while ($i < $string.$length()) {
+            while ($i < $string.$length0()) {
                 var$4 = $this.$buffer;
                 var$5 = $index + 1 | 0;
                 var$7 = $string.$charAt($i);
@@ -1556,7 +1697,7 @@
         return $this.$append2($value, 10);
     }
     function jl_AbstractStringBuilder_append2($this, $value, $radix) {
-        return $this.$insert1($this.$length0, $value, $radix);
+        return $this.$insert1($this.$length, $value, $radix);
     }
     function jl_AbstractStringBuilder_insert0($this, $target, $value, $radix) {
         var $positive, var$5, var$6, $pos, $sz, $posLimit, var$10, var$11, var$12, var$13;
@@ -1627,10 +1768,86 @@
         }
         return $this;
     }
-    function jl_AbstractStringBuilder_append3($this, $c) {
-        return $this.$insert2($this.$length0, $c);
+    function jl_AbstractStringBuilder_append3($this, $value) {
+        return $this.$insert2($this.$length, $value);
     }
-    function jl_AbstractStringBuilder_insert1($this, $index, $c) {
+    function jl_AbstractStringBuilder_insert1($this, $target, $value) {
+        return $this.$insert3($target, $value, 10);
+    }
+    function jl_AbstractStringBuilder_insert2($this, $target, $value, $radix) {
+        var $positive, var$5, var$6, var$7, $sz, $pos, $posLimit, var$11, var$12, var$13;
+        $positive = 1;
+        if (Long_lt($value, Long_ZERO)) {
+            $positive = 0;
+            $value = Long_neg($value);
+        }
+        a: {
+            var$5 = Long_fromInt($radix);
+            if (jl_Long_compareUnsigned($value, var$5) < 0) {
+                if ($positive)
+                    jl_AbstractStringBuilder_insertSpace($this, $target, $target + 1 | 0);
+                else {
+                    jl_AbstractStringBuilder_insertSpace($this, $target, $target + 2 | 0);
+                    var$6 = $this.$buffer;
+                    var$7 = $target + 1 | 0;
+                    var$6 = $rt_nullCheck(var$6).data;
+                    $target = $rt_checkBounds($target, var$6);
+                    var$6[$target] = 45;
+                    $target = var$7;
+                }
+                var$6 = $this.$buffer;
+                var$7 = jl_Character_forDigit(Long_lo($value), $radix);
+                var$6 = $rt_nullCheck(var$6).data;
+                var$6[$rt_checkBounds($target, var$6)] = var$7;
+            } else {
+                $sz = 1;
+                $pos = Long_fromInt(1);
+                $posLimit = jl_Long_divideUnsigned(Long_fromInt(-1), var$5);
+                b: {
+                    while (true) {
+                        var$11 = Long_mul($pos, var$5);
+                        if (jl_Long_compareUnsigned(var$11, $value) > 0) {
+                            var$11 = $pos;
+                            break b;
+                        }
+                        $sz = $sz + 1 | 0;
+                        if (jl_Long_compareUnsigned(var$11, $posLimit) > 0)
+                            break;
+                        $pos = var$11;
+                    }
+                }
+                if (!$positive)
+                    $sz = $sz + 1 | 0;
+                jl_AbstractStringBuilder_insertSpace($this, $target, $target + $sz | 0);
+                if ($positive)
+                    var$12 = $target;
+                else {
+                    var$6 = $this.$buffer;
+                    var$12 = $target + 1 | 0;
+                    var$6 = $rt_nullCheck(var$6).data;
+                    $target = $rt_checkBounds($target, var$6);
+                    var$6[$target] = 45;
+                }
+                while (true) {
+                    if (Long_eq(var$11, Long_ZERO))
+                        break a;
+                    var$6 = $this.$buffer;
+                    var$13 = var$12 + 1 | 0;
+                    var$7 = jl_Character_forDigit(Long_lo((jl_Long_divideUnsigned($value, var$11))), $radix);
+                    var$6 = $rt_nullCheck(var$6).data;
+                    var$6[$rt_checkBounds(var$12, var$6)] = var$7;
+                    $value = jl_Long_remainderUnsigned($value, var$11);
+                    var$11 = jl_Long_divideUnsigned(var$11, var$5);
+                    var$12 = var$13;
+                }
+            }
+        }
+        return $this;
+    }
+    function jl_AbstractStringBuilder_append4($this, $c) {
+        return $this.$insert4($this.$length, $c);
+    }
+    function jl_AbstractStringBuilder_insert3($this, $index, $c) {
         var var$3;
         jl_AbstractStringBuilder_insertSpace($this, $index, $index + 1 | 0);
         var$3 = $rt_nullCheck($this.$buffer).data;
@@ -1638,8 +1855,8 @@
         var$3[$index] = $c;
         return $this;
     }
-    function jl_AbstractStringBuilder_insert2($this, $index, $obj) {
-        return $this.$insert0($index, $obj === null ? $rt_s(5) : $obj.$toString());
+    function jl_AbstractStringBuilder_insert4($this, $index, $obj) {
+        return $this.$insert0($index, $obj === null ? $rt_s(8) : $obj.$toString());
     }
     function jl_AbstractStringBuilder_ensureCapacity($this, $capacity) {
         var $newLength;
@@ -1649,12 +1866,12 @@
         $this.$buffer = ju_Arrays_copyOf($this.$buffer, $newLength);
     }
     function jl_AbstractStringBuilder_toString($this) {
-        return jl_String__init_0($this.$buffer, 0, $this.$length0);
+        return jl_String__init_0($this.$buffer, 0, $this.$length);
     }
     function jl_AbstractStringBuilder_insertSpace($this, $start, $end) {
         var $sz, $i, var$5, var$6, var$7, var$8;
-        $sz = $this.$length0 - $start | 0;
-        $this.$ensureCapacity(($this.$length0 + $end | 0) - $start | 0);
+        $sz = $this.$length - $start | 0;
+        $this.$ensureCapacity(($this.$length + $end | 0) - $start | 0);
         $i = $sz - 1 | 0;
         while ($i >= 0) {
             var$5 = $this.$buffer;
@@ -1667,7 +1884,7 @@
             var$5[$rt_checkBounds(var$6, var$5)] = var$8;
             $i = $i + (-1) | 0;
         }
-        $this.$length0 = $this.$length0 + ($end - $start | 0) | 0;
+        $this.$length = $this.$length + ($end - $start | 0) | 0;
     }
     var jl_Appendable = $rt_classWithoutFields(0);
     var jl_StringBuilder = $rt_classWithoutFields(jl_AbstractStringBuilder);
@@ -1683,27 +1900,35 @@
         jl_AbstractStringBuilder_append($this, $obj);
         return $this;
     }
-    function jl_StringBuilder_append1($this, $string) {
+    function jl_StringBuilder_append2($this, $string) {
         jl_AbstractStringBuilder_append0($this, $string);
         return $this;
     }
-    function jl_StringBuilder_append2($this, $value) {
+    function jl_StringBuilder_append3($this, $value) {
         jl_AbstractStringBuilder_append1($this, $value);
         return $this;
     }
+    function jl_StringBuilder_append1($this, $value) {
+        jl_AbstractStringBuilder_append3($this, $value);
+        return $this;
+    }
     function jl_StringBuilder_append0($this, $c) {
-        jl_AbstractStringBuilder_append3($this, $c);
+        jl_AbstractStringBuilder_append4($this, $c);
         return $this;
     }
-    function jl_StringBuilder_insert($this, $index, $obj) {
-        jl_AbstractStringBuilder_insert2($this, $index, $obj);
+    function jl_StringBuilder_insert($this, $target, $value) {
+        jl_AbstractStringBuilder_insert1($this, $target, $value);
         return $this;
     }
-    function jl_StringBuilder_insert0($this, $index, $c) {
-        jl_AbstractStringBuilder_insert1($this, $index, $c);
+    function jl_StringBuilder_insert0($this, $index, $obj) {
+        jl_AbstractStringBuilder_insert4($this, $index, $obj);
         return $this;
     }
-    function jl_StringBuilder_insert1($this, $index, $string) {
+    function jl_StringBuilder_insert1($this, $index, $c) {
+        jl_AbstractStringBuilder_insert3($this, $index, $c);
+        return $this;
+    }
+    function jl_StringBuilder_insert2($this, $index, $string) {
         jl_AbstractStringBuilder_insert($this, $index, $string);
         return $this;
     }
@@ -1713,14 +1938,26 @@
     function jl_StringBuilder_ensureCapacity($this, var$1) {
         jl_AbstractStringBuilder_ensureCapacity($this, var$1);
     }
-    function jl_StringBuilder_insert2($this, var$1, var$2) {
-        return $this.$insert3(var$1, var$2);
-    }
     function jl_StringBuilder_insert3($this, var$1, var$2) {
-        return $this.$insert4(var$1, var$2);
+        return $this.$insert5(var$1, var$2);
     }
     function jl_StringBuilder_insert4($this, var$1, var$2) {
-        return $this.$insert5(var$1, var$2);
+        return $this.$insert6(var$1, var$2);
+    }
+    function jl_StringBuilder_insert5($this, var$1, var$2) {
+        return $this.$insert7(var$1, var$2);
+    }
+    function jl_StringBuilder_insert6($this, var$1, var$2) {
+        return $this.$insert8(var$1, var$2);
+    }
+    var jl_ArrayStoreException = $rt_classWithoutFields(jl_RuntimeException);
+    function jl_ArrayStoreException__init_() {
+        var var_0 = new jl_ArrayStoreException();
+        jl_ArrayStoreException__init_0(var_0);
+        return var_0;
+    }
+    function jl_ArrayStoreException__init_0($this) {
+        jl_RuntimeException__init_1($this);
     }
     var ju_ConcurrentModificationException = $rt_classWithoutFields(jl_RuntimeException);
     function ju_ConcurrentModificationException__init_() {
@@ -1731,88 +1968,12 @@
     function ju_ConcurrentModificationException__init_0($this) {
         jl_RuntimeException__init_1($this);
     }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor() {
-        var a = this; jl_Object.call(a);
-        a.$sharedPrefix0 = null;
-        a.$sharedSuffix0 = null;
-        a.$this$0 = null;
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_0(var_0) {
-        var var_1 = new oj_ComparisonFailure$ComparisonCompactor$DiffExtractor();
-        oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_1(var_1, var_0);
-        return var_1;
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_(var_0, var_1) {
-        var var_2 = new oj_ComparisonFailure$ComparisonCompactor$DiffExtractor();
-        oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_2(var_2, var_0, var_1);
-        return var_2;
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_1($this, var$1) {
-        $this.$this$0 = var$1;
-        jl_Object__init_0($this);
-        $this.$sharedPrefix0 = oj_ComparisonFailure$ComparisonCompactor_access$100(var$1);
-        $this.$sharedSuffix0 = oj_ComparisonFailure$ComparisonCompactor_access$200(var$1, $this.$sharedPrefix0);
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_expectedDiff($this) {
-        return oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_extractDiff($this, oj_ComparisonFailure$ComparisonCompactor_access$300($this.$this$0));
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_actualDiff($this) {
-        return oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_extractDiff($this, oj_ComparisonFailure$ComparisonCompactor_access$400($this.$this$0));
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_compactPrefix($this) {
-        if ($rt_nullCheck($this.$sharedPrefix0).$length() <= oj_ComparisonFailure$ComparisonCompactor_access$500($this.$this$0))
-            return $this.$sharedPrefix0;
-        return $rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($rt_s(6))).$append1($rt_nullCheck($this.$sharedPrefix0).$substring0($rt_nullCheck($this.$sharedPrefix0).$length() - oj_ComparisonFailure$ComparisonCompactor_access$500($this.$this$0) | 0))).$toString();
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_compactSuffix($this) {
-        if ($rt_nullCheck($this.$sharedSuffix0).$length() <= oj_ComparisonFailure$ComparisonCompactor_access$500($this.$this$0))
-            return $this.$sharedSuffix0;
-        return $rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($rt_nullCheck($this.$sharedSuffix0).$substring(0, oj_ComparisonFailure$ComparisonCompactor_access$500($this.$this$0)))).$append1($rt_s(6))).$toString();
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_extractDiff($this, $source) {
-        var var$2, var$3;
-        var$2 = (jl_StringBuilder__init_()).$append1($rt_s(7));
-        var$3 = $rt_nullCheck($this.$sharedPrefix0).$length();
-        $source = $rt_nullCheck($source);
-        return $rt_nullCheck($rt_nullCheck($rt_nullCheck(var$2).$append1($source.$substring(var$3, $source.$length() - $rt_nullCheck($this.$sharedSuffix0).$length() | 0))).$append1($rt_s(8))).$toString();
-    }
-    function oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_2($this, $x0, $x1) {
-        oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_1($this, $x0);
-    }
     var jlr_AnnotatedElement = $rt_classWithoutFields(0);
-    var ucits_AppSecurityProvider_Factory = $rt_classWithoutFields();
-    var ucits_AppSecurityProvider_Factory_instance = null;
-    function ucits_AppSecurityProvider_Factory_getInstance() {
-        if (ucits_AppSecurityProvider_Factory_instance === null)
-            ucits_AppSecurityProvider_Factory_instance = ucits_AppSecurityProvider_Factory_createInstance();
-        return ucits_AppSecurityProvider_Factory_instance;
-    }
-    function ucits_AppSecurityProvider_Factory_createInstance() {
-        var $bean;
-        $bean = ucits_AppSecurityProvider__init_();
-        return $bean;
-    }
+    var otjc_JSFinalizationRegistryConsumer = $rt_classWithoutFields(0);
     var otjde_FocusEventTarget = $rt_classWithoutFields(0);
     var otjde_MouseEventTarget = $rt_classWithoutFields(0);
     var otjde_KeyboardEventTarget = $rt_classWithoutFields(0);
     var otjb_WindowEventTarget = $rt_classWithoutFields(0);
-    var jl_AssertionError = $rt_classWithoutFields(jl_Error);
-    function jl_AssertionError__init_() {
-        var var_0 = new jl_AssertionError();
-        jl_AssertionError__init_0(var_0);
-        return var_0;
-    }
-    function jl_AssertionError__init_1(var_0) {
-        var var_1 = new jl_AssertionError();
-        jl_AssertionError__init_2(var_1, var_0);
-        return var_1;
-    }
-    function jl_AssertionError__init_0($this) {
-        jl_Error__init_0($this);
-    }
-    function jl_AssertionError__init_2($this, $message) {
-        jl_Error__init_2($this, jl_String_valueOf($message));
-    }
     var jl_ClassCastException = $rt_classWithoutFields(jl_RuntimeException);
     function jl_ClassCastException__init_() {
         var var_0 = new jl_ClassCastException();
@@ -1822,23 +1983,138 @@
     function jl_ClassCastException__init_0($this) {
         jl_RuntimeException__init_1($this);
     }
-    var ju_AbstractCollection = $rt_classWithoutFields();
-    function ju_AbstractCollection__init_($this) {
+    function otji_JSWrapper() {
+        jl_Object.call(this);
+        this.$js = null;
+    }
+    var otji_JSWrapper_hashCodes = null;
+    var otji_JSWrapper_wrappers = null;
+    var otji_JSWrapper_stringWrappers = null;
+    var otji_JSWrapper_numberWrappers = null;
+    var otji_JSWrapper_undefinedWrapper = null;
+    var otji_JSWrapper_stringFinalizationRegistry = null;
+    var otji_JSWrapper_numberFinalizationRegistry = null;
+    function otji_JSWrapper_$callClinit() {
+        otji_JSWrapper_$callClinit = $rt_eraseClinit(otji_JSWrapper);
+        otji_JSWrapper__clinit_();
+    }
+    function otji_JSWrapper__init_(var_0) {
+        var var_1 = new otji_JSWrapper();
+        otji_JSWrapper__init_0(var_1, var_0);
+        return var_1;
+    }
+    function otji_JSWrapper__init_0($this, $js) {
+        otji_JSWrapper_$callClinit();
         jl_Object__init_0($this);
+        $this.$js = $js;
     }
-    var ju_SequencedCollection = $rt_classWithoutFields(0);
-    var ju_List = $rt_classWithoutFields(0);
-    function ju_AbstractList() {
-        ju_AbstractCollection.call(this);
-        this.$modCount = 0;
+    function otji_JSWrapper_wrap($o) {
+        var $js, $type, $isObject, $existingRef, $existing, $wrapper, $jsString, $wrapperAsJs, $jsNumber;
+        otji_JSWrapper_$callClinit();
+        if ($o === null)
+            return null;
+        $js = $o;
+        $type = $rt_str(typeof $js);
+        $type = $rt_nullCheck($type);
+        $isObject = !$type.$equals($rt_s(9)) && !$type.$equals($rt_s(10)) ? 0 : 1;
+        if ($isObject && $o[$rt_jso_marker] === true)
+            return $o;
+        if (otji_JSWrapper_wrappers !== null) {
+            if ($isObject) {
+                $existingRef = otji_JSWrapper_wrappers.get($js);
+                $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
+                if (!(typeof $existing === 'undefined' ? 1 : 0))
+                    return $existing;
+                $wrapper = otji_JSWrapper__init_($js);
+                otji_JSWrapper_wrappers.set($js, new $rt_globals.WeakRef($wrapper));
+                return $wrapper;
+            }
+            if ($type.$equals($rt_s(11))) {
+                $jsString = $js;
+                $existingRef = otji_JSWrapper_stringWrappers.get($jsString);
+                $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
+                if (!(typeof $existing === 'undefined' ? 1 : 0))
+                    return $existing;
+                $wrapper = otji_JSWrapper__init_($js);
+                $wrapperAsJs = $wrapper;
+                otji_JSWrapper_stringWrappers.set($jsString, new $rt_globals.WeakRef($wrapperAsJs));
+                otji_JSWrapper_register$js_body$_4(otji_JSWrapper_stringFinalizationRegistry, $wrapperAsJs, $jsString);
+                return $wrapper;
+            }
+            if ($type.$equals($rt_s(12))) {
+                $jsNumber = $js;
+                $existingRef = otji_JSWrapper_numberWrappers.get($jsNumber);
+                $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
+                if (!(typeof $existing === 'undefined' ? 1 : 0))
+                    return $existing;
+                $wrapper = otji_JSWrapper__init_($js);
+                $wrapperAsJs = $wrapper;
+                otji_JSWrapper_numberWrappers.set($jsNumber, new $rt_globals.WeakRef($wrapperAsJs));
+                otji_JSWrapper_register$js_body$_4(otji_JSWrapper_numberFinalizationRegistry, $wrapperAsJs, $jsNumber);
+                return $wrapper;
+            }
+            if ($type.$equals($rt_s(13))) {
+                $existingRef = otji_JSWrapper_undefinedWrapper;
+                $existing = $existingRef === null ? void 0 : $existingRef.deref();
+                if (!(typeof $existing === 'undefined' ? 1 : 0))
+                    return $existing;
+                $wrapper = otji_JSWrapper__init_($js);
+                $wrapperAsJs = $wrapper;
+                otji_JSWrapper_undefinedWrapper = new $rt_globals.WeakRef($wrapperAsJs);
+                return $wrapper;
+            }
+        }
+        return otji_JSWrapper__init_($js);
     }
-    function ju_AbstractList__init_($this) {
-        ju_AbstractCollection__init_($this);
+    function otji_JSWrapper_unwrap($o) {
+        otji_JSWrapper_$callClinit();
+        if ($o === null)
+            return null;
+        return $o[$rt_jso_marker] === true ? $o : $rt_nullCheck($rt_castToClass($o, otji_JSWrapper)).$js;
     }
-    function ju_AbstractList_iterator($this) {
-        return ju_AbstractList$1__init_($this);
+    function otji_JSWrapper_javaToJs($o) {
+        otji_JSWrapper_$callClinit();
+        if ($o === null)
+            return null;
+        return $o instanceof $rt_objcls() && $o instanceof otji_JSWrapper ? otji_JSWrapper_unwrap($o) : $o;
     }
-    var jl_Cloneable = $rt_classWithoutFields(0);
+    function otji_JSWrapper_jsToJava($o) {
+        otji_JSWrapper_$callClinit();
+        if ($o === null)
+            return null;
+        return $o instanceof $rt_objcls() ? $o : otji_JSWrapper_wrap($o);
+    }
+    function otji_JSWrapper_lambda$static$1($token) {
+        var var$2, var$3;
+        otji_JSWrapper_$callClinit();
+        var$2 = otji_JSWrapper_numberWrappers;
+        var$3 = otji_JSWrapper_unwrap($token);
+        var$2.delete(var$3);
+    }
+    function otji_JSWrapper_lambda$static$0($token) {
+        var var$2, var$3;
+        otji_JSWrapper_$callClinit();
+        var$2 = otji_JSWrapper_stringWrappers;
+        var$3 = otji_JSWrapper_unwrap($token);
+        var$2.delete(var$3);
+    }
+    function otji_JSWrapper__clinit_() {
+        var var$1;
+        otji_JSWrapper_hashCodes = new $rt_globals.WeakMap();
+        var$1 = !(typeof $rt_globals.WeakRef !== 'undefined' ? 1 : 0) ? null : new $rt_globals.WeakMap();
+        otji_JSWrapper_wrappers = var$1;
+        var$1 = !(typeof $rt_globals.WeakRef !== 'undefined' ? 1 : 0) ? null : new $rt_globals.Map();
+        otji_JSWrapper_stringWrappers = var$1;
+        var$1 = !(typeof $rt_globals.WeakRef !== 'undefined' ? 1 : 0) ? null : new $rt_globals.Map();
+        otji_JSWrapper_numberWrappers = var$1;
+        var$1 = otji_JSWrapper_stringWrappers === null ? null : new $rt_globals.FinalizationRegistry(otji_JS_function(otji_JSWrapper$_clinit_$lambda$_30_0__init_(), "accept"));
+        otji_JSWrapper_stringFinalizationRegistry = var$1;
+        var$1 = otji_JSWrapper_numberWrappers === null ? null : new $rt_globals.FinalizationRegistry(otji_JS_function(otji_JSWrapper$_clinit_$lambda$_30_1__init_(), "accept"));
+        otji_JSWrapper_numberFinalizationRegistry = var$1;
+    }
+    function otji_JSWrapper_register$js_body$_4(var$1, var$2, var$3) {
+        return var$1.register(var$2, var$3);
+    }
     var ju_RandomAccess = $rt_classWithoutFields(0);
     function ju_ArrayList() {
         var a = this; ju_AbstractList.call(a);
@@ -1899,32 +2175,7 @@
             return;
         $rt_throw(jl_IndexOutOfBoundsException__init_());
     }
-    var ucitw_Container = $rt_classWithoutFields(ucitw_Widget);
-    function ucitw_Container__init_() {
-        var var_0 = new ucitw_Container();
-        ucitw_Container__init_0(var_0);
-        return var_0;
-    }
-    function ucitw_Container__init_0($this) {
-        var var$1, var$2;
-        ucitw_Widget__init_($this);
-        $this.$element0 = $rt_globals.window.document.createElement("div");
-        var$1 = $this.$element0;
-        var$2 = "container";
-        var$1.className = var$2;
-    }
-    function uciti_NavigationImpl() {
-        jl_Object.call(this);
-        this.$securityProvider = null;
-    }
-    function uciti_NavigationImpl__init_() {
-        var var_0 = new uciti_NavigationImpl();
-        uciti_NavigationImpl__init_0(var_0);
-        return var_0;
-    }
-    function uciti_NavigationImpl__init_0($this) {
-        jl_Object__init_0($this);
-    }
+    var otjc_JSMap = $rt_classWithoutFields();
     var otjb_StorageProvider = $rt_classWithoutFields(0);
     var otjc_JSArrayReader = $rt_classWithoutFields(0);
     var otjb_Window = $rt_classWithoutFields();
@@ -1948,6 +2199,42 @@
     }
     function otjb_Window_addEventListener$exported$6(var$0, var$1, var$2, var$3) {
         var$0.$addEventListener0($rt_str(var$1), otji_JS_functionAsObject(var$2, "handleEvent"), var$3 ? 1 : 0);
+    }
+    var otp_Platform = $rt_classWithoutFields();
+    function otp_Platform_clone(var$1) {
+        var copy = new var$1.constructor();
+        for (var field in var$1) {
+            if (!var$1.hasOwnProperty(field)) {
+                continue;
+            }
+            copy[field] = var$1[field];
+        }
+        return copy;
+    }
+    function otp_Platform_isInstance($obj, $cls) {
+        return $obj !== null && !(typeof $obj.constructor.$meta === 'undefined' ? 1 : 0) && otp_Platform_isAssignable($obj.constructor, $cls) ? 1 : 0;
+    }
+    function otp_Platform_isAssignable($from, $to) {
+        var $supertypes, $i;
+        if ($from === $to)
+            return 1;
+        $supertypes = $from.$meta.supertypes;
+        $i = 0;
+        while ($i < $supertypes.length) {
+            if (otp_Platform_isAssignable($supertypes[$i], $to))
+                return 1;
+            $i = $i + 1 | 0;
+        }
+        return 0;
+    }
+    function otp_Platform_isPrimitive($cls) {
+        return $cls.$meta.primitive ? 1 : 0;
+    }
+    function otp_Platform_getArrayItem($cls) {
+        return $cls.$meta.item;
+    }
+    function otp_Platform_getName($cls) {
+        return $rt_str($cls.$meta.name);
     }
     function jl_StackTraceElement() {
         var a = this; jl_Object.call(a);
@@ -1976,12 +2263,12 @@
         var $sb, $index;
         $sb = jl_StringBuilder__init_();
         $index = $rt_nullCheck($this.$declaringClass).$lastIndexOf(46);
-        $rt_nullCheck($rt_nullCheck($rt_nullCheck($sb.$append1($rt_nullCheck($this.$declaringClass).$substring0($index + 1 | 0))).$append0(46)).$append1($this.$methodName)).$append0(40);
+        $rt_nullCheck($rt_nullCheck($rt_nullCheck($sb.$append8($rt_nullCheck($this.$declaringClass).$substring($index + 1 | 0))).$append0(46)).$append8($this.$methodName)).$append0(40);
         if ($this.$fileName === null)
-            $sb.$append1($rt_s(9));
+            $sb.$append8($rt_s(14));
         else
-            $rt_nullCheck($rt_nullCheck($sb.$append1($this.$fileName)).$append0(58)).$append7($this.$lineNumber);
-        $sb.$append1($rt_s(10));
+            $rt_nullCheck($rt_nullCheck($sb.$append8($this.$fileName)).$append0(58)).$append9($this.$lineNumber);
+        $sb.$append8($rt_s(15));
         return $sb.$toString();
     }
     function jl_String() {
@@ -2044,7 +2331,7 @@
     }
     function jl_String_lastIndexOf($this, $ch, $fromIndex) {
         var $i, $bmpChar, var$5, $hi, $lo, var$8, var$9;
-        $i = jl_Math_min($fromIndex, $this.$length() - 1 | 0);
+        $i = jl_Math_min($fromIndex, $this.$length0() - 1 | 0);
         if ($ch < 65536) {
             $bmpChar = $ch & 65535;
             while (true) {
@@ -2078,7 +2365,7 @@
         return var$9;
     }
     function jl_String_lastIndexOf0($this, $ch) {
-        return $this.$lastIndexOf0($ch, $this.$length() - 1 | 0);
+        return $this.$lastIndexOf0($ch, $this.$length0() - 1 | 0);
     }
     function jl_String_substring($this, $beginIndex, $endIndex) {
         var var$3;
@@ -2089,38 +2376,15 @@
             jl_String_$callClinit();
             return jl_String_EMPTY;
         }
-        if (!$beginIndex && $endIndex == $this.$length())
+        if (!$beginIndex && $endIndex == $this.$length0())
             return $this;
         return jl_String__init_0($this.$characters, $beginIndex, $endIndex - $beginIndex | 0);
     }
     function jl_String_substring0($this, $beginIndex) {
-        return $this.$substring($beginIndex, $this.$length());
-    }
-    function jl_String_contains($this, $s) {
-        var var$2, $sz, $i, $j;
-        var$2 = $this.$length();
-        $s = $rt_nullCheck($s);
-        $sz = var$2 - $s.$length() | 0;
-        $i = 0;
-        while ($i <= $sz) {
-            $j = 0;
-            while (true) {
-                if ($j >= $s.$length())
-                    return 1;
-                if ($this.$charAt($i + $j | 0) != $s.$charAt($j))
-                    break;
-                $j = $j + 1 | 0;
-            }
-            $i = $i + 1 | 0;
-        }
-        return 0;
+        return $this.$substring0($beginIndex, $this.$length0());
     }
     function jl_String_toString($this) {
         return $rt_castToClass($this, jl_String);
-    }
-    function jl_String_valueOf($obj) {
-        jl_String_$callClinit();
-        return $obj === null ? $rt_s(5) : $obj.$toString();
     }
     function jl_String_equals($this, $other) {
         var $str, $i;
@@ -2130,10 +2394,10 @@
             return 0;
         $str = $rt_castToClass($other, jl_String);
         $str = $rt_nullCheck($str);
-        if ($str.$length() != $this.$length())
+        if ($str.$length0() != $this.$length0())
             return 0;
         $i = 0;
-        while ($i < $str.$length()) {
+        while ($i < $str.$length0()) {
             if ($this.$charAt($i) != $str.$charAt($i))
                 return 0;
             $i = $i + 1 | 0;
@@ -2164,6 +2428,7 @@
         jl_String_EMPTY = jl_String__init_1();
         jl_String_CASE_INSENSITIVE_ORDER = jl_String$_clinit_$lambda$_93_0__init_();
     }
+    var jl_NoClassDefFoundError = $rt_classWithoutFields(jl_LinkageError);
     var jl_NegativeArraySizeException = $rt_classWithoutFields(jl_RuntimeException);
     function jl_NegativeArraySizeException__init_() {
         var var_0 = new jl_NegativeArraySizeException();
@@ -2173,7 +2438,7 @@
     function jl_NegativeArraySizeException__init_0($this) {
         jl_RuntimeException__init_1($this);
     }
-    var otjc_JSFinalizationRegistryConsumer = $rt_classWithoutFields(0);
+    var otjc_JSWeakRef = $rt_classWithoutFields();
     var otji_JSWrapper$_clinit_$lambda$_30_0 = $rt_classWithoutFields();
     function otji_JSWrapper$_clinit_$lambda$_30_0__init_() {
         var var_0 = new otji_JSWrapper$_clinit_$lambda$_30_0();
@@ -2204,16 +2469,7 @@
     function otji_JSWrapper$_clinit_$lambda$_30_1_accept$exported$0(var$0, var$1) {
         var$0.$accept(otji_JSWrapper_jsToJava(var$1));
     }
-    var ju_Map$Entry = $rt_classWithoutFields(0);
-    var jl_IncompatibleClassChangeError = $rt_classWithoutFields(jl_LinkageError);
-    function jl_IncompatibleClassChangeError__init_(var_0) {
-        var var_1 = new jl_IncompatibleClassChangeError();
-        jl_IncompatibleClassChangeError__init_0(var_1, var_0);
-        return var_1;
-    }
-    function jl_IncompatibleClassChangeError__init_0($this, $message) {
-        jl_LinkageError__init_0($this, $message);
-    }
+    var ju_Iterator = $rt_classWithoutFields(0);
     var jl_NoSuchMethodError = $rt_classWithoutFields(jl_IncompatibleClassChangeError);
     function jl_NoSuchMethodError__init_(var_0) {
         var var_1 = new jl_NoSuchMethodError();
@@ -2223,6 +2479,7 @@
     function jl_NoSuchMethodError__init_0($this, $message) {
         jl_IncompatibleClassChangeError__init_0($this, $message);
     }
+    var otjc_JSFinalizationRegistry = $rt_classWithoutFields();
     var jl_ArrayIndexOutOfBoundsException = $rt_classWithoutFields(jl_IndexOutOfBoundsException);
     function jl_ArrayIndexOutOfBoundsException__init_() {
         var var_0 = new jl_ArrayIndexOutOfBoundsException();
@@ -2232,720 +2489,6 @@
     function jl_ArrayIndexOutOfBoundsException__init_0($this) {
         jl_IndexOutOfBoundsException__init_0($this);
     }
-    var ju_Iterator = $rt_classWithoutFields(0);
-    function ju_AbstractList$1() {
-        var a = this; jl_Object.call(a);
-        a.$index = 0;
-        a.$modCount0 = 0;
-        a.$size0 = 0;
-        a.$removeIndex = 0;
-        a.$this$00 = null;
-    }
-    function ju_AbstractList$1__init_(var_0) {
-        var var_1 = new ju_AbstractList$1();
-        ju_AbstractList$1__init_0(var_1, var_0);
-        return var_1;
-    }
-    function ju_AbstractList$1__init_0($this, $this$0) {
-        $this.$this$00 = $this$0;
-        jl_Object__init_0($this);
-        $this.$modCount0 = $rt_nullCheck($this.$this$00).$modCount;
-        $this.$size0 = $rt_nullCheck($this.$this$00).$size1();
-        $this.$removeIndex = (-1);
-    }
-    function ju_AbstractList$1_hasNext($this) {
-        return $this.$index >= $this.$size0 ? 0 : 1;
-    }
-    function ju_AbstractList$1_next($this) {
-        var var$1, var$2;
-        ju_AbstractList$1_checkConcurrentModification($this);
-        $this.$removeIndex = $this.$index;
-        var$1 = $this.$this$00;
-        var$2 = $this.$index;
-        $this.$index = var$2 + 1 | 0;
-        return $rt_nullCheck(var$1).$get(var$2);
-    }
-    function ju_AbstractList$1_checkConcurrentModification($this) {
-        if ($this.$modCount0 >= $rt_nullCheck($this.$this$00).$modCount)
-            return;
-        $rt_throw(ju_ConcurrentModificationException__init_());
-    }
-    var oj_Assert = $rt_classWithoutFields();
-    function oj_Assert_assertTrue0($message, $condition) {
-        if (!$condition)
-            oj_Assert_fail($message);
-    }
-    function oj_Assert_assertTrue($condition) {
-        oj_Assert_assertTrue0(null, $condition);
-    }
-    function oj_Assert_fail($message) {
-        if ($message !== null)
-            $rt_throw(jl_AssertionError__init_1($message));
-        $rt_throw(jl_AssertionError__init_());
-    }
-    function oj_Assert_assertEquals($cleanMessage, $expected, $actual) {
-        if (oj_Assert_equalsRegardingNull($expected, $actual))
-            return;
-        if ($expected instanceof jl_String && $actual instanceof jl_String) {
-            if ($cleanMessage === null)
-                $cleanMessage = $rt_s(11);
-            $rt_throw(oj_ComparisonFailure__init_($cleanMessage, $rt_castToClass($expected, jl_String), $rt_castToClass($actual, jl_String)));
-        }
-        oj_Assert_failNotEquals($cleanMessage, $expected, $actual);
-    }
-    function oj_Assert_equalsRegardingNull($expected, $actual) {
-        if ($expected !== null)
-            return oj_Assert_isEquals($expected, $actual);
-        return $actual !== null ? 0 : 1;
-    }
-    function oj_Assert_isEquals($expected, $actual) {
-        $expected = $rt_nullCheck($expected);
-        return $expected.$equals($actual);
-    }
-    function oj_Assert_assertEquals0($expected, $actual) {
-        oj_Assert_assertEquals(null, $expected, $actual);
-    }
-    function oj_Assert_assertNotNull($message, $object) {
-        oj_Assert_assertTrue0($message, $object === null ? 0 : 1);
-    }
-    function oj_Assert_assertNotNull0($object) {
-        oj_Assert_assertNotNull(null, $object);
-    }
-    function oj_Assert_assertNull0($message, $object) {
-        if ($object === null)
-            return;
-        oj_Assert_failNotNull($message, $object);
-    }
-    function oj_Assert_assertNull($object) {
-        oj_Assert_assertNull0(null, $object);
-    }
-    function oj_Assert_failNotNull($message, $actual) {
-        var $formatted;
-        $formatted = $rt_s(11);
-        if ($message !== null)
-            $formatted = $rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($message)).$append1($rt_s(12))).$toString();
-        oj_Assert_fail($rt_nullCheck($rt_nullCheck($rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($formatted)).$append1($rt_s(13))).$append($actual)).$append1($rt_s(14))).$toString());
-    }
-    function oj_Assert_failNotEquals($message, $expected, $actual) {
-        oj_Assert_fail(oj_Assert_format($message, $expected, $actual));
-    }
-    function oj_Assert_format($message, $expected, $actual) {
-        var $formatted, $expectedString, $actualString;
-        $formatted = $rt_s(11);
-        if ($message !== null && !$rt_s(11).$equals($message))
-            $formatted = $rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($message)).$append1($rt_s(12))).$toString();
-        $expectedString = jl_String_valueOf($expected);
-        $actualString = jl_String_valueOf($actual);
-        if (oj_Assert_equalsRegardingNull($expectedString, $actualString))
-            return $rt_nullCheck($rt_nullCheck($rt_nullCheck($rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($formatted)).$append1($rt_s(15))).$append1(oj_Assert_formatClassAndValue($expected, $expectedString))).$append1($rt_s(16))).$append1(oj_Assert_formatClassAndValue($actual, $actualString))).$toString();
-        return $rt_nullCheck($rt_nullCheck($rt_nullCheck($rt_nullCheck($rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($formatted)).$append1($rt_s(17))).$append1($expectedString)).$append1($rt_s(18))).$append1($actualString)).$append1($rt_s(14))).$toString();
-    }
-    function oj_Assert_formatClassAndValue($value, $valueString) {
-        var $className;
-        $className = $value === null ? $rt_s(5) : $rt_nullCheck(jl_Object_getClass($value)).$getName();
-        return $rt_nullCheck($rt_nullCheck($rt_nullCheck($rt_nullCheck((jl_StringBuilder__init_()).$append1($className)).$append1($rt_s(19))).$append1($valueString)).$append1($rt_s(14))).$toString();
-    }
-    function oj_ComparisonFailure() {
-        var a = this; jl_AssertionError.call(a);
-        a.$fExpected = null;
-        a.$fActual = null;
-    }
-    function oj_ComparisonFailure__init_(var_0, var_1, var_2) {
-        var var_3 = new oj_ComparisonFailure();
-        oj_ComparisonFailure__init_0(var_3, var_0, var_1, var_2);
-        return var_3;
-    }
-    function oj_ComparisonFailure__init_0($this, $message, $expected, $actual) {
-        jl_AssertionError__init_2($this, $message);
-        $this.$fExpected = $expected;
-        $this.$fActual = $actual;
-    }
-    function oj_ComparisonFailure_getMessage($this) {
-        return (oj_ComparisonFailure$ComparisonCompactor__init_(20, $this.$fExpected, $this.$fActual)).$compact(jl_Throwable_getMessage($this));
-    }
-    var jlr_Array = $rt_classWithoutFields();
-    function jlr_Array_getLength(var$1) {
-        if (var$1 === null || var$1.constructor.$meta.item === undefined) {
-            $rt_throw(jl_IllegalArgumentException__init_());
-        }
-        return var$1.data.length;
-    }
-    function jlr_Array_newInstance($componentType, $length) {
-        if ($componentType === null)
-            $rt_throw(jl_NullPointerException__init_());
-        if ($componentType === $rt_cls($rt_voidcls()))
-            $rt_throw(jl_IllegalArgumentException__init_());
-        if ($length < 0)
-            $rt_throw(jl_NegativeArraySizeException__init_());
-        return jlr_Array_newInstanceImpl($rt_nullCheck($rt_castToClass($componentType, jl_Class)).$getPlatformClass(), $length);
-    }
-    function jlr_Array_newInstanceImpl(var$1, var$2) {
-        if (var$1.$meta.primitive) {
-            if (var$1 == $rt_bytecls()) {
-                return $rt_createByteArray(var$2);
-            }
-            if (var$1 == $rt_shortcls()) {
-                return $rt_createShortArray(var$2);
-            }
-            if (var$1 == $rt_charcls()) {
-                return $rt_createCharArray(var$2);
-            }
-            if (var$1 == $rt_intcls()) {
-                return $rt_createIntArray(var$2);
-            }
-            if (var$1 == $rt_longcls()) {
-                return $rt_createLongArray(var$2);
-            }
-            if (var$1 == $rt_floatcls()) {
-                return $rt_createFloatArray(var$2);
-            }
-            if (var$1 == $rt_doublecls()) {
-                return $rt_createDoubleArray(var$2);
-            }
-            if (var$1 == $rt_booleancls()) {
-                return $rt_createBooleanArray(var$2);
-            }
-        } else {
-            return $rt_createArray(var$1, var$2)
-        }
-    }
-    var jl_NullPointerException = $rt_classWithoutFields(jl_RuntimeException);
-    function jl_NullPointerException__init_0(var_0) {
-        var var_1 = new jl_NullPointerException();
-        jl_NullPointerException__init_1(var_1, var_0);
-        return var_1;
-    }
-    function jl_NullPointerException__init_() {
-        var var_0 = new jl_NullPointerException();
-        jl_NullPointerException__init_2(var_0);
-        return var_0;
-    }
-    function jl_NullPointerException__init_1($this, $message) {
-        jl_RuntimeException__init_2($this, $message);
-    }
-    function jl_NullPointerException__init_2($this) {
-        jl_RuntimeException__init_1($this);
-    }
-    var jl_NoSuchFieldError = $rt_classWithoutFields(jl_IncompatibleClassChangeError);
-    function jl_NoSuchFieldError__init_(var_0) {
-        var var_1 = new jl_NoSuchFieldError();
-        jl_NoSuchFieldError__init_0(var_1, var_0);
-        return var_1;
-    }
-    function jl_NoSuchFieldError__init_0($this, $message) {
-        jl_IncompatibleClassChangeError__init_0($this, $message);
-    }
-    var ucits_DashboardPage_Binder = $rt_classWithoutFields();
-    function ucits_DashboardPage_Binder_bind($target) {
-        var $doc, $root, var$4, $el_container, $fragment, $widgetElement, $currentClasses, $placeholderClasses, var$10, $placeholderId, $placeholderStyle, $currentStyle, var$14;
-        $doc = $rt_globals.window.document;
-        $root = $doc.createElement("div");
-        var$4 = "<div>     <h1>Dashboard</h1>     <div data-field=\"content\"></div>     <div data-field=\"userBtn\"></div>     <div data-field=\"backBtn\"></div> </div> ";
-        $root.innerHTML = var$4;
-        $target = $rt_nullCheck($target);
-        $target.$element = $root;
-        $el_container = $root.querySelector("[data-field=\'container\']");
-        $fragment = $doc.createDocumentFragment();
-        while ($root.hasChildNodes() ? 1 : 0) {
-            var$4 = $root.firstChild;
-            $fragment.appendChild(var$4);
-        }
-        if ($el_container !== null && $target.$container !== null) {
-            $widgetElement = $rt_nullCheck($target.$container).$element0;
-            if ($widgetElement !== null) {
-                $currentClasses = $rt_str($widgetElement.className);
-                $placeholderClasses = $rt_str($el_container.className);
-                if ($placeholderClasses !== null && !$placeholderClasses.$isEmpty()) {
-                    if ($currentClasses === null)
-                        var$10 = $rt_s(11);
-                    else {
-                        var$4 = jl_StringBuilder__init_();
-                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$4, $currentClasses)), 32);
-                        var$10 = jl_StringBuilder_toString(var$4);
-                    }
-                    var$4 = jl_StringBuilder__init_();
-                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$4, var$10)), $placeholderClasses);
-                    var$4 = $rt_ustr(jl_StringBuilder_toString(var$4));
-                    $widgetElement.className = var$4;
-                }
-                $placeholderId = $rt_str($el_container.getAttribute("id"));
-                if ($placeholderId !== null && !$placeholderId.$isEmpty())
-                    $widgetElement.setAttribute("id", $rt_ustr($placeholderId));
-                $placeholderStyle = $rt_str($el_container.getAttribute("style"));
-                if ($placeholderStyle !== null && !$placeholderStyle.$isEmpty()) {
-                    $currentStyle = $rt_str($widgetElement.getAttribute("style"));
-                    if ($currentStyle === null)
-                        var$10 = $rt_s(11);
-                    else {
-                        var$4 = jl_StringBuilder__init_();
-                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$4, $currentStyle)), 59);
-                        var$10 = jl_StringBuilder_toString(var$4);
-                    }
-                    var$4 = jl_StringBuilder__init_();
-                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$4, var$10)), $placeholderStyle);
-                    var$14 = jl_StringBuilder_toString(var$4);
-                    $widgetElement.setAttribute("style", $rt_ustr(var$14));
-                }
-                $el_container.parentNode.replaceChild($widgetElement, $el_container);
-            }
-        }
-        $root.appendChild($fragment);
-        return $root;
-    }
-    function ucits_DashboardPage() {
-        var a = this; jl_Object.call(a);
-        a.$navigation = null;
-        a.$service = null;
-        a.$element = null;
-        a.$container = null;
-    }
-    function ucits_DashboardPage__init_() {
-        var var_0 = new ucits_DashboardPage();
-        ucits_DashboardPage__init_0(var_0);
-        return var_0;
-    }
-    function ucits_DashboardPage__init_0($this) {
-        jl_Object__init_0($this);
-    }
-    var otci_IntegerUtil = $rt_classWithoutFields();
-    function otci_IntegerUtil_toUnsignedLogRadixString($value, $radixLog2) {
-        var $radix, $mask, $sz, $chars, $pos, $target, var$9, $target_0, var$11;
-        if (!$value)
-            return $rt_s(20);
-        $radix = 1 << $radixLog2;
-        $mask = $radix - 1 | 0;
-        $sz = (((32 - jl_Integer_numberOfLeadingZeros($value) | 0) + $radixLog2 | 0) - 1 | 0) / $radixLog2 | 0;
-        $chars = $rt_createCharArray($sz);
-        $pos = $rt_imul($sz - 1 | 0, $radixLog2);
-        $target = 0;
-        while ($pos >= 0) {
-            var$9 = $chars.data;
-            $target_0 = $target + 1 | 0;
-            var$11 = jl_Character_forDigit(($value >>> $pos | 0) & $mask, $radix);
-            $target = $rt_checkBounds($target, var$9);
-            var$9[$target] = var$11;
-            $pos = $pos - $radixLog2 | 0;
-            $target = $target_0;
-        }
-        return jl_String__init_($chars);
-    }
-    var jl_Math = $rt_classWithoutFields();
-    function jl_Math_min($a, $b) {
-        if ($a < $b)
-            $b = $a;
-        return $b;
-    }
-    function jl_Math_max($a, $b) {
-        if ($a > $b)
-            $b = $a;
-        return $b;
-    }
-    var otjc_JSWeakMap = $rt_classWithoutFields();
-    var ucits_DashboardPage_Factory = $rt_classWithoutFields();
-    var ucits_DashboardPage_Factory_instance = null;
-    function ucits_DashboardPage_Factory_getInstance() {
-        if (ucits_DashboardPage_Factory_instance === null)
-            ucits_DashboardPage_Factory_instance = ucits_DashboardPage_Factory_createInstance();
-        return ucits_DashboardPage_Factory_instance;
-    }
-    function ucits_DashboardPage_Factory_createInstance() {
-        var $bean;
-        $bean = ucits_DashboardPage__init_();
-        $bean.$navigation = uciti_NavigationImpl_Factory_getInstance();
-        $bean.$service = ucits_HelloService_Factory_getInstance();
-        $bean.$container = ucitw_Container__init_();
-        ucits_DashboardPage_Binder_bind($bean);
-        return $bean;
-    }
-    var otjc_JSObjects = $rt_classWithoutFields();
-    var otji_JS = $rt_classWithoutFields();
-    function otji_JS_function(var$1, var$2) {
-        var name = 'jso$functor$' + var$2;
-        if (!var$1[name]) {
-            var fn = function() {
-                return var$1[var$2].apply(var$1, arguments);
-            };
-            var$1[name] = function() {
-                return fn;
-            };
-        }
-        return var$1[name]();
-    }
-    function otji_JS_functionAsObject(var$1, var$2) {
-        if (typeof var$1 !== "function") return var$1;
-        var result = {};
-        result[var$2] = var$1;
-        return result;
-    }
-    var otj_TestEntryPoint = $rt_classWithoutFields();
-    var otj_TestEntryPoint_testCase = null;
-    function otj_TestEntryPoint_run($name) {
-        var $launchers, var$3, $launcher, var$5, $e, $$je;
-        $launchers = ju_ArrayList__init_();
-        otj_TestEntryPoint_testCase = otj_TestEntryPoint_createTestCase();
-        otj_TestEntryPoint_launchers($name, $launchers);
-        var$3 = $launchers.$iterator();
-        while (true) {
-            var$3 = $rt_nullCheck(var$3);
-            if (!var$3.$hasNext())
-                break;
-            $launcher = $rt_castToInterface(var$3.$next(), otj_TestEntryPoint$Launcher);
-            otj_TestEntryPoint_before();
-            try {
-                var$5 = otj_TestEntryPoint_testCase;
-                $launcher = $rt_nullCheck($launcher);
-                $launcher.$launch(var$5);
-            } catch ($$e) {
-                $$je = $rt_wrapException($$e);
-                var$3 = $$je;
-                a: {
-                    try {
-                        otj_TestEntryPoint_after();
-                        break a;
-                    } catch ($$e) {
-                        $$je = $rt_wrapException($$e);
-                        if ($$je instanceof jl_Throwable) {
-                            $e = $$je;
-                        } else {
-                            throw $$e;
-                        }
-                    }
-                    $e.$printStackTrace();
-                }
-                $rt_throw(var$3);
-
-            }
-            b: {
-                try {
-                    otj_TestEntryPoint_after();
-                    break b;
-                } catch ($$e) {
-                    $$je = $rt_wrapException($$e);
-                    if ($$je instanceof jl_Throwable) {
-                        $e = $$je;
-                    } else {
-                        throw $$e;
-                    }
-                }
-                $e.$printStackTrace();
-            }
-        }
-    }
-    function otj_TestEntryPoint_createTestCase() {
-        return ucits_TemplatedTest__init_();
-    }
-    function otj_TestEntryPoint_before() {}
-    function otj_TestEntryPoint_launchers(var$1, var$2) {
-        if (!jl_String_equals($rt_nullCheck(var$1), $rt_s(21)))
-            $rt_throw(jl_IllegalArgumentException__init_0($rt_s(22)));
-        var$1 = otj_TestEntryPoint$LauncherImpl0__init_();
-        $rt_nullCheck(var$2).$add(var$1);
-    }
-    function otj_TestEntryPoint_after() {}
-    var uciti_NavigationImpl_Factory = $rt_classWithoutFields();
-    var uciti_NavigationImpl_Factory_instance = null;
-    function uciti_NavigationImpl_Factory_getInstance() {
-        if (uciti_NavigationImpl_Factory_instance === null) {
-            uciti_NavigationImpl_Factory_instance = uciti_NavigationImpl__init_();
-            $rt_nullCheck(uciti_NavigationImpl_Factory_instance).$securityProvider = ucits_AppSecurityProvider_Factory_getInstance();
-        }
-        return uciti_NavigationImpl_Factory_instance;
-    }
-    var ju_MapEntry = $rt_classWithoutFields();
-    var ju_HashMap$HashEntry = $rt_classWithoutFields(ju_MapEntry);
-    var jlr_Type = $rt_classWithoutFields(0);
-    var jl_ArrayStoreException = $rt_classWithoutFields(jl_RuntimeException);
-    function jl_ArrayStoreException__init_() {
-        var var_0 = new jl_ArrayStoreException();
-        jl_ArrayStoreException__init_0(var_0);
-        return var_0;
-    }
-    function jl_ArrayStoreException__init_0($this) {
-        jl_RuntimeException__init_1($this);
-    }
-    var ucits_HelloService = $rt_classWithoutFields();
-    function ucits_HelloService__init_() {
-        var var_0 = new ucits_HelloService();
-        ucits_HelloService__init_0(var_0);
-        return var_0;
-    }
-    function ucits_HelloService__init_0($this) {
-        jl_Object__init_0($this);
-    }
-    var ju_AbstractSet = $rt_classWithoutFields(ju_AbstractCollection);
-    function ju_AbstractSet__init_($this) {
-        ju_AbstractCollection__init_($this);
-    }
-    var ju_AbstractMap = $rt_classWithoutFields();
-    function ju_AbstractMap__init_($this) {
-        jl_Object__init_0($this);
-    }
-    function ju_HashMap() {
-        var a = this; ju_AbstractMap.call(a);
-        a.$elementCount = 0;
-        a.$elementData = null;
-        a.$loadFactor = 0.0;
-        a.$threshold = 0;
-    }
-    function ju_HashMap__init_() {
-        var var_0 = new ju_HashMap();
-        ju_HashMap__init_0(var_0);
-        return var_0;
-    }
-    function ju_HashMap__init_1(var_0) {
-        var var_1 = new ju_HashMap();
-        ju_HashMap__init_2(var_1, var_0);
-        return var_1;
-    }
-    function ju_HashMap__init_3(var_0, var_1) {
-        var var_2 = new ju_HashMap();
-        ju_HashMap__init_4(var_2, var_0, var_1);
-        return var_2;
-    }
-    function ju_HashMap_newElementArray($this, $s) {
-        return $rt_createArray(ju_HashMap$HashEntry, $s);
-    }
-    function ju_HashMap__init_0($this) {
-        ju_HashMap__init_2($this, 16);
-    }
-    function ju_HashMap__init_2($this, $capacity) {
-        ju_HashMap__init_4($this, $capacity, 0.75);
-    }
-    function ju_HashMap_calculateCapacity($x) {
-        var var$2, var$3;
-        if ($x >= 1073741824)
-            return 1073741824;
-        if (!$x)
-            return 16;
-        var$2 = $x - 1 | 0;
-        var$3 = var$2 | var$2 >> 1;
-        var$3 = var$3 | var$3 >> 2;
-        var$3 = var$3 | var$3 >> 4;
-        var$3 = var$3 | var$3 >> 8;
-        var$3 = var$3 | var$3 >> 16;
-        return var$3 + 1 | 0;
-    }
-    function ju_HashMap__init_4($this, $capacity, $loadFactor) {
-        var var$3;
-        ju_AbstractMap__init_($this);
-        if ($capacity >= 0 && $loadFactor > 0.0) {
-            var$3 = ju_HashMap_calculateCapacity($capacity);
-            $this.$elementCount = 0;
-            $this.$elementData = $this.$newElementArray(var$3);
-            $this.$loadFactor = $loadFactor;
-            ju_HashMap_computeThreshold($this);
-            return;
-        }
-        $rt_throw(jl_IllegalArgumentException__init_());
-    }
-    function ju_HashMap_computeThreshold($this) {
-        $this.$threshold = $rt_nullCheck($this.$elementData).data.length * $this.$loadFactor | 0;
-    }
-    function otji_JSWrapper() {
-        jl_Object.call(this);
-        this.$js = null;
-    }
-    var otji_JSWrapper_hashCodes = null;
-    var otji_JSWrapper_wrappers = null;
-    var otji_JSWrapper_stringWrappers = null;
-    var otji_JSWrapper_numberWrappers = null;
-    var otji_JSWrapper_undefinedWrapper = null;
-    var otji_JSWrapper_stringFinalizationRegistry = null;
-    var otji_JSWrapper_numberFinalizationRegistry = null;
-    function otji_JSWrapper_$callClinit() {
-        otji_JSWrapper_$callClinit = $rt_eraseClinit(otji_JSWrapper);
-        otji_JSWrapper__clinit_();
-    }
-    function otji_JSWrapper__init_(var_0) {
-        var var_1 = new otji_JSWrapper();
-        otji_JSWrapper__init_0(var_1, var_0);
-        return var_1;
-    }
-    function otji_JSWrapper__init_0($this, $js) {
-        otji_JSWrapper_$callClinit();
-        jl_Object__init_0($this);
-        $this.$js = $js;
-    }
-    function otji_JSWrapper_wrap($o) {
-        var $js, $type, $isObject, $existingRef, $existing, $wrapper, $jsString, $wrapperAsJs, $jsNumber;
-        otji_JSWrapper_$callClinit();
-        if ($o === null)
-            return null;
-        $js = $o;
-        $type = $rt_str(typeof $js);
-        $type = $rt_nullCheck($type);
-        $isObject = !$type.$equals($rt_s(23)) && !$type.$equals($rt_s(24)) ? 0 : 1;
-        if ($isObject && $o[$rt_jso_marker] === true)
-            return $o;
-        if (otji_JSWrapper_wrappers !== null) {
-            if ($isObject) {
-                $existingRef = otji_JSWrapper_wrappers.get($js);
-                $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
-                if (!(typeof $existing === 'undefined' ? 1 : 0))
-                    return $existing;
-                $wrapper = otji_JSWrapper__init_($js);
-                otji_JSWrapper_wrappers.set($js, new $rt_globals.WeakRef($wrapper));
-                return $wrapper;
-            }
-            if ($type.$equals($rt_s(25))) {
-                $jsString = $js;
-                $existingRef = otji_JSWrapper_stringWrappers.get($jsString);
-                $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
-                if (!(typeof $existing === 'undefined' ? 1 : 0))
-                    return $existing;
-                $wrapper = otji_JSWrapper__init_($js);
-                $wrapperAsJs = $wrapper;
-                otji_JSWrapper_stringWrappers.set($jsString, new $rt_globals.WeakRef($wrapperAsJs));
-                otji_JSWrapper_register$js_body$_4(otji_JSWrapper_stringFinalizationRegistry, $wrapperAsJs, $jsString);
-                return $wrapper;
-            }
-            if ($type.$equals($rt_s(26))) {
-                $jsNumber = $js;
-                $existingRef = otji_JSWrapper_numberWrappers.get($jsNumber);
-                $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
-                if (!(typeof $existing === 'undefined' ? 1 : 0))
-                    return $existing;
-                $wrapper = otji_JSWrapper__init_($js);
-                $wrapperAsJs = $wrapper;
-                otji_JSWrapper_numberWrappers.set($jsNumber, new $rt_globals.WeakRef($wrapperAsJs));
-                otji_JSWrapper_register$js_body$_4(otji_JSWrapper_numberFinalizationRegistry, $wrapperAsJs, $jsNumber);
-                return $wrapper;
-            }
-            if ($type.$equals($rt_s(27))) {
-                $existingRef = otji_JSWrapper_undefinedWrapper;
-                $existing = $existingRef === null ? void 0 : $existingRef.deref();
-                if (!(typeof $existing === 'undefined' ? 1 : 0))
-                    return $existing;
-                $wrapper = otji_JSWrapper__init_($js);
-                $wrapperAsJs = $wrapper;
-                otji_JSWrapper_undefinedWrapper = new $rt_globals.WeakRef($wrapperAsJs);
-                return $wrapper;
-            }
-        }
-        return otji_JSWrapper__init_($js);
-    }
-    function otji_JSWrapper_unwrap($o) {
-        otji_JSWrapper_$callClinit();
-        if ($o === null)
-            return null;
-        return $o[$rt_jso_marker] === true ? $o : $rt_nullCheck($rt_castToClass($o, otji_JSWrapper)).$js;
-    }
-    function otji_JSWrapper_javaToJs($o) {
-        otji_JSWrapper_$callClinit();
-        if ($o === null)
-            return null;
-        return $o instanceof $rt_objcls() && $o instanceof otji_JSWrapper ? otji_JSWrapper_unwrap($o) : $o;
-    }
-    function otji_JSWrapper_jsToJava($o) {
-        otji_JSWrapper_$callClinit();
-        if ($o === null)
-            return null;
-        return $o instanceof $rt_objcls() ? $o : otji_JSWrapper_wrap($o);
-    }
-    function otji_JSWrapper_equals($this, $obj) {
-        if ($obj === $this)
-            return 1;
-        if ($obj === null)
-            return 0;
-        if (!($obj instanceof otji_JSWrapper))
-            return 0;
-        return $this.$js !== $rt_nullCheck($rt_castToClass($obj, otji_JSWrapper)).$js ? 0 : 1;
-    }
-    function otji_JSWrapper_toString($this) {
-        return (typeof $this.$js === 'undefined' ? 1 : 0) ? $rt_s(27) : $rt_str($this.$js.toString());
-    }
-    function otji_JSWrapper_lambda$static$1($token) {
-        var var$2, var$3;
-        otji_JSWrapper_$callClinit();
-        var$2 = otji_JSWrapper_numberWrappers;
-        var$3 = otji_JSWrapper_unwrap($token);
-        var$2.delete(var$3);
-    }
-    function otji_JSWrapper_lambda$static$0($token) {
-        var var$2, var$3;
-        otji_JSWrapper_$callClinit();
-        var$2 = otji_JSWrapper_stringWrappers;
-        var$3 = otji_JSWrapper_unwrap($token);
-        var$2.delete(var$3);
-    }
-    function otji_JSWrapper__clinit_() {
-        var var$1;
-        otji_JSWrapper_hashCodes = new $rt_globals.WeakMap();
-        var$1 = !(typeof $rt_globals.WeakRef !== 'undefined' ? 1 : 0) ? null : new $rt_globals.WeakMap();
-        otji_JSWrapper_wrappers = var$1;
-        var$1 = !(typeof $rt_globals.WeakRef !== 'undefined' ? 1 : 0) ? null : new $rt_globals.Map();
-        otji_JSWrapper_stringWrappers = var$1;
-        var$1 = !(typeof $rt_globals.WeakRef !== 'undefined' ? 1 : 0) ? null : new $rt_globals.Map();
-        otji_JSWrapper_numberWrappers = var$1;
-        var$1 = otji_JSWrapper_stringWrappers === null ? null : new $rt_globals.FinalizationRegistry(otji_JS_function(otji_JSWrapper$_clinit_$lambda$_30_0__init_(), "accept"));
-        otji_JSWrapper_stringFinalizationRegistry = var$1;
-        var$1 = otji_JSWrapper_numberWrappers === null ? null : new $rt_globals.FinalizationRegistry(otji_JS_function(otji_JSWrapper$_clinit_$lambda$_30_1__init_(), "accept"));
-        otji_JSWrapper_numberFinalizationRegistry = var$1;
-    }
-    function otji_JSWrapper_register$js_body$_4(var$1, var$2, var$3) {
-        return var$1.register(var$2, var$3);
-    }
-    var otjc_JSMap = $rt_classWithoutFields();
-    function ju_HashSet() {
-        ju_AbstractSet.call(this);
-        this.$backingMap = null;
-    }
-    function ju_HashSet__init_() {
-        var var_0 = new ju_HashSet();
-        ju_HashSet__init_0(var_0);
-        return var_0;
-    }
-    function ju_HashSet__init_1(var_0) {
-        var var_1 = new ju_HashSet();
-        ju_HashSet__init_2(var_1, var_0);
-        return var_1;
-    }
-    function ju_HashSet__init_0($this) {
-        ju_HashSet__init_2($this, ju_HashMap__init_());
-    }
-    function ju_HashSet__init_2($this, $backingMap) {
-        ju_AbstractSet__init_($this);
-        $this.$backingMap = $backingMap;
-    }
-    var otp_Platform = $rt_classWithoutFields();
-    function otp_Platform_clone(var$1) {
-        var copy = new var$1.constructor();
-        for (var field in var$1) {
-            if (!var$1.hasOwnProperty(field)) {
-                continue;
-            }
-            copy[field] = var$1[field];
-        }
-        return copy;
-    }
-    function otp_Platform_isInstance($obj, $cls) {
-        return $obj !== null && !(typeof $obj.constructor.$meta === 'undefined' ? 1 : 0) && otp_Platform_isAssignable($obj.constructor, $cls) ? 1 : 0;
-    }
-    function otp_Platform_isAssignable($from, $to) {
-        var $supertypes, $i;
-        if ($from === $to)
-            return 1;
-        $supertypes = $from.$meta.supertypes;
-        $i = 0;
-        while ($i < $supertypes.length) {
-            if (otp_Platform_isAssignable($supertypes[$i], $to))
-                return 1;
-            $i = $i + 1 | 0;
-        }
-        return 0;
-    }
-    function otp_Platform_isPrimitive($cls) {
-        return $cls.$meta.primitive ? 1 : 0;
-    }
-    function otp_Platform_getArrayItem($cls) {
-        return $cls.$meta.item;
-    }
-    function otp_Platform_getName($cls) {
-        return $rt_str($cls.$meta.name);
-    }
-    var jl_NoClassDefFoundError = $rt_classWithoutFields(jl_LinkageError);
-    var otjc_JSWeakRef = $rt_classWithoutFields();
-    var otjc_JSFinalizationRegistry = $rt_classWithoutFields();
     var jl_IllegalArgumentException = $rt_classWithoutFields(jl_RuntimeException);
     function jl_IllegalArgumentException__init_() {
         var var_0 = new jl_IllegalArgumentException();
@@ -2992,15 +2535,15 @@
         $e = $rt_nullCheck($e);
         var$3 = $rt_nullCheck(jl_Object_getClass($e)).$getName();
         $stream = $rt_nullCheck($stream);
-        $stream.$append1(var$3);
+        $stream.$append8(var$3);
         $message = $e.$getLocalizedMessage();
         if ($message !== null) {
             var$3 = jl_StringBuilder__init_();
-            jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$3, $rt_s(28))), $message);
-            $stream.$append1(jl_StringBuilder_toString(var$3));
+            jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$3, $rt_s(16))), $message);
+            $stream.$append8(jl_StringBuilder_toString(var$3));
         }
         a: {
-            $stream.$append1($rt_s(29));
+            $stream.$append8($rt_s(17));
             $stackTrace = $e.$getStackTrace();
             if ($stackTrace !== null) {
                 var$6 = $stackTrace.data;
@@ -3011,16 +2554,53 @@
                         break a;
                     var$8 = $rt_checkLowerBound(var$8);
                     $element = var$6[var$8];
-                    $stream.$append1($rt_s(30));
-                    $rt_nullCheck($stream.$append($element)).$append1($rt_s(29));
+                    $stream.$append8($rt_s(18));
+                    $rt_nullCheck($stream.$append($element)).$append8($rt_s(17));
                     var$8 = var$8 + 1 | 0;
                 }
             }
         }
         if ($e.$getCause() !== null && $e.$getCause() !== $e) {
-            $stream.$append1($rt_s(31));
+            $stream.$append8($rt_s(19));
             otj_TestJsEntryPoint_printStackTrace($e.$getCause(), $stream);
         }
+    }
+    function ju_AbstractList$1() {
+        var a = this; jl_Object.call(a);
+        a.$index = 0;
+        a.$modCount0 = 0;
+        a.$size0 = 0;
+        a.$removeIndex = 0;
+        a.$this$0 = null;
+    }
+    function ju_AbstractList$1__init_(var_0) {
+        var var_1 = new ju_AbstractList$1();
+        ju_AbstractList$1__init_0(var_1, var_0);
+        return var_1;
+    }
+    function ju_AbstractList$1__init_0($this, $this$0) {
+        $this.$this$0 = $this$0;
+        jl_Object__init_0($this);
+        $this.$modCount0 = $rt_nullCheck($this.$this$0).$modCount;
+        $this.$size0 = $rt_nullCheck($this.$this$0).$size1();
+        $this.$removeIndex = (-1);
+    }
+    function ju_AbstractList$1_hasNext($this) {
+        return $this.$index >= $this.$size0 ? 0 : 1;
+    }
+    function ju_AbstractList$1_next($this) {
+        var var$1, var$2;
+        ju_AbstractList$1_checkConcurrentModification($this);
+        $this.$removeIndex = $this.$index;
+        var$1 = $this.$this$0;
+        var$2 = $this.$index;
+        $this.$index = var$2 + 1 | 0;
+        return $rt_nullCheck(var$1).$get(var$2);
+    }
+    function ju_AbstractList$1_checkConcurrentModification($this) {
+        if ($this.$modCount0 >= $rt_nullCheck($this.$this$0).$modCount)
+            return;
+        $rt_throw(ju_ConcurrentModificationException__init_());
     }
     function jl_Class() {
         var a = this; jl_Object.call(a);
@@ -3065,118 +2645,92 @@
     function jl_Class_getComponentType($this) {
         return jl_Class_getClass(otp_Platform_getArrayItem($this.$platformClass));
     }
-    $rt_packages([-1, "java", 0, "util", 0, "lang", -1, "org", 3, "junit", 3, "teavm", 5, "jso", 6, "impl"
+    $rt_packages([-1, "java", 0, "util", 0, "lang"
     ]);
     $rt_metadata([jl_Object, "Object", 2, 0, [], 0, 3, 0, 0, ["$getClass0", $rt_wrapFunction0(jl_Object_getClass), "$toString", $rt_wrapFunction0(jl_Object_toString), "$identity", $rt_wrapFunction0(jl_Object_identity), "$clone", $rt_wrapFunction0(jl_Object_clone)],
     jl_Throwable, 0, jl_Object, [], 0, 3, 0, 0, ["$fillInStackTrace", $rt_wrapFunction0(jl_Throwable_fillInStackTrace), "$getMessage", $rt_wrapFunction0(jl_Throwable_getMessage), "$getLocalizedMessage", $rt_wrapFunction0(jl_Throwable_getLocalizedMessage), "$getCause", $rt_wrapFunction0(jl_Throwable_getCause), "$getStackTrace", $rt_wrapFunction0(jl_Throwable_getStackTrace), "$setStackTrace", $rt_wrapFunction1(jl_Throwable_setStackTrace)],
     jl_Exception, 0, jl_Throwable, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_Exception__init_0), "$_init_0", $rt_wrapFunction1(jl_Exception__init_2)],
-    jl_RuntimeException, 0, jl_Exception, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_RuntimeException__init_1), "$_init_0", $rt_wrapFunction1(jl_RuntimeException__init_2)],
+    jl_RuntimeException, "RuntimeException", 2, jl_Exception, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_RuntimeException__init_1), "$_init_0", $rt_wrapFunction1(jl_RuntimeException__init_2)],
     jl_IndexOutOfBoundsException, "IndexOutOfBoundsException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_IndexOutOfBoundsException__init_0)],
     ju_Arrays, 0, jl_Object, [], 0, 3, 0, 0, 0,
+    jlr_Array, 0, jl_Object, [], 4, 3, 0, 0, 0,
     jl_System, 0, jl_Object, [], 4, 3, 0, 0, 0,
-    ucita_SecurityProvider, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    ucits_AppSecurityProvider, 0, jl_Object, [ucita_SecurityProvider], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_AppSecurityProvider__init_0)],
-    ucits_TemplatedTest, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_TemplatedTest__init_0), "$testTemplatingBinding", $rt_wrapFunction0(ucits_TemplatedTest_testTemplatingBinding)],
+    jl_Iterable, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    ju_Collection, 0, jl_Object, [jl_Iterable], 3, 3, 0, 0, 0,
+    ju_AbstractCollection, 0, jl_Object, [ju_Collection], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractCollection__init_)],
+    ju_SequencedCollection, 0, jl_Object, [ju_Collection], 3, 3, 0, 0, 0,
+    ju_List, 0, jl_Object, [ju_SequencedCollection], 3, 3, 0, 0, 0,
+    ju_AbstractList, 0, ju_AbstractCollection, [ju_List], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractList__init_), "$iterator", $rt_wrapFunction0(ju_AbstractList_iterator)],
     ji_Serializable, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_Number, 0, jl_Object, [ji_Serializable], 1, 3, 0, 0, 0,
     jl_Comparable, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_Integer, 0, jl_Number, [jl_Comparable], 0, 3, 0, jl_Integer_$callClinit, 0,
+    jl_NullPointerException, "NullPointerException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NullPointerException__init_1), "$_init_", $rt_wrapFunction0(jl_NullPointerException__init_2)],
     jl_CloneNotSupportedException, "CloneNotSupportedException", 2, jl_Exception, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_CloneNotSupportedException__init_0)],
+    jl_Error, 0, jl_Throwable, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_Error__init_0)],
+    jl_LinkageError, 0, jl_Error, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_LinkageError__init_0)],
+    jl_IncompatibleClassChangeError, 0, jl_LinkageError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_IncompatibleClassChangeError__init_0)],
+    jl_NoSuchFieldError, 0, jl_IncompatibleClassChangeError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NoSuchFieldError__init_0)],
     jl_Character, 0, jl_Object, [jl_Comparable], 0, 3, 0, jl_Character_$callClinit, 0,
-    ucita_Navigation, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    oj_ComparisonFailure$ComparisonCompactor, 0, jl_Object, [], 0, 0, 0, 0, ["$_init_8", $rt_wrapFunction3(oj_ComparisonFailure$ComparisonCompactor__init_0), "$compact", $rt_wrapFunction1(oj_ComparisonFailure$ComparisonCompactor_compact)],
-    ucitw_Widget, 0, jl_Object, [], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
-    ju_Map, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    otci_IntegerUtil, 0, jl_Object, [], 4, 3, 0, 0, 0,
+    jl_Long, 0, jl_Number, [jl_Comparable], 0, 3, 0, jl_Long_$callClinit, 0,
+    jl_Math, 0, jl_Object, [], 4, 3, 0, 0, 0,
+    otj_JSObject, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    otjc_JSWeakMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otj_TestEntryPoint$Launcher, 0, jl_Object, [], 3, 0, 0, 0, 0,
     otj_TestEntryPoint$LauncherImpl0, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl0__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl0_launch)],
-    otj_JSObject, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    otjc_JSObjects, 0, jl_Object, [], 4, 3, 0, 0, 0,
+    jl_Cloneable, 0, jl_Object, [], 3, 3, 0, 0, 0,
     otjde_EventTarget, 0, jl_Object, [otj_JSObject], 3, 3, 0, 0, 0,
     otjde_GamepadEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
+    otji_JS, 0, jl_Object, [], 4, 0, 0, 0, 0,
     jl_CharSequence, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    jl_Error, 0, jl_Throwable, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_Error__init_0), "$_init_0", $rt_wrapFunction1(jl_Error__init_2)],
-    jl_LinkageError, 0, jl_Error, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_LinkageError__init_0)],
+    otj_TestEntryPoint, 0, jl_Object, [], 4, 0, 0, 0, 0,
     otjde_LoadEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
     ju_Comparator, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_String$_clinit_$lambda$_93_0, 0, jl_Object, [ju_Comparator], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_String$_clinit_$lambda$_93_0__init_0)],
     jl_StringIndexOutOfBoundsException, "StringIndexOutOfBoundsException", 2, jl_IndexOutOfBoundsException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_StringIndexOutOfBoundsException__init_0)],
-    jl_Iterable, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    ju_Collection, 0, jl_Object, [jl_Iterable], 3, 3, 0, 0, 0,
-    ju_Set, 0, jl_Object, [ju_Collection], 3, 3, 0, 0, 0,
-    ucits_HelloService_Factory, 0, jl_Object, [], 0, 3, 0, 0, 0,
-    jl_AbstractStringBuilder, 0, jl_Object, [ji_Serializable, jl_CharSequence], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(jl_AbstractStringBuilder__init_0), "$_init_2", $rt_wrapFunction1(jl_AbstractStringBuilder__init_2), "$append3", $rt_wrapFunction1(jl_AbstractStringBuilder_append), "$append4", $rt_wrapFunction1(jl_AbstractStringBuilder_append0), "$insert0", $rt_wrapFunction2(jl_AbstractStringBuilder_insert), "$append5", $rt_wrapFunction1(jl_AbstractStringBuilder_append1), "$append2", $rt_wrapFunction2(jl_AbstractStringBuilder_append2),
-    "$insert1", $rt_wrapFunction3(jl_AbstractStringBuilder_insert0), "$append6", $rt_wrapFunction1(jl_AbstractStringBuilder_append3), "$insert2", $rt_wrapFunction2(jl_AbstractStringBuilder_insert1), "$insert", $rt_wrapFunction2(jl_AbstractStringBuilder_insert2), "$ensureCapacity", $rt_wrapFunction1(jl_AbstractStringBuilder_ensureCapacity), "$toString", $rt_wrapFunction0(jl_AbstractStringBuilder_toString)],
+    ucits_PerformanceTest, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_PerformanceTest__init_0), "$testInnerHTMLVsInnerText", $rt_wrapFunction0(ucits_PerformanceTest_testInnerHTMLVsInnerText)],
+    jlr_Type, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    jl_AbstractStringBuilder, 0, jl_Object, [ji_Serializable, jl_CharSequence], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(jl_AbstractStringBuilder__init_0), "$_init_3", $rt_wrapFunction1(jl_AbstractStringBuilder__init_2), "$append3", $rt_wrapFunction1(jl_AbstractStringBuilder_append), "$append4", $rt_wrapFunction1(jl_AbstractStringBuilder_append0), "$insert0", $rt_wrapFunction2(jl_AbstractStringBuilder_insert), "$append5", $rt_wrapFunction1(jl_AbstractStringBuilder_append1), "$append2", $rt_wrapFunction2(jl_AbstractStringBuilder_append2),
+    "$insert1", $rt_wrapFunction3(jl_AbstractStringBuilder_insert0), "$append6", $rt_wrapFunction1(jl_AbstractStringBuilder_append3), "$insert2", $rt_wrapFunction2(jl_AbstractStringBuilder_insert1), "$insert3", $rt_wrapFunction3(jl_AbstractStringBuilder_insert2), "$append7", $rt_wrapFunction1(jl_AbstractStringBuilder_append4), "$insert4", $rt_wrapFunction2(jl_AbstractStringBuilder_insert3), "$insert", $rt_wrapFunction2(jl_AbstractStringBuilder_insert4), "$ensureCapacity", $rt_wrapFunction1(jl_AbstractStringBuilder_ensureCapacity),
+    "$toString", $rt_wrapFunction0(jl_AbstractStringBuilder_toString)],
     jl_Appendable, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    jl_StringBuilder, 0, jl_AbstractStringBuilder, [jl_Appendable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_StringBuilder__init_0), "$append", $rt_wrapFunction1(jl_StringBuilder_append), "$append1", $rt_wrapFunction1(jl_StringBuilder_append1), "$append7", $rt_wrapFunction1(jl_StringBuilder_append2), "$append0", $rt_wrapFunction1(jl_StringBuilder_append0), "$insert3", $rt_wrapFunction2(jl_StringBuilder_insert), "$insert4", $rt_wrapFunction2(jl_StringBuilder_insert0), "$insert5", $rt_wrapFunction2(jl_StringBuilder_insert1),
-    "$toString", $rt_wrapFunction0(jl_StringBuilder_toString), "$ensureCapacity", $rt_wrapFunction1(jl_StringBuilder_ensureCapacity), "$insert", $rt_wrapFunction2(jl_StringBuilder_insert2), "$insert2", $rt_wrapFunction2(jl_StringBuilder_insert3), "$insert0", $rt_wrapFunction2(jl_StringBuilder_insert4)],
-    ju_ConcurrentModificationException, "ConcurrentModificationException", 1, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_ConcurrentModificationException__init_0)],
-    oj_ComparisonFailure$ComparisonCompactor$DiffExtractor, 0, jl_Object, [], 0, 0, 0, 0, ["$expectedDiff", $rt_wrapFunction0(oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_expectedDiff), "$actualDiff", $rt_wrapFunction0(oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_actualDiff), "$compactPrefix", $rt_wrapFunction0(oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_compactPrefix), "$compactSuffix", $rt_wrapFunction0(oj_ComparisonFailure$ComparisonCompactor$DiffExtractor_compactSuffix), "$_init_1",
-    $rt_wrapFunction2(oj_ComparisonFailure$ComparisonCompactor$DiffExtractor__init_2)],
-    jlr_AnnotatedElement, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    ucits_AppSecurityProvider_Factory, 0, jl_Object, [], 0, 3, 0, 0, 0,
+    jl_StringBuilder, 0, jl_AbstractStringBuilder, [jl_Appendable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_StringBuilder__init_0), "$append", $rt_wrapFunction1(jl_StringBuilder_append), "$append8", $rt_wrapFunction1(jl_StringBuilder_append2), "$append9", $rt_wrapFunction1(jl_StringBuilder_append3), "$append1", $rt_wrapFunction1(jl_StringBuilder_append1), "$append0", $rt_wrapFunction1(jl_StringBuilder_append0), "$insert7", $rt_wrapFunction2(jl_StringBuilder_insert), "$insert5", $rt_wrapFunction2(jl_StringBuilder_insert0),
+    "$insert6", $rt_wrapFunction2(jl_StringBuilder_insert1), "$insert8", $rt_wrapFunction2(jl_StringBuilder_insert2), "$toString", $rt_wrapFunction0(jl_StringBuilder_toString), "$ensureCapacity", $rt_wrapFunction1(jl_StringBuilder_ensureCapacity), "$insert", $rt_wrapFunction2(jl_StringBuilder_insert3), "$insert4", $rt_wrapFunction2(jl_StringBuilder_insert4), "$insert2", $rt_wrapFunction2(jl_StringBuilder_insert5), "$insert0", $rt_wrapFunction2(jl_StringBuilder_insert6)],
+    jl_ArrayStoreException, "ArrayStoreException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayStoreException__init_0)],
+    ju_ConcurrentModificationException, "ConcurrentModificationException", 1, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_ConcurrentModificationException__init_0)]]);
+    $rt_metadata([jlr_AnnotatedElement, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    otjc_JSFinalizationRegistryConsumer, 0, jl_Object, [otj_JSObject], 3, 3, 0, 0, 0,
     otjde_FocusEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
     otjde_MouseEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
     otjde_KeyboardEventTarget, 0, jl_Object, [otjde_EventTarget], 3, 3, 0, 0, 0,
     otjb_WindowEventTarget, 0, jl_Object, [otjde_EventTarget, otjde_FocusEventTarget, otjde_MouseEventTarget, otjde_KeyboardEventTarget, otjde_LoadEventTarget, otjde_GamepadEventTarget], 3, 3, 0, 0, 0,
-    jl_AssertionError, "AssertionError", 2, jl_Error, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_AssertionError__init_0), "$_init_6", $rt_wrapFunction1(jl_AssertionError__init_2)],
     jl_ClassCastException, "ClassCastException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ClassCastException__init_0)],
-    ju_AbstractCollection, 0, jl_Object, [ju_Collection], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractCollection__init_)]]);
-    $rt_metadata([ju_SequencedCollection, 0, jl_Object, [ju_Collection], 3, 3, 0, 0, 0,
-    ju_List, 0, jl_Object, [ju_SequencedCollection], 3, 3, 0, 0, 0,
-    ju_AbstractList, 0, ju_AbstractCollection, [ju_List], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractList__init_), "$iterator", $rt_wrapFunction0(ju_AbstractList_iterator)],
-    jl_Cloneable, 0, jl_Object, [], 3, 3, 0, 0, 0,
+    otji_JSWrapper, 0, jl_Object, [], 4, 3, 0, otji_JSWrapper_$callClinit, 0,
     ju_RandomAccess, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    ju_ArrayList, 0, ju_AbstractList, [jl_Cloneable, ji_Serializable, ju_RandomAccess], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_ArrayList__init_0), "$_init_2", $rt_wrapFunction1(ju_ArrayList__init_2), "$ensureCapacity", $rt_wrapFunction1(ju_ArrayList_ensureCapacity), "$get", $rt_wrapFunction1(ju_ArrayList_get), "$size1", $rt_wrapFunction0(ju_ArrayList_size), "$add", $rt_wrapFunction1(ju_ArrayList_add)],
-    ucitw_Container, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Container__init_0)],
-    uciti_NavigationImpl, 0, jl_Object, [ucita_Navigation], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(uciti_NavigationImpl__init_0)],
+    ju_ArrayList, 0, ju_AbstractList, [jl_Cloneable, ji_Serializable, ju_RandomAccess], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_ArrayList__init_0), "$_init_3", $rt_wrapFunction1(ju_ArrayList__init_2), "$ensureCapacity", $rt_wrapFunction1(ju_ArrayList_ensureCapacity), "$get", $rt_wrapFunction1(ju_ArrayList_get), "$size1", $rt_wrapFunction0(ju_ArrayList_size), "$add", $rt_wrapFunction1(ju_ArrayList_add)],
+    otjc_JSMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otjb_StorageProvider, 0, jl_Object, [], 3, 3, 0, 0, 0,
     otjc_JSArrayReader, 0, jl_Object, [otj_JSObject], 3, 3, 0, 0, 0,
     otjb_Window, 0, jl_Object, [otj_JSObject, otjb_WindowEventTarget, otjb_StorageProvider, otjc_JSArrayReader], 1, 3, 0, 0, ["$get$exported$0", $rt_wrapFunction1(otjb_Window_get$exported$0), "$addEventListener$exported$1", $rt_wrapFunction2(otjb_Window_addEventListener$exported$1), "$removeEventListener$exported$2", $rt_wrapFunction2(otjb_Window_removeEventListener$exported$2), "$removeEventListener$exported$3", $rt_wrapFunction3(otjb_Window_removeEventListener$exported$3), "$dispatchEvent$exported$4", $rt_wrapFunction1(otjb_Window_dispatchEvent$exported$4),
     "$getLength$exported$5", $rt_wrapFunction0(otjb_Window_getLength$exported$5), "$addEventListener$exported$6", $rt_wrapFunction3(otjb_Window_addEventListener$exported$6)],
-    jl_StackTraceElement, 0, jl_Object, [ji_Serializable], 4, 3, 0, 0, ["$_init_14", $rt_wrapFunction4(jl_StackTraceElement__init_0), "$toString", $rt_wrapFunction0(jl_StackTraceElement_toString)],
-    jl_String, "String", 2, jl_Object, [ji_Serializable, jl_Comparable, jl_CharSequence], 0, 3, 0, jl_String_$callClinit, ["$_init_", $rt_wrapFunction0(jl_String__init_2), "$_init_9", $rt_wrapFunction1(jl_String__init_3), "$_init_3", $rt_wrapFunction3(jl_String__init_4), "$charAt", $rt_wrapFunction1(jl_String_charAt), "$length", $rt_wrapFunction0(jl_String_length), "$isEmpty", $rt_wrapFunction0(jl_String_isEmpty), "$lastIndexOf0", $rt_wrapFunction2(jl_String_lastIndexOf), "$lastIndexOf", $rt_wrapFunction1(jl_String_lastIndexOf0),
-    "$substring", $rt_wrapFunction2(jl_String_substring), "$substring0", $rt_wrapFunction1(jl_String_substring0), "$contains", $rt_wrapFunction1(jl_String_contains), "$toString", $rt_wrapFunction0(jl_String_toString), "$equals", $rt_wrapFunction1(jl_String_equals), "$hashCode0", $rt_wrapFunction0(jl_String_hashCode)],
+    otp_Platform, 0, jl_Object, [], 4, 3, 0, 0, 0,
+    jl_StackTraceElement, 0, jl_Object, [ji_Serializable], 4, 3, 0, 0, ["$_init_7", $rt_wrapFunction4(jl_StackTraceElement__init_0), "$toString", $rt_wrapFunction0(jl_StackTraceElement_toString)],
+    jl_String, 0, jl_Object, [ji_Serializable, jl_Comparable, jl_CharSequence], 0, 3, 0, jl_String_$callClinit, ["$_init_", $rt_wrapFunction0(jl_String__init_2), "$_init_2", $rt_wrapFunction1(jl_String__init_3), "$_init_4", $rt_wrapFunction3(jl_String__init_4), "$charAt", $rt_wrapFunction1(jl_String_charAt), "$length0", $rt_wrapFunction0(jl_String_length), "$isEmpty", $rt_wrapFunction0(jl_String_isEmpty), "$lastIndexOf0", $rt_wrapFunction2(jl_String_lastIndexOf), "$lastIndexOf", $rt_wrapFunction1(jl_String_lastIndexOf0),
+    "$substring0", $rt_wrapFunction2(jl_String_substring), "$substring", $rt_wrapFunction1(jl_String_substring0), "$toString", $rt_wrapFunction0(jl_String_toString), "$equals", $rt_wrapFunction1(jl_String_equals), "$hashCode0", $rt_wrapFunction0(jl_String_hashCode)],
+    jl_NoClassDefFoundError, 0, jl_LinkageError, [], 0, 3, 0, 0, 0,
     jl_NegativeArraySizeException, "NegativeArraySizeException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_NegativeArraySizeException__init_0)],
-    otjc_JSFinalizationRegistryConsumer, 0, jl_Object, [otj_JSObject], 3, 3, 0, 0, 0,
+    otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otji_JSWrapper$_clinit_$lambda$_30_0, 0, jl_Object, [otjc_JSFinalizationRegistryConsumer], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(otji_JSWrapper$_clinit_$lambda$_30_0__init_0), "$accept", $rt_wrapFunction1(otji_JSWrapper$_clinit_$lambda$_30_0_accept), "$accept$exported$0", $rt_wrapFunction1(otji_JSWrapper$_clinit_$lambda$_30_0_accept$exported$0)],
     otji_JSWrapper$_clinit_$lambda$_30_1, 0, jl_Object, [otjc_JSFinalizationRegistryConsumer], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(otji_JSWrapper$_clinit_$lambda$_30_1__init_0), "$accept", $rt_wrapFunction1(otji_JSWrapper$_clinit_$lambda$_30_1_accept), "$accept$exported$0", $rt_wrapFunction1(otji_JSWrapper$_clinit_$lambda$_30_1_accept$exported$0)],
-    ju_Map$Entry, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    jl_IncompatibleClassChangeError, 0, jl_LinkageError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_IncompatibleClassChangeError__init_0)],
-    jl_NoSuchMethodError, 0, jl_IncompatibleClassChangeError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NoSuchMethodError__init_0)],
-    jl_ArrayIndexOutOfBoundsException, 0, jl_IndexOutOfBoundsException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayIndexOutOfBoundsException__init_0)],
     ju_Iterator, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    ju_AbstractList$1, 0, jl_Object, [ju_Iterator], 0, 0, 0, 0, ["$_init_5", $rt_wrapFunction1(ju_AbstractList$1__init_0), "$hasNext", $rt_wrapFunction0(ju_AbstractList$1_hasNext), "$next", $rt_wrapFunction0(ju_AbstractList$1_next)],
-    oj_Assert, 0, jl_Object, [], 0, 3, 0, 0, 0,
-    oj_ComparisonFailure, "ComparisonFailure", 4, jl_AssertionError, [], 0, 3, 0, 0, ["$_init_7", $rt_wrapFunction3(oj_ComparisonFailure__init_0), "$getMessage", $rt_wrapFunction0(oj_ComparisonFailure_getMessage)],
-    jlr_Array, 0, jl_Object, [], 4, 3, 0, 0, 0,
-    jl_NullPointerException, "NullPointerException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NullPointerException__init_1), "$_init_", $rt_wrapFunction0(jl_NullPointerException__init_2)],
-    jl_NoSuchFieldError, 0, jl_IncompatibleClassChangeError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NoSuchFieldError__init_0)],
-    ucits_DashboardPage_Binder, 0, jl_Object, [], 0, 3, 0, 0, 0,
-    ucits_DashboardPage, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage__init_0)],
-    otci_IntegerUtil, 0, jl_Object, [], 4, 3, 0, 0, 0,
-    jl_Math, 0, jl_Object, [], 4, 3, 0, 0, 0,
-    otjc_JSWeakMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
-    ucits_DashboardPage_Factory, 0, jl_Object, [], 0, 3, 0, 0, 0,
-    otjc_JSObjects, 0, jl_Object, [], 4, 3, 0, 0, 0,
-    otji_JS, 0, jl_Object, [], 4, 0, 0, 0, 0,
-    otj_TestEntryPoint, 0, jl_Object, [], 4, 0, 0, 0, 0,
-    uciti_NavigationImpl_Factory, 0, jl_Object, [], 0, 3, 0, 0, 0,
-    ju_MapEntry, 0, jl_Object, [ju_Map$Entry, jl_Cloneable], 0, 0, 0, 0, 0,
-    ju_HashMap$HashEntry, 0, ju_MapEntry, [], 0, 0, 0, 0, 0,
-    jlr_Type, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    jl_ArrayStoreException, "ArrayStoreException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayStoreException__init_0)],
-    ucits_HelloService, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_HelloService__init_0)],
-    ju_AbstractSet, 0, ju_AbstractCollection, [ju_Set], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractSet__init_)],
-    ju_AbstractMap, 0, jl_Object, [ju_Map], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractMap__init_)],
-    ju_HashMap, 0, ju_AbstractMap, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$newElementArray", $rt_wrapFunction1(ju_HashMap_newElementArray), "$_init_", $rt_wrapFunction0(ju_HashMap__init_0), "$_init_2", $rt_wrapFunction1(ju_HashMap__init_2), "$_init_10", $rt_wrapFunction2(ju_HashMap__init_4)],
-    otji_JSWrapper, "JSWrapper", 7, jl_Object, [], 4, 3, 0, otji_JSWrapper_$callClinit, ["$equals", $rt_wrapFunction1(otji_JSWrapper_equals), "$toString", $rt_wrapFunction0(otji_JSWrapper_toString)],
-    otjc_JSMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
-    ju_HashSet, 0, ju_AbstractSet, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_HashSet__init_0), "$_init_12", $rt_wrapFunction1(ju_HashSet__init_2)],
-    otp_Platform, 0, jl_Object, [], 4, 3, 0, 0, 0]);
-    $rt_metadata([jl_NoClassDefFoundError, 0, jl_LinkageError, [], 0, 3, 0, 0, 0,
-    otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
+    jl_NoSuchMethodError, 0, jl_IncompatibleClassChangeError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NoSuchMethodError__init_0)],
     otjc_JSFinalizationRegistry, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
+    jl_ArrayIndexOutOfBoundsException, 0, jl_IndexOutOfBoundsException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayIndexOutOfBoundsException__init_0)],
     jl_IllegalArgumentException, "IllegalArgumentException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_IllegalArgumentException__init_1), "$_init_0", $rt_wrapFunction1(jl_IllegalArgumentException__init_2)],
     otj_TestJsEntryPoint, 0, jl_Object, [], 4, 0, 0, 0, 0,
+    ju_AbstractList$1, 0, jl_Object, [ju_Iterator], 0, 0, 0, 0, ["$_init_1", $rt_wrapFunction1(ju_AbstractList$1__init_0), "$hasNext", $rt_wrapFunction0(ju_AbstractList$1_hasNext), "$next", $rt_wrapFunction0(ju_AbstractList$1_next)],
     jl_Class, 0, jl_Object, [jlr_AnnotatedElement, jlr_Type], 0, 3, 0, 0, ["$getPlatformClass", $rt_wrapFunction0(jl_Class_getPlatformClass), "$isInstance", $rt_wrapFunction1(jl_Class_isInstance), "$getName", $rt_wrapFunction0(jl_Class_getName), "$isPrimitive", $rt_wrapFunction0(jl_Class_isPrimitive), "$getComponentType", $rt_wrapFunction0(jl_Class_getComponentType)]]);
     function $rt_array(cls, data) {
         this.$monitor = null;
@@ -3209,7 +2763,7 @@
         }
         return new $rt_array(this.type, dataCopy);
     });
-    $rt_stringPool(["Either src or dest is null", "Root element should be created", "Root element should be assigned to page", "Dashboard", "container", "null", "...", "[", "]", "Unknown Source", ")", "", " ", "expected null, but was:<", ">", "expected: ", " but was: ", "expected:<", "> but was:<", "<", "0", "uk.co.instanto.tearay.sample.TemplatedTest.testTemplatingBinding()V", "Invalid test name", "object", "function", "string", "number", "undefined", ": ", "\n", "\tat ", "Caused by: "]);
+    $rt_stringPool(["Either src or dest is null", "0", "uk.co.instanto.tearay.sample.PerformanceTest.testInnerHTMLVsInnerText()V", "Invalid test name", "Welcome! Hello from Injected Service!", "Benchmark Results -> innerHTML: ", "ms, innerText: ", "ms", "null", "object", "function", "string", "number", "undefined", "Unknown Source", ")", ": ", "\n", "\tat ", "Caused by: "]);
     jl_String.prototype.toString = function() {
         return $rt_ustr(this);
     };
@@ -3220,6 +2774,632 @@
     jl_Object.prototype.__teavm_class__ = function() {
         return $dbg_class(this);
     };
+    var Long_eq;
+    var Long_ne;
+    var Long_gt;
+    var Long_ge;
+    var Long_lt;
+    var Long_le;
+    var Long_compare;
+    var Long_ucompare;
+    var Long_add;
+    var Long_sub;
+    var Long_inc;
+    var Long_dec;
+    var Long_mul;
+    var Long_div;
+    var Long_rem;
+    var Long_udiv;
+    var Long_urem;
+    var Long_neg;
+    var Long_and;
+    var Long_or;
+    var Long_xor;
+    var Long_shl;
+    var Long_shr;
+    var Long_shru;
+    var Long_not;
+    if (typeof $rt_globals.BigInt !== 'function') {
+        Long_eq = function(a, b) {
+            return a.hi === b.hi && a.lo === b.lo;
+        };
+        Long_ne = function(a, b) {
+            return a.hi !== b.hi || a.lo !== b.lo;
+        };
+        Long_gt = function(a, b) {
+            if (a.hi < b.hi) {
+                return false;
+            }
+            if (a.hi > b.hi) {
+                return true;
+            }
+            var x = a.lo >>> 1;
+            var y = b.lo >>> 1;
+            if (x !== y) {
+                return x > y;
+            }
+            return (a.lo & 1) > (b.lo & 1);
+        };
+        Long_ge = function(a, b) {
+            if (a.hi < b.hi) {
+                return false;
+            }
+            if (a.hi > b.hi) {
+                return true;
+            }
+            var x = a.lo >>> 1;
+            var y = b.lo >>> 1;
+            if (x !== y) {
+                return x >= y;
+            }
+            return (a.lo & 1) >= (b.lo & 1);
+        };
+        Long_lt = function(a, b) {
+            if (a.hi > b.hi) {
+                return false;
+            }
+            if (a.hi < b.hi) {
+                return true;
+            }
+            var x = a.lo >>> 1;
+            var y = b.lo >>> 1;
+            if (x !== y) {
+                return x < y;
+            }
+            return (a.lo & 1) < (b.lo & 1);
+        };
+        Long_le = function(a, b) {
+            if (a.hi > b.hi) {
+                return false;
+            }
+            if (a.hi < b.hi) {
+                return true;
+            }
+            var x = a.lo >>> 1;
+            var y = b.lo >>> 1;
+            if (x !== y) {
+                return x <= y;
+            }
+            return (a.lo & 1) <= (b.lo & 1);
+        };
+        Long_add = function(a, b) {
+            if (a.hi === a.lo >> 31 && b.hi === b.lo >> 31) {
+                return Long_fromNumber(a.lo + b.lo);
+            } else if ($rt_globals.Math.abs(a.hi) < Long_MAX_NORMAL && $rt_globals.Math.abs(b.hi) < Long_MAX_NORMAL) {
+                return Long_fromNumber(Long_toNumber(a) + Long_toNumber(b));
+            }
+            var a_lolo = a.lo & 0xFFFF;
+            var a_lohi = a.lo >>> 16;
+            var a_hilo = a.hi & 0xFFFF;
+            var a_hihi = a.hi >>> 16;
+            var b_lolo = b.lo & 0xFFFF;
+            var b_lohi = b.lo >>> 16;
+            var b_hilo = b.hi & 0xFFFF;
+            var b_hihi = b.hi >>> 16;
+            var lolo = a_lolo + b_lolo | 0;
+            var lohi = a_lohi + b_lohi + (lolo >> 16) | 0;
+            var hilo = a_hilo + b_hilo + (lohi >> 16) | 0;
+            var hihi = a_hihi + b_hihi + (hilo >> 16) | 0;
+            return new Long(lolo & 0xFFFF | (lohi & 0xFFFF) << 16, hilo & 0xFFFF | (hihi & 0xFFFF) << 16);
+        };
+        Long_inc = function(a) {
+            var lo = a.lo + 1 | 0;
+            var hi = a.hi;
+            if (lo === 0) {
+                hi = hi + 1 | 0;
+            }
+            return new Long(lo, hi);
+        };
+        Long_dec = function(a) {
+            var lo = a.lo - 1 | 0;
+            var hi = a.hi;
+            if (lo ===  -1) {
+                hi = hi - 1 | 0;
+            }
+            return new Long(lo, hi);
+        };
+        Long_neg = function(a) {
+            return Long_inc(new Long(a.lo ^ 0xFFFFFFFF, a.hi ^ 0xFFFFFFFF));
+        };
+        Long_sub = function(a, b) {
+            if (a.hi === a.lo >> 31 && b.hi === b.lo >> 31) {
+                return Long_fromNumber(a.lo - b.lo);
+            }
+            var a_lolo = a.lo & 0xFFFF;
+            var a_lohi = a.lo >>> 16;
+            var a_hilo = a.hi & 0xFFFF;
+            var a_hihi = a.hi >>> 16;
+            var b_lolo = b.lo & 0xFFFF;
+            var b_lohi = b.lo >>> 16;
+            var b_hilo = b.hi & 0xFFFF;
+            var b_hihi = b.hi >>> 16;
+            var lolo = a_lolo - b_lolo | 0;
+            var lohi = a_lohi - b_lohi + (lolo >> 16) | 0;
+            var hilo = a_hilo - b_hilo + (lohi >> 16) | 0;
+            var hihi = a_hihi - b_hihi + (hilo >> 16) | 0;
+            return new Long(lolo & 0xFFFF | (lohi & 0xFFFF) << 16, hilo & 0xFFFF | (hihi & 0xFFFF) << 16);
+        };
+        Long_compare = function(a, b) {
+            var r = a.hi - b.hi;
+            if (r !== 0) {
+                return r;
+            }
+            r = (a.lo >>> 1) - (b.lo >>> 1);
+            if (r !== 0) {
+                return r;
+            }
+            return (a.lo & 1) - (b.lo & 1);
+        };
+        Long_ucompare = function(a, b) {
+            var r = $rt_ucmp(a.hi, b.hi);
+            if (r !== 0) {
+                return r;
+            }
+            r = (a.lo >>> 1) - (b.lo >>> 1);
+            if (r !== 0) {
+                return r;
+            }
+            return (a.lo & 1) - (b.lo & 1);
+        };
+        Long_mul = function(a, b) {
+            var positive = Long_isNegative(a) === Long_isNegative(b);
+            if (Long_isNegative(a)) {
+                a = Long_neg(a);
+            }
+            if (Long_isNegative(b)) {
+                b = Long_neg(b);
+            }
+            var a_lolo = a.lo & 0xFFFF;
+            var a_lohi = a.lo >>> 16;
+            var a_hilo = a.hi & 0xFFFF;
+            var a_hihi = a.hi >>> 16;
+            var b_lolo = b.lo & 0xFFFF;
+            var b_lohi = b.lo >>> 16;
+            var b_hilo = b.hi & 0xFFFF;
+            var b_hihi = b.hi >>> 16;
+            var lolo = 0;
+            var lohi = 0;
+            var hilo = 0;
+            var hihi = 0;
+            lolo = a_lolo * b_lolo | 0;
+            lohi = lolo >>> 16;
+            lohi = (lohi & 0xFFFF) + a_lohi * b_lolo | 0;
+            hilo = hilo + (lohi >>> 16) | 0;
+            lohi = (lohi & 0xFFFF) + a_lolo * b_lohi | 0;
+            hilo = hilo + (lohi >>> 16) | 0;
+            hihi = hilo >>> 16;
+            hilo = (hilo & 0xFFFF) + a_hilo * b_lolo | 0;
+            hihi = hihi + (hilo >>> 16) | 0;
+            hilo = (hilo & 0xFFFF) + a_lohi * b_lohi | 0;
+            hihi = hihi + (hilo >>> 16) | 0;
+            hilo = (hilo & 0xFFFF) + a_lolo * b_hilo | 0;
+            hihi = hihi + (hilo >>> 16) | 0;
+            hihi = hihi + a_hihi * b_lolo + a_hilo * b_lohi + a_lohi * b_hilo + a_lolo * b_hihi | 0;
+            var result = new Long(lolo & 0xFFFF | lohi << 16, hilo & 0xFFFF | hihi << 16);
+            return positive ? result : Long_neg(result);
+        };
+        Long_div = function(a, b) {
+            if ($rt_globals.Math.abs(a.hi) < Long_MAX_NORMAL && $rt_globals.Math.abs(b.hi) < Long_MAX_NORMAL) {
+                return Long_fromNumber(Long_toNumber(a) / Long_toNumber(b));
+            }
+            return (Long_divRem(a, b))[0];
+        };
+        Long_udiv = function(a, b) {
+            if (a.hi >= 0 && a.hi < Long_MAX_NORMAL && b.hi >= 0 && b.hi < Long_MAX_NORMAL) {
+                return Long_fromNumber(Long_toNumber(a) / Long_toNumber(b));
+            }
+            return (Long_udivRem(a, b))[0];
+        };
+        Long_rem = function(a, b) {
+            if ($rt_globals.Math.abs(a.hi) < Long_MAX_NORMAL && $rt_globals.Math.abs(b.hi) < Long_MAX_NORMAL) {
+                return Long_fromNumber(Long_toNumber(a) % Long_toNumber(b));
+            }
+            return (Long_divRem(a, b))[1];
+        };
+        Long_urem = function(a, b) {
+            if (a.hi >= 0 && a.hi < Long_MAX_NORMAL && b.hi >= 0 && b.hi < Long_MAX_NORMAL) {
+                return Long_fromNumber(Long_toNumber(a) / Long_toNumber(b));
+            }
+            return (Long_udivRem(a, b))[1];
+        };
+        function Long_divRem(a, b) {
+            if (b.lo === 0 && b.hi === 0) {
+                throw new $rt_globals.Error("Division by zero");
+            }
+            var positive = Long_isNegative(a) === Long_isNegative(b);
+            if (Long_isNegative(a)) {
+                a = Long_neg(a);
+            }
+            if (Long_isNegative(b)) {
+                b = Long_neg(b);
+            }
+            a = new LongInt(a.lo, a.hi, 0);
+            b = new LongInt(b.lo, b.hi, 0);
+            var q = LongInt_div(a, b);
+            a = new Long(a.lo, a.hi);
+            q = new Long(q.lo, q.hi);
+            return positive ? [q, a] : [Long_neg(q), Long_neg(a)];
+        }
+        function Long_udivRem(a, b) {
+            if (b.lo === 0 && b.hi === 0) {
+                throw new $rt_globals.Error("Division by zero");
+            }
+            a = new LongInt(a.lo, a.hi, 0);
+            b = new LongInt(b.lo, b.hi, 0);
+            var q = LongInt_div(a, b);
+            a = new Long(a.lo, a.hi);
+            q = new Long(q.lo, q.hi);
+            return [q, a];
+        }
+        function Long_shiftLeft16(a) {
+            return new Long(a.lo << 16, a.lo >>> 16 | a.hi << 16);
+        }
+        function Long_shiftRight16(a) {
+            return new Long(a.lo >>> 16 | a.hi << 16, a.hi >>> 16);
+        }
+        Long_and = function(a, b) {
+            return new Long(a.lo & b.lo, a.hi & b.hi);
+        };
+        Long_or = function(a, b) {
+            return new Long(a.lo | b.lo, a.hi | b.hi);
+        };
+        Long_xor = function(a, b) {
+            return new Long(a.lo ^ b.lo, a.hi ^ b.hi);
+        };
+        Long_shl = function(a, b) {
+            b &= 63;
+            if (b === 0) {
+                return a;
+            } else if (b < 32) {
+                return new Long(a.lo << b, a.lo >>> 32 - b | a.hi << b);
+            } else if (b === 32) {
+                return new Long(0, a.lo);
+            } else {
+                return new Long(0, a.lo << b - 32);
+            }
+        };
+        Long_shr = function(a, b) {
+            b &= 63;
+            if (b === 0) {
+                return a;
+            } else if (b < 32) {
+                return new Long(a.lo >>> b | a.hi << 32 - b, a.hi >> b);
+            } else if (b === 32) {
+                return new Long(a.hi, a.hi >> 31);
+            } else {
+                return new Long(a.hi >> b - 32, a.hi >> 31);
+            }
+        };
+        Long_shru = function(a, b) {
+            b &= 63;
+            if (b === 0) {
+                return a;
+            } else if (b < 32) {
+                return new Long(a.lo >>> b | a.hi << 32 - b, a.hi >>> b);
+            } else if (b === 32) {
+                return new Long(a.hi, 0);
+            } else {
+                return new Long(a.hi >>> b - 32, 0);
+            }
+        };
+        Long_not = function(a) {
+            return new Long(~a.hi, ~a.lo);
+        };
+        function LongInt(lo, hi, sup) {
+            this.lo = lo;
+            this.hi = hi;
+            this.sup = sup;
+        }
+        function LongInt_mul(a, b) {
+            var a_lolo = (a.lo & 0xFFFF) * b | 0;
+            var a_lohi = (a.lo >>> 16) * b | 0;
+            var a_hilo = (a.hi & 0xFFFF) * b | 0;
+            var a_hihi = (a.hi >>> 16) * b | 0;
+            var sup = a.sup * b | 0;
+            a_lohi = a_lohi + (a_lolo >>> 16) | 0;
+            a_hilo = a_hilo + (a_lohi >>> 16) | 0;
+            a_hihi = a_hihi + (a_hilo >>> 16) | 0;
+            sup = sup + (a_hihi >>> 16) | 0;
+            a.lo = a_lolo & 0xFFFF | a_lohi << 16;
+            a.hi = a_hilo & 0xFFFF | a_hihi << 16;
+            a.sup = sup & 0xFFFF;
+        }
+        function LongInt_sub(a, b) {
+            var a_lolo = a.lo & 0xFFFF;
+            var a_lohi = a.lo >>> 16;
+            var a_hilo = a.hi & 0xFFFF;
+            var a_hihi = a.hi >>> 16;
+            var b_lolo = b.lo & 0xFFFF;
+            var b_lohi = b.lo >>> 16;
+            var b_hilo = b.hi & 0xFFFF;
+            var b_hihi = b.hi >>> 16;
+            a_lolo = a_lolo - b_lolo | 0;
+            a_lohi = a_lohi - b_lohi + (a_lolo >> 16) | 0;
+            a_hilo = a_hilo - b_hilo + (a_lohi >> 16) | 0;
+            a_hihi = a_hihi - b_hihi + (a_hilo >> 16) | 0;
+            var sup = a.sup - b.sup + (a_hihi >> 16) | 0;
+            a.lo = a_lolo & 0xFFFF | a_lohi << 16;
+            a.hi = a_hilo & 0xFFFF | a_hihi << 16;
+            a.sup = sup;
+        }
+        function LongInt_add(a, b) {
+            var a_lolo = a.lo & 0xFFFF;
+            var a_lohi = a.lo >>> 16;
+            var a_hilo = a.hi & 0xFFFF;
+            var a_hihi = a.hi >>> 16;
+            var b_lolo = b.lo & 0xFFFF;
+            var b_lohi = b.lo >>> 16;
+            var b_hilo = b.hi & 0xFFFF;
+            var b_hihi = b.hi >>> 16;
+            a_lolo = a_lolo + b_lolo | 0;
+            a_lohi = a_lohi + b_lohi + (a_lolo >> 16) | 0;
+            a_hilo = a_hilo + b_hilo + (a_lohi >> 16) | 0;
+            a_hihi = a_hihi + b_hihi + (a_hilo >> 16) | 0;
+            var sup = a.sup + b.sup + (a_hihi >> 16) | 0;
+            a.lo = a_lolo & 0xFFFF | a_lohi << 16;
+            a.hi = a_hilo & 0xFFFF | a_hihi << 16;
+            a.sup = sup;
+        }
+        function LongInt_inc(a) {
+            a.lo = a.lo + 1 | 0;
+            if (a.lo === 0) {
+                a.hi = a.hi + 1 | 0;
+                if (a.hi === 0) {
+                    a.sup = a.sup + 1 & 0xFFFF;
+                }
+            }
+        }
+        function LongInt_dec(a) {
+            a.lo = a.lo - 1 | 0;
+            if (a.lo ===  -1) {
+                a.hi = a.hi - 1 | 0;
+                if (a.hi ===  -1) {
+                    a.sup = a.sup - 1 & 0xFFFF;
+                }
+            }
+        }
+        function LongInt_ucompare(a, b) {
+            var r = a.sup - b.sup;
+            if (r !== 0) {
+                return r;
+            }
+            r = (a.hi >>> 1) - (b.hi >>> 1);
+            if (r !== 0) {
+                return r;
+            }
+            r = (a.hi & 1) - (b.hi & 1);
+            if (r !== 0) {
+                return r;
+            }
+            r = (a.lo >>> 1) - (b.lo >>> 1);
+            if (r !== 0) {
+                return r;
+            }
+            return (a.lo & 1) - (b.lo & 1);
+        }
+        function LongInt_numOfLeadingZeroBits(a) {
+            var n = 0;
+            var d = 16;
+            while (d > 0) {
+                if (a >>> d !== 0) {
+                    a >>>= d;
+                    n = n + d | 0;
+                }
+                d = d / 2 | 0;
+            }
+            return 31 - n;
+        }
+        function LongInt_shl(a, b) {
+            if (b === 0) {
+                return;
+            }
+            if (b < 32) {
+                a.sup = (a.hi >>> 32 - b | a.sup << b) & 0xFFFF;
+                a.hi = a.lo >>> 32 - b | a.hi << b;
+                a.lo <<= b;
+            } else if (b === 32) {
+                a.sup = a.hi & 0xFFFF;
+                a.hi = a.lo;
+                a.lo = 0;
+            } else if (b < 64) {
+                a.sup = (a.lo >>> 64 - b | a.hi << b - 32) & 0xFFFF;
+                a.hi = a.lo << b;
+                a.lo = 0;
+            } else if (b === 64) {
+                a.sup = a.lo & 0xFFFF;
+                a.hi = 0;
+                a.lo = 0;
+            } else {
+                a.sup = a.lo << b - 64 & 0xFFFF;
+                a.hi = 0;
+                a.lo = 0;
+            }
+        }
+        function LongInt_shr(a, b) {
+            if (b === 0) {
+                return;
+            }
+            if (b === 32) {
+                a.lo = a.hi;
+                a.hi = a.sup;
+                a.sup = 0;
+            } else if (b < 32) {
+                a.lo = a.lo >>> b | a.hi << 32 - b;
+                a.hi = a.hi >>> b | a.sup << 32 - b;
+                a.sup >>>= b;
+            } else if (b === 64) {
+                a.lo = a.sup;
+                a.hi = 0;
+                a.sup = 0;
+            } else if (b < 64) {
+                a.lo = a.hi >>> b - 32 | a.sup << 64 - b;
+                a.hi = a.sup >>> b - 32;
+                a.sup = 0;
+            } else {
+                a.lo = a.sup >>> b - 64;
+                a.hi = 0;
+                a.sup = 0;
+            }
+        }
+        function LongInt_copy(a) {
+            return new LongInt(a.lo, a.hi, a.sup);
+        }
+        function LongInt_div(a, b) {
+            var bits = b.hi !== 0 ? LongInt_numOfLeadingZeroBits(b.hi) : LongInt_numOfLeadingZeroBits(b.lo) + 32;
+            var sz = 1 + (bits / 16 | 0);
+            var dividentBits = bits % 16;
+            LongInt_shl(b, bits);
+            LongInt_shl(a, dividentBits);
+            var q = new LongInt(0, 0, 0);
+            while (sz-- > 0) {
+                LongInt_shl(q, 16);
+                var digitA = (a.hi >>> 16) + 0x10000 * a.sup;
+                var digitB = b.hi >>> 16;
+                var digit = digitA / digitB | 0;
+                var t = LongInt_copy(b);
+                LongInt_mul(t, digit);
+                if (LongInt_ucompare(t, a) >= 0) {
+                    while (LongInt_ucompare(t, a) > 0) {
+                        LongInt_sub(t, b);
+                         --digit;
+                    }
+                } else {
+                    while (true) {
+                        var nextT = LongInt_copy(t);
+                        LongInt_add(nextT, b);
+                        if (LongInt_ucompare(nextT, a) > 0) {
+                            break;
+                        }
+                        t = nextT;
+                        ++digit;
+                    }
+                }
+                LongInt_sub(a, t);
+                q.lo |= digit;
+                LongInt_shl(a, 16);
+            }
+            LongInt_shr(a, bits + 16);
+            return q;
+        }
+    } else {
+        Long_eq = function(a, b) {
+            return a === b;
+        };
+        Long_ne = function(a, b) {
+            return a !== b;
+        };
+        Long_gt = function(a, b) {
+            return a > b;
+        };
+        Long_ge = function(a, b) {
+            return a >= b;
+        };
+        Long_lt = function(a, b) {
+            return a < b;
+        };
+        Long_le = function(a, b) {
+            return a <= b;
+        };
+        Long_add = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a + b);
+        };
+        Long_inc = function(a) {
+            return $rt_globals.BigInt.asIntN(64, a + 1);
+        };
+        Long_dec = function(a) {
+            return $rt_globals.BigInt.asIntN(64, a - 1);
+        };
+        Long_neg = function(a) {
+            return $rt_globals.BigInt.asIntN(64,  -a);
+        };
+        Long_sub = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a - b);
+        };
+        Long_compare = function(a, b) {
+            return a < b ?  -1 : a > b ? 1 : 0;
+        };
+        Long_ucompare = function(a, b) {
+            a = $rt_globals.BigInt.asUintN(64, a);
+            b = $rt_globals.BigInt.asUintN(64, b);
+            return a < b ?  -1 : a > b ? 1 : 0;
+        };
+        Long_mul = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a * b);
+        };
+        Long_div = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a / b);
+        };
+        Long_udiv = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, $rt_globals.BigInt.asUintN(64, a) / $rt_globals.BigInt.asUintN(64, b));
+        };
+        Long_rem = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a % b);
+        };
+        Long_urem = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, $rt_globals.BigInt.asUintN(64, a) % $rt_globals.BigInt.asUintN(64, b));
+        };
+        Long_and = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a & b);
+        };
+        Long_or = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a | b);
+        };
+        Long_xor = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a ^ b);
+        };
+        Long_shl = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a << $rt_globals.BigInt(b & 63));
+        };
+        Long_shr = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, a >> $rt_globals.BigInt(b & 63));
+        };
+        Long_shru = function(a, b) {
+            return $rt_globals.BigInt.asIntN(64, $rt_globals.BigInt.asUintN(64, a) >> $rt_globals.BigInt(b & 63));
+        };
+        Long_not = function(a) {
+            return $rt_globals.BigInt.asIntN(64, ~a);
+        };
+    }
+    var Long_add = Long_add;
+
+    var Long_sub = Long_sub;
+
+    var Long_mul = Long_mul;
+
+    var Long_div = Long_div;
+
+    var Long_rem = Long_rem;
+
+    var Long_or = Long_or;
+
+    var Long_and = Long_and;
+
+    var Long_xor = Long_xor;
+
+    var Long_shl = Long_shl;
+
+    var Long_shr = Long_shr;
+
+    var Long_shru = Long_shru;
+
+    var Long_compare = Long_compare;
+
+    var Long_eq = Long_eq;
+
+    var Long_ne = Long_ne;
+
+    var Long_lt = Long_lt;
+
+    var Long_le = Long_le;
+
+    var Long_gt = Long_gt;
+
+    var Long_ge = Long_ge;
+
+    var Long_not = Long_not;
+
+    var Long_neg = Long_neg;
+
     function $rt_startThread(runner, callback) {
         var result;
         try {
