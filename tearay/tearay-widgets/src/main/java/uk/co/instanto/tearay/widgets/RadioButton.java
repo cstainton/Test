@@ -9,6 +9,10 @@ public class RadioButton extends Widget {
     private HTMLInputElement input;
     private HTMLElement label;
 
+    public RadioButton() {
+        this("", "");
+    }
+
     public RadioButton(String name, String labelText) {
         this.element = Window.current().getDocument().createElement("div");
         this.element.setClassName("form-check");

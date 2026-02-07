@@ -3,11 +3,16 @@ package uk.co.instanto.tearay.widgets;
 import org.teavm.jso.browser.Window;
 import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.dom.html.HTMLInputElement;
+import uk.co.instanto.tearay.api.TakesValue;
 
-public class Checkbox extends Widget {
+public class Checkbox extends Widget implements TakesValue<Boolean> {
 
     private HTMLInputElement input;
     private HTMLElement label;
+
+    public Checkbox() {
+        this("");
+    }
 
     public Checkbox(String labelText) {
         this.element = Window.current().getDocument().createElement("div");
@@ -24,11 +29,13 @@ public class Checkbox extends Widget {
         this.element.appendChild(label);
     }
 
-    public void setValue(boolean checked) {
-        input.setChecked(checked);
+    @Override
+    public void setValue(Boolean checked) {
+        input.setChecked(checked != null && checked);
     }
 
-    public boolean getValue() {
+    @Override
+    public Boolean getValue() {
         return input.isChecked();
     }
 

@@ -4,6 +4,10 @@ import uk.co.instanto.tearay.api.DataField;
 import uk.co.instanto.tearay.api.Templated;
 import uk.co.instanto.tearay.api.RootElement;
 import uk.co.instanto.tearay.api.IsWidget;
+import uk.co.instanto.tearay.api.Bound;
+import uk.co.instanto.tearay.api.Model;
+import uk.co.instanto.tearay.api.TakesValue;
+
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -21,7 +25,6 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
@@ -63,6 +66,7 @@ public class TemplatedProcessor extends AbstractProcessor {
         ClassName documentClass = ClassName.get("org.teavm.jso.dom.html", "HTMLDocument");
         ClassName nodeListClass = ClassName.get("org.teavm.jso.dom.xml", "NodeList");
         ClassName elementClass = ClassName.get("org.teavm.jso.dom.xml", "Element");
+        ClassName fragmentClass = ClassName.get("org.teavm.jso.dom.xml", "DocumentFragment");
 
         MethodSpec.Builder bindMethod = MethodSpec.methodBuilder("bind")
                 .addModifiers(javax.lang.model.element.Modifier.PUBLIC, javax.lang.model.element.Modifier.STATIC)
@@ -76,9 +80,9 @@ public class TemplatedProcessor extends AbstractProcessor {
         String escapedHtml = htmlContent.replace("\n", " ");
         bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
 
-        // Assign root if a field "element" exists (Convention for this PoC)
-        // In a real framework, we'd look for an interface like IsWidget or a specific annotation.
         List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
+
+        // Bind element field
         for (VariableElement field : fields) {
              if (field.getSimpleName().toString().equals("element") &&
                  com.squareup.javapoet.TypeName.get(field.asType()).equals(htmlElementClass)) {
@@ -86,6 +90,7 @@ public class TemplatedProcessor extends AbstractProcessor {
              }
         }
 
+        // Query selectors for @DataField
         for (VariableElement field : fields) {
             DataField dataField = field.getAnnotation(DataField.class);
             if (dataField != null) {
@@ -93,15 +98,6 @@ public class TemplatedProcessor extends AbstractProcessor {
                 if (dataFieldName.isEmpty()) {
                     dataFieldName = field.getSimpleName().toString();
                 }
-                bindMethod.addCode("case $S:\n", dataFieldName);
-                bindMethod.addStatement("  if (el_$L == null) el_$L = ($T) candidate", field.getSimpleName(), field.getSimpleName(), htmlElementClass);
-                bindMethod.addStatement("  break");
-            }
-            bindMethod.endControlFlow(); // switch
-            bindMethod.endControlFlow(); // for
-
-            for (VariableElement field : dataFields) {
-                // Reuse existing binding logic structure but check el_field != null
                 bindMethod.addStatement("$T el_$L = root.querySelector($S)",
                     htmlElementClass,
                     field.getSimpleName(),
@@ -109,36 +105,37 @@ public class TemplatedProcessor extends AbstractProcessor {
             }
         }
 
-        // 2. Move to DocumentFragment to avoid reflows during manipulation
-        ClassName fragmentClass = ClassName.get("org.teavm.jso.dom.xml", "DocumentFragment");
+        // Move to DocumentFragment
         bindMethod.addStatement("$T fragment = doc.createDocumentFragment()", fragmentClass);
         bindMethod.beginControlFlow("while (root.hasChildNodes())");
         bindMethod.addStatement("fragment.appendChild(root.getFirstChild())");
         bindMethod.endControlFlow();
 
-        // 3. Process fields
-        for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
+        // Process @DataField replacements
+        for (VariableElement field : fields) {
             DataField dataField = field.getAnnotation(DataField.class);
             if (dataField != null) {
                 bindMethod.beginControlFlow("if (el_$L != null)", field.getSimpleName());
 
                 // Check if the field type is HTMLElement
                 TypeElement htmlElementType = processingEnv.getElementUtils().getTypeElement("org.teavm.jso.dom.html.HTMLElement");
-                if (htmlElementType != null && processingEnv.getTypeUtils().isAssignable(field.asType(), htmlElementType.asType())) {
+                boolean isHtmlElement = htmlElementType != null && processingEnv.getTypeUtils().isAssignable(field.asType(), htmlElementType.asType());
+
+                if (isHtmlElement) {
                     bindMethod.addStatement("target.$L = ($T) el_$L",
                         field.getSimpleName(),
                         com.squareup.javapoet.TypeName.get(field.asType()),
                         field.getSimpleName());
                 } else {
-                    // Assume it is a nested component.
+                    // Nested component
                     bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
                     bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
                     bindMethod.beginControlFlow("if (widgetElement != null)");
 
-                    // Merge attributes
-                    bindMethod.addStatement("String currentClasses = widgetElement.getClassName()");
+                    // Merge attributes (simplified)
                     bindMethod.addStatement("String placeholderClasses = el_$L.getClassName()", field.getSimpleName());
                     bindMethod.beginControlFlow("if (placeholderClasses != null && !placeholderClasses.isEmpty())");
+                    bindMethod.addStatement("String currentClasses = widgetElement.getClassName()");
                     bindMethod.addStatement("widgetElement.setClassName((currentClasses != null ? currentClasses + \" \" : \"\") + placeholderClasses)");
                     bindMethod.endControlFlow();
 
@@ -153,14 +150,55 @@ public class TemplatedProcessor extends AbstractProcessor {
                     bindMethod.addStatement("widgetElement.setAttribute(\"style\", (currentStyle != null ? currentStyle + \";\" : \"\") + placeholderStyle)");
                     bindMethod.endControlFlow();
 
-                    // Replace in DOM (now in Fragment)
+                    // Replace in DOM
                     bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
                     bindMethod.endControlFlow();
+                    bindMethod.endControlFlow();
+                }
+                bindMethod.endControlFlow();
+            }
+        }
+
+        // DATA BINDING LOGIC
+        VariableElement modelField = null;
+        for (VariableElement field : fields) {
+            if (field.getAnnotation(Model.class) != null) {
+                modelField = field;
+                break;
+            }
+        }
+
+        if (modelField != null) {
+            for (VariableElement field : fields) {
+                Bound bound = field.getAnnotation(Bound.class);
+                if (bound != null) {
+                    String propertyName = bound.property();
+                    if (propertyName.isEmpty()) {
+                        propertyName = field.getSimpleName().toString();
+                    }
+
+                    // Capitalize for getter/setter
+                    String capProp = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+                    String getter = "get" + capProp; // simplify: assume get
+                    String setter = "set" + capProp;
+
+                    bindMethod.beginControlFlow("if (target.$L != null && target.$L != null)", modelField.getSimpleName(), field.getSimpleName());
+
+                    // 1. Initial set
+                    // Try to detect boolean for isProp? No, stick to getProp for now or rely on user using getProp.
+                    // Actually, boolean fields often use isProp.
+                    // Ideally we check model type. But for MVP we assume getProp.
+
+                    bindMethod.addStatement("target.$L.setValue(target.$L.$L())",
+                        field.getSimpleName(), modelField.getSimpleName(), getter);
+
+                    // 2. Change handler
+                    bindMethod.addCode("((uk.co.instanto.tearay.api.IsWidget)target.$L).getElement().addEventListener(\"change\", e -> {\n", field.getSimpleName());
+                    bindMethod.addStatement("  target.$L.$L(target.$L.getValue())", modelField.getSimpleName(), setter, field.getSimpleName());
+                    bindMethod.addCode("});\n");
 
                     bindMethod.endControlFlow();
                 }
-
-                bindMethod.endControlFlow();
             }
         }
 
@@ -186,7 +224,6 @@ public class TemplatedProcessor extends AbstractProcessor {
              return templateCache.get(cacheKey);
          }
 
-         // Try SOURCE_PATH first as it is more likely for sources
          try {
              FileObject resource = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, packageName, templateName);
              String content = resource.getCharContent(true).toString();
@@ -203,36 +240,5 @@ public class TemplatedProcessor extends AbstractProcessor {
                  return null;
              }
          }
-    }
-
-    private VariableElement findPublicElementField(javax.lang.model.type.TypeMirror typeMirror) {
-        if (typeMirror.getKind() != javax.lang.model.type.TypeKind.DECLARED) {
-            return null;
-        }
-        TypeElement typeElement = (TypeElement) ((javax.lang.model.type.DeclaredType) typeMirror).asElement();
-        if (typeElement == null) {
-            return null;
-        }
-
-        // Check fields in this class
-        for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
-            if (field.getSimpleName().toString().equals("element") &&
-                field.getModifiers().contains(javax.lang.model.element.Modifier.PUBLIC)) {
-
-                // Check if it is HTMLElement or subtype
-                 TypeElement htmlElementType = processingEnv.getElementUtils().getTypeElement("org.teavm.jso.dom.html.HTMLElement");
-                 if (htmlElementType != null && processingEnv.getTypeUtils().isAssignable(field.asType(), htmlElementType.asType())) {
-                    return field;
-                 }
-            }
-        }
-
-        // Check superclass
-        javax.lang.model.type.TypeMirror superclass = typeElement.getSuperclass();
-        if (superclass.getKind() != javax.lang.model.type.TypeKind.NONE) {
-            return findPublicElementField(superclass);
-        }
-
-        return null;
     }
 }

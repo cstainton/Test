@@ -1412,9 +1412,6 @@
     function ucitw_Widget__init_($this) {
         jl_Object__init_0($this);
     }
-    function ucitw_Widget_getElement($this) {
-        return $this.$element0;
-    }
     var ju_Map = $rt_classWithoutFields(0);
     var otj_TestEntryPoint$Launcher = $rt_classWithoutFields(0);
     var otj_TestEntryPoint$LauncherImpl0 = $rt_classWithoutFields();
@@ -2430,6 +2427,7 @@
     function jl_NullPointerException__init_2($this) {
         jl_RuntimeException__init_1($this);
     }
+    var ucits_GreetingService = $rt_classWithoutFields(0);
     var jl_NoSuchFieldError = $rt_classWithoutFields(jl_IncompatibleClassChangeError);
     function jl_NoSuchFieldError__init_(var_0) {
         var var_1 = new jl_NoSuchFieldError();
@@ -2441,7 +2439,7 @@
     }
     var ucits_DashboardPage_Binder = $rt_classWithoutFields();
     function ucits_DashboardPage_Binder_bind($target) {
-        var $doc, $root, var$4, $el_container, $fragment, $widgetElement, $currentClasses, $placeholderClasses, var$10, $placeholderId, $placeholderStyle, $currentStyle, var$14;
+        var $doc, $root, var$4, $el_container, $fragment, $widgetElement, $placeholderClasses, $currentClasses, var$10, $placeholderId, $placeholderStyle, $currentStyle, var$14;
         $doc = $rt_globals.window.document;
         $root = $doc.createElement("div");
         var$4 = "<div>     <h1>Dashboard</h1>     <div data-field=\"content\"></div>     <div data-field=\"userBtn\"></div>     <div data-field=\"backBtn\"></div> </div> ";
@@ -2455,11 +2453,11 @@
             $fragment.appendChild(var$4);
         }
         if ($el_container !== null && $target.$container !== null) {
-            $widgetElement = $rt_nullCheck($target.$container).$getElement();
+            $widgetElement = $rt_nullCheck($target.$container).$element0;
             if ($widgetElement !== null) {
-                $currentClasses = $rt_str($widgetElement.className);
                 $placeholderClasses = $rt_str($el_container.className);
                 if ($placeholderClasses !== null && !$placeholderClasses.$isEmpty()) {
+                    $currentClasses = $rt_str($widgetElement.className);
                     if ($currentClasses === null)
                         var$10 = $rt_s(11);
                     else {
@@ -2546,11 +2544,8 @@
     }
     var otjc_JSWeakMap = $rt_classWithoutFields();
     var ucits_DashboardPage_Factory = $rt_classWithoutFields();
-    var ucits_DashboardPage_Factory_instance = null;
     function ucits_DashboardPage_Factory_getInstance() {
-        if (ucits_DashboardPage_Factory_instance === null)
-            ucits_DashboardPage_Factory_instance = ucits_DashboardPage_Factory_createInstance();
-        return ucits_DashboardPage_Factory_instance;
+        return ucits_DashboardPage_Factory_createInstance();
     }
     function ucits_DashboardPage_Factory_createInstance() {
         var $bean;
@@ -3090,7 +3085,7 @@
     ucita_Navigation, 0, jl_Object, [], 3, 3, 0, 0, 0,
     oj_ComparisonFailure$ComparisonCompactor, 0, jl_Object, [], 0, 0, 0, 0, ["$_init_8", $rt_wrapFunction3(oj_ComparisonFailure$ComparisonCompactor__init_0), "$compact", $rt_wrapFunction1(oj_ComparisonFailure$ComparisonCompactor_compact)],
     ucita_IsWidget, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_), "$getElement", $rt_wrapFunction0(ucitw_Widget_getElement)],
+    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
     ju_Map, 0, jl_Object, [], 3, 3, 0, 0, 0,
     otj_TestEntryPoint$Launcher, 0, jl_Object, [], 3, 0, 0, 0, 0,
     otj_TestEntryPoint$LauncherImpl0, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl0__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl0_launch)],
@@ -3154,6 +3149,7 @@
     oj_ComparisonFailure, "ComparisonFailure", 4, jl_AssertionError, [], 0, 3, 0, 0, ["$_init_7", $rt_wrapFunction3(oj_ComparisonFailure__init_0), "$getMessage", $rt_wrapFunction0(oj_ComparisonFailure_getMessage)],
     jlr_Array, 0, jl_Object, [], 4, 3, 0, 0, 0,
     jl_NullPointerException, "NullPointerException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NullPointerException__init_1), "$_init_", $rt_wrapFunction0(jl_NullPointerException__init_2)],
+    ucits_GreetingService, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_NoSuchFieldError, 0, jl_IncompatibleClassChangeError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NoSuchFieldError__init_0)],
     ucits_DashboardPage_Binder, 0, jl_Object, [], 0, 3, 0, 0, 0,
     ucits_DashboardPage, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage__init_0)],
@@ -3169,14 +3165,14 @@
     ju_HashMap$HashEntry, 0, ju_MapEntry, [], 0, 0, 0, 0, 0,
     jlr_Type, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_ArrayStoreException, "ArrayStoreException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayStoreException__init_0)],
-    ucits_HelloService, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_HelloService__init_0)],
+    ucits_HelloService, 0, jl_Object, [ucits_GreetingService], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_HelloService__init_0)],
     ju_AbstractSet, 0, ju_AbstractCollection, [ju_Set], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractSet__init_)],
     ju_AbstractMap, 0, jl_Object, [ju_Map], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractMap__init_)],
     ju_HashMap, 0, ju_AbstractMap, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$newElementArray", $rt_wrapFunction1(ju_HashMap_newElementArray), "$_init_", $rt_wrapFunction0(ju_HashMap__init_0), "$_init_2", $rt_wrapFunction1(ju_HashMap__init_2), "$_init_10", $rt_wrapFunction2(ju_HashMap__init_4)],
     otji_JSWrapper, "JSWrapper", 7, jl_Object, [], 4, 3, 0, otji_JSWrapper_$callClinit, ["$equals", $rt_wrapFunction1(otji_JSWrapper_equals), "$toString", $rt_wrapFunction0(otji_JSWrapper_toString)],
-    otjc_JSMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
-    ju_HashSet, 0, ju_AbstractSet, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_HashSet__init_0), "$_init_12", $rt_wrapFunction1(ju_HashSet__init_2)]]);
-    $rt_metadata([otp_Platform, 0, jl_Object, [], 4, 3, 0, 0, 0,
+    otjc_JSMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0]);
+    $rt_metadata([ju_HashSet, 0, ju_AbstractSet, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_HashSet__init_0), "$_init_12", $rt_wrapFunction1(ju_HashSet__init_2)],
+    otp_Platform, 0, jl_Object, [], 4, 3, 0, 0, 0,
     jl_NoClassDefFoundError, 0, jl_LinkageError, [], 0, 3, 0, 0, 0,
     otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otjc_JSFinalizationRegistry, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
