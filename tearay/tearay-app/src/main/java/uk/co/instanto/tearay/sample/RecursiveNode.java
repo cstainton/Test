@@ -5,18 +5,12 @@ import uk.co.instanto.tearay.api.wire.ProtoField;
 import java.util.List;
 
 @Proto
-public class UserDTO {
+public class RecursiveNode {
     @ProtoField(id = 1)
     public String name;
 
     @ProtoField(id = 2)
-    public int age;
+    public List<RecursiveNode> children;
 
-    @ProtoField(id = 3)
-    public boolean active;
-
-    @ProtoField(id = 4)
-    public List<String> tags;
-
-    public UserDTO() {}
+    public RecursiveNode() {}
 }

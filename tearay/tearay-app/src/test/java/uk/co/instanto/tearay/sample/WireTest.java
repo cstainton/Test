@@ -105,4 +105,45 @@ public class WireTest {
         assertEquals(original.tags.size(), decoded.tags.size());
         assertEquals(original.tags.get(0), decoded.tags.get(0));
     }
+
+    @Test
+    public void testRecursiveProtobuf() throws IOException {
+        CodecRegistry registry = new WireCodecRegistryImpl();
+        registry.setMode(WireMode.PROTOBUF);
+        Codec<RecursiveNode> codec = registry.getCodec(RecursiveNode.class);
+
+        RecursiveNode root = new RecursiveNode();
+        root.name = "Root";
+        root.children = new ArrayList<>();
+
+        RecursiveNode child1 = new RecursiveNode();
+        child1.name = "Child1";
+        root.children.add(child1);
+
+        RecursiveNode child2 = new RecursiveNode();
+        child2.name = "Child2";
+        // child2.children = new ArrayList<>();
+        // RecursiveNode grandChild = new RecursiveNode();
+        // grandChild.name = "GrandChild";
+        // child2.children.add(grandChild);
+        root.children.add(child2);
+
+        Buffer buffer = new Buffer();
+        ProtoWriter writer = new ProtoWriter(buffer);
+        codec.encode(root, writer);
+
+        byte[] bytes = buffer.readByteArray();
+        assertTrue(bytes.length > 0);
+
+        Buffer input = new Buffer();
+        input.write(bytes);
+        ProtoReader reader = new ProtoReader(input);
+
+        RecursiveNode decoded = codec.decode(reader);
+        assertNotNull(decoded);
+        assertEquals("Root", decoded.name);
+        assertEquals(2, decoded.children.size());
+        assertEquals("Child1", decoded.children.get(0).name);
+        assertEquals("Child2", decoded.children.get(1).name);
+    }
 }

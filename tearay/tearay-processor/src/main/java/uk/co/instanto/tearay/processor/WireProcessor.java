@@ -5,6 +5,8 @@ import uk.co.instanto.tearay.api.wire.*;
 import com.squareup.wire.ProtoWriter;
 import com.squareup.wire.ProtoReader;
 import com.squareup.wire.FieldEncoding;
+import okio.ByteString;
+import okio.Buffer;
 import java.io.IOException;
 
 import javax.annotation.processing.*;
@@ -65,6 +67,7 @@ public class WireProcessor extends AbstractProcessor {
         return true;
     }
 
+    // ... JSON Codec Generation (keeping as is roughly) ...
     private void generateJsonCodec(TypeElement typeElement) throws IOException {
         String packageName = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
         String className = typeElement.getSimpleName().toString();
@@ -83,13 +86,13 @@ public class WireProcessor extends AbstractProcessor {
                 .addStatement("this.registry = registry")
                 .build();
         typeSpec.addMethod(constructor);
-
         typeSpec.addField(CodecRegistry.class, "registry", Modifier.PRIVATE, Modifier.FINAL);
 
         Proto proto = typeElement.getAnnotation(Proto.class);
         List<TypeMirror> subTypes = getSubTypes(proto);
         String typeField = proto.typeField();
 
+        // Encode
         MethodSpec.Builder encode = MethodSpec.methodBuilder("encode")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
@@ -121,6 +124,7 @@ public class WireProcessor extends AbstractProcessor {
         encode.addStatement("writer.endObject()");
         typeSpec.addMethod(encode.build());
 
+        // Decode
         MethodSpec.Builder decode = MethodSpec.methodBuilder("decode")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
@@ -150,6 +154,7 @@ public class WireProcessor extends AbstractProcessor {
         decode.addStatement("return value");
         typeSpec.addMethod(decode.build());
 
+        // Encode Fields
         MethodSpec.Builder encodeFields = MethodSpec.methodBuilder("encodeFields")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
@@ -161,10 +166,11 @@ public class WireProcessor extends AbstractProcessor {
              if (field.getAnnotation(ProtoField.class) == null) continue;
              String fieldName = field.getSimpleName().toString();
              encodeFields.addStatement("writer.name($S)", fieldName);
-             addEncodeStatement(encodeFields, field.asType(), "value." + fieldName);
+             addEncodeStatementJson(encodeFields, field.asType(), "value." + fieldName);
         }
         typeSpec.addMethod(encodeFields.build());
 
+        // Decode Fields
         MethodSpec.Builder decodeFields = MethodSpec.methodBuilder("decodeFields")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
@@ -184,7 +190,7 @@ public class WireProcessor extends AbstractProcessor {
                 String fieldName = field.getSimpleName().toString();
                 decodeFields.addCode("case $S:\n", fieldName);
                 decodeFields.addCode("  ");
-                addDecodeStatement(decodeFields, field.asType(), "value." + fieldName);
+                addDecodeStatementJson(decodeFields, field.asType(), "value." + fieldName);
                 decodeFields.addStatement("  break");
             }
             if (!typeField.isEmpty()) {
@@ -199,6 +205,8 @@ public class WireProcessor extends AbstractProcessor {
 
         JavaFile.builder(packageName, typeSpec.build()).build().writeTo(filer);
     }
+
+    // ----------- PROTO CODEC GENERATION -----------
 
     private void generateProtoCodec(TypeElement typeElement) throws IOException {
         String packageName = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
@@ -252,19 +260,9 @@ public class WireProcessor extends AbstractProcessor {
              if (id == 0) continue;
 
              TypeMirror type = field.asType();
-             if (type.getKind() == TypeKind.INT) {
-                 encodeProto.addStatement("writer.writeVarint32($L, $L)", id, "value." + field.getSimpleName());
-             } else if (type.getKind() == TypeKind.BOOLEAN) {
-                 encodeProto.addStatement("writer.writeVarint32($L, value.$L ? 1 : 0)", id, field.getSimpleName());
-             } else if (isString(type)) {
-                 encodeProto.addStatement("writer.writeString($L, value.$L)", id, field.getSimpleName());
-             } else if (isList(type)) {
-                 encodeProto.beginControlFlow("if (value.$L != null)", field.getSimpleName());
-                 encodeProto.beginControlFlow("for (String item : value.$L)", field.getSimpleName());
-                 encodeProto.addStatement("writer.writeString($L, item)", id);
-                 encodeProto.endControlFlow();
-                 encodeProto.endControlFlow();
-             }
+             String accessor = "value." + field.getSimpleName();
+
+             addEncodeStatementProto(encodeProto, type, accessor, id);
         }
         typeSpec.addMethod(encodeProto.build());
 
@@ -289,24 +287,14 @@ public class WireProcessor extends AbstractProcessor {
                  if (protoField == null || protoField.id() == 0) continue;
 
                  decodeProto.addCode("case $L: ", protoField.id());
-                 TypeMirror type = field.asType();
-                 if (type.getKind() == TypeKind.INT) {
-                     decodeProto.addStatement("value.$L = reader.readVarint32()", field.getSimpleName());
-                 } else if (type.getKind() == TypeKind.BOOLEAN) {
-                     decodeProto.addStatement("value.$L = reader.readVarint32() != 0", field.getSimpleName());
-                 } else if (isString(type)) {
-                     decodeProto.addStatement("value.$L = reader.readString()", field.getSimpleName());
-                 } else if (isList(type)) {
-                     decodeProto.beginControlFlow("if (value.$L == null) value.$L = new $T<>()", field.getSimpleName(), field.getSimpleName(), ArrayList.class);
-                     decodeProto.addStatement("value.$L.add(reader.readString())", field.getSimpleName());
-                     decodeProto.endControlFlow();
-                 }
+                 addDecodeStatementProto(decodeProto, field.asType(), "value." + field.getSimpleName());
                  decodeProto.addStatement("break");
             }
 
             decodeProto.addCode("default: ");
             decodeProto.addStatement("$T encoding = reader.peekFieldEncoding()", FieldEncoding.class);
-            decodeProto.addStatement("encoding.rawProtoAdapter().decode(reader)"); // Just consume/skip, don't store unknown fields for now
+            decodeProto.addStatement("encoding.rawProtoAdapter().decode(reader)");
+            // Note: Not adding unknown field to map as we don't have one in DTO
             decodeProto.addStatement("break");
 
             decodeProto.endControlFlow(); // switch
@@ -320,7 +308,88 @@ public class WireProcessor extends AbstractProcessor {
         JavaFile.builder(packageName, typeSpec.build()).build().writeTo(filer);
     }
 
-    // ... rest of the file
+    // ----------- HELPERS -----------
+
+    private void addEncodeStatementProto(MethodSpec.Builder builder, TypeMirror type, String accessor, int id) {
+        if (type.getKind() == TypeKind.INT) {
+             builder.addStatement("writer.writeTag($L, $T.VARINT)", id, FieldEncoding.class);
+             builder.addStatement("writer.writeVarint32($L)", accessor);
+        } else if (type.getKind() == TypeKind.BOOLEAN) {
+             builder.addStatement("writer.writeTag($L, $T.VARINT)", id, FieldEncoding.class);
+             builder.addStatement("writer.writeVarint32($L ? 1 : 0)", accessor);
+        } else if (isString(type)) {
+             builder.addStatement("writer.writeTag($L, $T.LENGTH_DELIMITED)", id, FieldEncoding.class);
+             builder.addStatement("writer.writeBytes($T.encodeUtf8($L))", ByteString.class, accessor);
+        } else if (isList(type)) {
+             // Handle List
+             DeclaredType declaredType = (DeclaredType) type;
+             TypeMirror elementType = declaredType.getTypeArguments().get(0);
+             builder.beginControlFlow("if ($L != null)", accessor);
+             builder.beginControlFlow("for ($T item : $L)", elementType, accessor);
+
+             // If item is Proto
+             if (isProto(elementType)) {
+                 builder.addStatement("$T buffer = new $T()", Buffer.class, Buffer.class);
+                 builder.addStatement("$T nestedWriter = new $T(buffer)", ProtoWriter.class, ProtoWriter.class);
+                 builder.addStatement("registry.getCodec($T.class).encode(item, nestedWriter)", TypeName.get(elementType));
+                 builder.addStatement("writer.writeTag($L, $T.LENGTH_DELIMITED)", id, FieldEncoding.class);
+                 builder.addStatement("writer.writeBytes(buffer.readByteString())");
+             } else if (isString(elementType)) {
+                 builder.addStatement("writer.writeTag($L, $T.LENGTH_DELIMITED)", id, FieldEncoding.class);
+                 builder.addStatement("writer.writeBytes($T.encodeUtf8(item))", ByteString.class);
+             } else {
+                 // TODO: primitive lists? packed?
+             }
+
+             builder.endControlFlow();
+             builder.endControlFlow();
+        } else if (isProto(type)) {
+             // Nested Message
+             builder.beginControlFlow("if ($L != null)", accessor);
+             builder.addStatement("$T buffer = new $T()", Buffer.class, Buffer.class);
+             builder.addStatement("$T nestedWriter = new $T(buffer)", ProtoWriter.class, ProtoWriter.class);
+             builder.addStatement("registry.getCodec($T.class).encode($L, nestedWriter)", TypeName.get(type), accessor);
+             builder.addStatement("writer.writeTag($L, $T.LENGTH_DELIMITED)", id, FieldEncoding.class);
+             builder.addStatement("writer.writeBytes(buffer.readByteString())");
+             builder.endControlFlow();
+        }
+    }
+
+    private void addDecodeStatementProto(MethodSpec.Builder builder, TypeMirror type, String accessor) {
+        if (type.getKind() == TypeKind.INT) {
+             builder.addStatement("$L = reader.readVarint32()", accessor);
+        } else if (type.getKind() == TypeKind.BOOLEAN) {
+             builder.addStatement("$L = reader.readVarint32() != 0", accessor);
+        } else if (isString(type)) {
+             builder.addStatement("$L = reader.readString()", accessor);
+        } else if (isList(type)) {
+             DeclaredType declaredType = (DeclaredType) type;
+             TypeMirror elementType = declaredType.getTypeArguments().get(0);
+
+             builder.addStatement("if ($L == null) $L = new $T<>()", accessor, accessor, ArrayList.class);
+
+             if (isProto(elementType)) {
+                 builder.addStatement("$T bytes = reader.readBytes()", ByteString.class);
+                 builder.addStatement("$T nestedReader = new $T(new $T().write(bytes))", ProtoReader.class, ProtoReader.class, Buffer.class);
+                 builder.addStatement("$T item = registry.getCodec($T.class).decode(nestedReader)", elementType, TypeName.get(elementType));
+                 builder.addStatement("$L.add(item)", accessor);
+             } else if (isString(elementType)) {
+                 builder.addStatement("$L.add(reader.readString())", accessor);
+             }
+        } else if (isProto(type)) {
+             // Nested Message
+             builder.addStatement("$T bytes = reader.readBytes()", ByteString.class);
+             builder.addStatement("$T nestedReader = new $T(new $T().write(bytes))", ProtoReader.class, ProtoReader.class, Buffer.class);
+             builder.addStatement("$L = registry.getCodec($T.class).decode(nestedReader)", accessor, TypeName.get(type));
+        }
+    }
+
+    private boolean isProto(TypeMirror type) {
+        if (type.getKind() != TypeKind.DECLARED) return false;
+        TypeElement element = (TypeElement) ((DeclaredType) type).asElement();
+        return element.getAnnotation(Proto.class) != null;
+    }
+
     private List<VariableElement> getAllFields(TypeElement element) {
         List<VariableElement> fields = new ArrayList<>(ElementFilter.fieldsIn(element.getEnclosedElements()));
         TypeMirror superclass = element.getSuperclass();
@@ -340,7 +409,7 @@ public class WireProcessor extends AbstractProcessor {
         return Collections.emptyList();
     }
 
-    private void addEncodeStatement(MethodSpec.Builder builder, TypeMirror type, String accessor) {
+    private void addEncodeStatementJson(MethodSpec.Builder builder, TypeMirror type, String accessor) {
         if (type.getKind().isPrimitive()) {
             builder.addStatement("writer.value($L)", accessor);
         } else if (isString(type)) {
@@ -350,7 +419,7 @@ public class WireProcessor extends AbstractProcessor {
              TypeMirror elementType = declaredType.getTypeArguments().get(0);
              builder.addStatement("writer.beginArray()");
              builder.beginControlFlow("for ($T item : $L)", elementType, accessor);
-             addEncodeStatement(builder, elementType, "item");
+             addEncodeStatementJson(builder, elementType, "item");
              builder.endControlFlow();
              builder.addStatement("writer.endArray()");
         } else {
@@ -358,7 +427,7 @@ public class WireProcessor extends AbstractProcessor {
         }
     }
 
-    private void addDecodeStatement(MethodSpec.Builder builder, TypeMirror type, String accessor) {
+    private void addDecodeStatementJson(MethodSpec.Builder builder, TypeMirror type, String accessor) {
         if (type.getKind() == TypeKind.INT) {
             builder.addStatement("$L = reader.nextInt()", accessor);
         } else if (type.getKind() == TypeKind.DOUBLE) {
@@ -374,7 +443,7 @@ public class WireProcessor extends AbstractProcessor {
              builder.addStatement("reader.beginArray()");
              builder.beginControlFlow("while (reader.hasNext())");
              builder.addStatement("$T item", elementType);
-             addDecodeStatement(builder, elementType, "item");
+             addDecodeStatementJson(builder, elementType, "item");
              builder.addStatement("$L.add(item)", accessor);
              builder.endControlFlow();
              builder.addStatement("reader.endArray()");
