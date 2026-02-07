@@ -77,6 +77,7 @@ public class TemplatedProcessor extends AbstractProcessor {
              }
         }
 
+        // 1. Find all placeholders
         for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
             DataField dataField = field.getAnnotation(DataField.class);
             if (dataField != null) {
@@ -89,7 +90,20 @@ public class TemplatedProcessor extends AbstractProcessor {
                     htmlElementClass,
                     field.getSimpleName(),
                     "[data-field='" + dataFieldName + "']");
+            }
+        }
 
+        // 2. Move to DocumentFragment to avoid reflows during manipulation
+        ClassName fragmentClass = ClassName.get("org.teavm.jso.dom.xml", "DocumentFragment");
+        bindMethod.addStatement("$T fragment = doc.createDocumentFragment()", fragmentClass);
+        bindMethod.beginControlFlow("while (root.hasChildNodes())");
+        bindMethod.addStatement("fragment.appendChild(root.getFirstChild())");
+        bindMethod.endControlFlow();
+
+        // 3. Process fields
+        for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
+            DataField dataField = field.getAnnotation(DataField.class);
+            if (dataField != null) {
                 bindMethod.beginControlFlow("if (el_$L != null)", field.getSimpleName());
 
                 // Check if the field type is HTMLElement
@@ -99,25 +113,7 @@ public class TemplatedProcessor extends AbstractProcessor {
                         com.squareup.javapoet.TypeName.get(field.asType()),
                         field.getSimpleName());
                 } else {
-                    // Assume it is a nested component.
-                    // 1. Check if the component is injected. (If not, we might need to instantiate it, but let's assume IOC handles it)
-                    // The IOCProcessor injects the bean. Here we just need to SWAP the element.
-                    // But wait, if we are in the Binder, 'target' is already instantiated.
-                    // 'target.field' should be populated by IOC if it has @Inject.
-
-                    // Logic:
-                    // 1. Get the component instance from the field.
-                    // 2. Access its 'element' field (Convention!).
-                    // 3. Replace 'el_field' with 'component.element' in the DOM.
-
                     bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
-                    // We need to access target.field.element.
-                    // Since we don't know the exact type structure at compile time easily without reflection or strict rules,
-                    // we will cast to a convention or assume public field 'element'.
-                    // For this PoC, we assume the component has a public 'element' field of type HTMLElement.
-                    // We can't easily check fields of other classes in APT without full TypeMirror resolution, which is doable but verbose.
-                    // Let's generate code that assumes it exists.
-
                     bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
                     bindMethod.beginControlFlow("if (widgetElement != null)");
 
@@ -138,11 +134,11 @@ public class TemplatedProcessor extends AbstractProcessor {
                     // 3. Copy Style
                     bindMethod.addStatement("String placeholderStyle = el_$L.getAttribute(\"style\")", field.getSimpleName());
                     bindMethod.beginControlFlow("if (placeholderStyle != null && !placeholderStyle.isEmpty())");
-                    // Simple concatenation for style string; robust parsing is too complex for this PoC
                     bindMethod.addStatement("String currentStyle = widgetElement.getAttribute(\"style\")");
                     bindMethod.addStatement("widgetElement.setAttribute(\"style\", (currentStyle != null ? currentStyle + \";\" : \"\") + placeholderStyle)");
                     bindMethod.endControlFlow();
 
+                    // Replace in DOM (now in Fragment)
                     bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
                     bindMethod.endControlFlow();
 
@@ -153,6 +149,7 @@ public class TemplatedProcessor extends AbstractProcessor {
             }
         }
 
+        bindMethod.addStatement("root.appendChild(fragment)");
         bindMethod.addStatement("return root");
 
         TypeSpec binderClass = TypeSpec.classBuilder(binderName)
