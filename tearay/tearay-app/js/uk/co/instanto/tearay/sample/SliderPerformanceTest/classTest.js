@@ -1196,6 +1196,7 @@
             return $rt_createArray(var$1, var$2)
         }
     }
+    var ucita_IsWidget = $rt_classWithoutFields(0);
     var jl_System = $rt_classWithoutFields();
     function jl_System_arraycopy($src, $srcPos, $dest, $destPos, $length) {
         var var$6, $srcType, $targetType, $srcArray, $i, var$11, var$12, $elem;
@@ -2779,6 +2780,7 @@
     jl_IndexOutOfBoundsException, "IndexOutOfBoundsException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_IndexOutOfBoundsException__init_0)],
     ju_Arrays, 0, jl_Object, [], 0, 3, 0, 0, 0,
     jlr_Array, 0, jl_Object, [], 4, 3, 0, 0, 0,
+    ucita_IsWidget, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_System, 0, jl_Object, [], 4, 3, 0, 0, 0,
     jl_Iterable, 0, jl_Object, [], 3, 3, 0, 0, 0,
     ju_Collection, 0, jl_Object, [jl_Iterable], 3, 3, 0, 0, 0,
@@ -2799,7 +2801,7 @@
     jl_Character, 0, jl_Object, [jl_Comparable], 0, 3, 0, jl_Character_$callClinit, 0,
     otci_IntegerUtil, 0, jl_Object, [], 4, 3, 0, 0, 0,
     jl_Long, "Long", 2, jl_Number, [jl_Comparable], 0, 3, 0, jl_Long_$callClinit, ["$_init_4", $rt_wrapFunction1(jl_Long__init_0), "$toString", $rt_wrapFunction0(jl_Long_toString0)],
-    ucitw_Widget, 0, jl_Object, [], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
+    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
     jl_Math, 0, jl_Object, [], 4, 3, 0, 0, 0,
     otj_JSObject, 0, jl_Object, [], 3, 3, 0, 0, 0,
     otjc_JSWeakMap, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
@@ -2822,9 +2824,9 @@
     "$toString", $rt_wrapFunction0(jl_AbstractStringBuilder_toString)],
     jl_Appendable, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_StringBuilder, 0, jl_AbstractStringBuilder, [jl_Appendable], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_StringBuilder__init_0), "$append", $rt_wrapFunction1(jl_StringBuilder_append), "$append8", $rt_wrapFunction1(jl_StringBuilder_append1), "$append9", $rt_wrapFunction1(jl_StringBuilder_append2), "$append1", $rt_wrapFunction1(jl_StringBuilder_append3), "$append0", $rt_wrapFunction1(jl_StringBuilder_append0), "$insert7", $rt_wrapFunction2(jl_StringBuilder_insert), "$insert5", $rt_wrapFunction2(jl_StringBuilder_insert0),
-    "$insert6", $rt_wrapFunction2(jl_StringBuilder_insert1), "$insert8", $rt_wrapFunction2(jl_StringBuilder_insert2), "$toString", $rt_wrapFunction0(jl_StringBuilder_toString), "$ensureCapacity", $rt_wrapFunction1(jl_StringBuilder_ensureCapacity), "$insert", $rt_wrapFunction2(jl_StringBuilder_insert3), "$insert4", $rt_wrapFunction2(jl_StringBuilder_insert4), "$insert2", $rt_wrapFunction2(jl_StringBuilder_insert5), "$insert0", $rt_wrapFunction2(jl_StringBuilder_insert6)],
-    jl_ArrayStoreException, "ArrayStoreException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayStoreException__init_0)]]);
-    $rt_metadata([ju_ConcurrentModificationException, "ConcurrentModificationException", 1, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_ConcurrentModificationException__init_0)],
+    "$insert6", $rt_wrapFunction2(jl_StringBuilder_insert1), "$insert8", $rt_wrapFunction2(jl_StringBuilder_insert2), "$toString", $rt_wrapFunction0(jl_StringBuilder_toString), "$ensureCapacity", $rt_wrapFunction1(jl_StringBuilder_ensureCapacity), "$insert", $rt_wrapFunction2(jl_StringBuilder_insert3), "$insert4", $rt_wrapFunction2(jl_StringBuilder_insert4), "$insert2", $rt_wrapFunction2(jl_StringBuilder_insert5), "$insert0", $rt_wrapFunction2(jl_StringBuilder_insert6)]]);
+    $rt_metadata([jl_ArrayStoreException, "ArrayStoreException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayStoreException__init_0)],
+    ju_ConcurrentModificationException, "ConcurrentModificationException", 1, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_ConcurrentModificationException__init_0)],
     jlr_AnnotatedElement, 0, jl_Object, [], 3, 3, 0, 0, 0,
     otjc_JSFinalizationRegistryConsumer, 0, jl_Object, [otj_JSObject], 3, 3, 0, 0, 0,
     otjde_EventListener, 0, jl_Object, [otj_JSObject], 3, 3, 0, 0, 0,

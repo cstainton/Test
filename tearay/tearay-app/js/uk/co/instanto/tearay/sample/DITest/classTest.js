@@ -1585,9 +1585,6 @@
     function ju_Collections$2_get($this, $key) {
         return null;
     }
-    function ju_Collections$2_containsKey($this, $key) {
-        return 0;
-    }
     var jl_Long = $rt_classWithoutFields(jl_Number);
     var jl_Long_TYPE = null;
     function jl_Long_$callClinit() {
@@ -1613,9 +1610,6 @@
     }
     function ucitw_Widget__init_($this) {
         jl_Object__init_0($this);
-    }
-    function ucitw_Widget_getElement($this) {
-        return $this.$element;
     }
     var otj_TestEntryPoint$Launcher = $rt_classWithoutFields(0);
     var otj_TestEntryPoint$LauncherImpl1 = $rt_classWithoutFields();
@@ -2226,11 +2220,8 @@
         var$0.$handleEvent(var$1);
     }
     var ucits_LoginPage_Factory = $rt_classWithoutFields();
-    var ucits_LoginPage_Factory_instance = null;
     function ucits_LoginPage_Factory_getInstance() {
-        if (ucits_LoginPage_Factory_instance === null)
-            ucits_LoginPage_Factory_instance = ucits_LoginPage_Factory_createInstance();
-        return ucits_LoginPage_Factory_instance;
+        return ucits_LoginPage_Factory_createInstance();
     }
     function ucits_LoginPage_Factory_createInstance() {
         var $bean;
@@ -2375,7 +2366,7 @@
         $this.$goTo($role, ju_Collections_emptyMap());
     }
     function uciti_NavigationImpl_goTo0($this, $role, $state) {
-        var $body, var$4, $hash, $entry, var$7, var$8, var$9, var$10, $page_dashboard, $page_user_profile, $page_login;
+        var $body, var$4, $hash, $entry, var$7, var$8, var$9, var$10, $page_dashboard, $val, $page_user_profile, $page_login;
         $body = $rt_globals.window.document.body;
         var$4 = "";
         $body.innerText = var$4;
@@ -2397,11 +2388,11 @@
             $rt_nullCheck(var$7).$append8(var$8);
         }
         a: {
-            var$8 = $rt_globals.window.history;
+            var$9 = $rt_globals.window.history;
             var$4 = null;
-            var$9 = null;
-            var$7 = $hash.$toString();
-            var$8.pushState(var$4, $rt_ustr(var$9), $rt_ustr(var$7));
+            var$7 = null;
+            var$8 = $hash.$toString();
+            var$9.pushState(var$4, $rt_ustr(var$7), $rt_ustr(var$8));
             var$10 = (-1);
             $role = $rt_nullCheck($role);
             switch ($role.$hashCode()) {
@@ -2427,10 +2418,10 @@
             switch (var$10) {
                 case 0:
                     $page_dashboard = ucits_DashboardPage_Factory_getInstance();
-                    if ($state.$containsKey($rt_s(16))) {
-                        var$4 = $rt_castToClass($state.$get($rt_s(16)), jl_String);
+                    $val = $rt_castToClass($state.$get($rt_s(16)), jl_String);
+                    if ($val !== null) {
                         $page_dashboard = $rt_nullCheck($page_dashboard);
-                        $page_dashboard.$username = var$4;
+                        $page_dashboard.$username = $val;
                     }
                     $page_dashboard = $rt_nullCheck($page_dashboard);
                     $page_dashboard.$onShow();
@@ -2446,15 +2437,15 @@
                         return;
                     }
                     $page_user_profile = ucits_UserProfilePage_Factory_getInstance();
-                    if ($state.$containsKey($rt_s(18))) {
-                        var$4 = $rt_castToClass($state.$get($rt_s(18)), jl_String);
+                    $val = $rt_castToClass($state.$get($rt_s(18)), jl_String);
+                    if ($val !== null) {
                         $page_user_profile = $rt_nullCheck($page_user_profile);
-                        $page_user_profile.$userId = var$4;
+                        $page_user_profile.$userId = $val;
                     }
-                    if ($state.$containsKey($rt_s(19))) {
-                        var$4 = $rt_castToClass($state.$get($rt_s(19)), jl_String);
+                    $val = $rt_castToClass($state.$get($rt_s(19)), jl_String);
+                    if ($val !== null) {
                         $page_user_profile = $rt_nullCheck($page_user_profile);
-                        $page_user_profile.$name = var$4;
+                        $page_user_profile.$name = $val;
                     }
                     $page_user_profile = $rt_nullCheck($page_user_profile);
                     $page_user_profile.$onShow();
@@ -2853,22 +2844,75 @@
     }
     var ucits_UserProfilePage_Binder = $rt_classWithoutFields();
     function ucits_UserProfilePage_Binder_bind($target) {
-        var $doc, $root, var$4, $el_idSpan, $el_nameSpan, $el_backBtn;
+        var $doc, $root, var$4, $el_idSpan, $el_nameSpan, $el_backBtn, $nodes, $i, var$10, $attr, var$12, $fragment;
         $doc = $rt_globals.window.document;
         $root = $doc.createElement("div");
         var$4 = "<div>     <h1>User Profile</h1>     <p>User ID: <span data-field=\"idSpan\"></span></p>     <p>Name: <span data-field=\"nameSpan\"></span></p>     <button data-field=\"backBtn\">Back to Dashboard</button> </div> ";
         $root.innerHTML = var$4;
         $target = $rt_nullCheck($target);
         $target.$element1 = $root;
-        $el_idSpan = $root.querySelector("[data-field=\'idSpan\']");
+        $el_idSpan = null;
+        $el_nameSpan = null;
+        $el_backBtn = null;
+        $nodes = $root.querySelectorAll("[data-field]");
+        $i = 0;
+        while ($i < $nodes.length) {
+            a: {
+                var$10 = $nodes.item($i);
+                $attr = $rt_str(var$10.getAttribute("data-field"));
+                var$12 = (-1);
+                $attr = $rt_nullCheck($attr);
+                switch ($attr.$hashCode()) {
+                    case -1193970939:
+                        if (!$attr.$equals($rt_s(31)))
+                            break a;
+                        var$12 = 0;
+                        break a;
+                    case -347241483:
+                        if (!$attr.$equals($rt_s(32)))
+                            break a;
+                        var$12 = 2;
+                        break a;
+                    case 1840556149:
+                        if (!$attr.$equals($rt_s(33)))
+                            break a;
+                        var$12 = 1;
+                        break a;
+                    default:
+                }
+            }
+            b: {
+                switch (var$12) {
+                    case 0:
+                        break;
+                    case 1:
+                        $el_nameSpan = var$10;
+                        var$10 = $el_idSpan;
+                        break b;
+                    case 2:
+                        $el_backBtn = var$10;
+                        var$10 = $el_idSpan;
+                        break b;
+                    default:
+                        var$10 = $el_idSpan;
+                        break b;
+                }
+            }
+            $i = $i + 1 | 0;
+            $el_idSpan = var$10;
+        }
+        $fragment = $doc.createDocumentFragment();
+        while ($root.hasChildNodes() ? 1 : 0) {
+            var$4 = $root.firstChild;
+            $fragment.appendChild(var$4);
+        }
         if ($el_idSpan !== null)
             $target.$idSpan = $el_idSpan;
-        $el_nameSpan = $root.querySelector("[data-field=\'nameSpan\']");
         if ($el_nameSpan !== null)
             $target.$nameSpan = $el_nameSpan;
-        $el_backBtn = $root.querySelector("[data-field=\'backBtn\']");
         if ($el_backBtn !== null)
             $target.$backBtn = $el_backBtn;
+        $root.appendChild($fragment);
         return $root;
     }
     var jl_NegativeArraySizeException = $rt_classWithoutFields(jl_RuntimeException);
@@ -3028,11 +3072,11 @@
         return var$1;
     }
     function ucitw_Button$Type__clinit_() {
-        ucitw_Button$Type_PRIMARY = ucitw_Button$Type__init_($rt_s(31), 0, $rt_s(32));
-        ucitw_Button$Type_SUCCESS = ucitw_Button$Type__init_($rt_s(33), 1, $rt_s(34));
-        ucitw_Button$Type_DANGER = ucitw_Button$Type__init_($rt_s(35), 2, $rt_s(36));
-        ucitw_Button$Type_WARNING = ucitw_Button$Type__init_($rt_s(37), 3, $rt_s(38));
-        ucitw_Button$Type_INFO = ucitw_Button$Type__init_($rt_s(39), 4, $rt_s(40));
+        ucitw_Button$Type_PRIMARY = ucitw_Button$Type__init_($rt_s(34), 0, $rt_s(35));
+        ucitw_Button$Type_SUCCESS = ucitw_Button$Type__init_($rt_s(36), 1, $rt_s(37));
+        ucitw_Button$Type_DANGER = ucitw_Button$Type__init_($rt_s(38), 2, $rt_s(39));
+        ucitw_Button$Type_WARNING = ucitw_Button$Type__init_($rt_s(40), 3, $rt_s(41));
+        ucitw_Button$Type_INFO = ucitw_Button$Type__init_($rt_s(42), 4, $rt_s(43));
         ucitw_Button$Type_$VALUES = ucitw_Button$Type_$values();
     }
     function ju_AbstractList$1() {
@@ -3217,19 +3261,63 @@
     }
     var ucits_LoginPage_Binder = $rt_classWithoutFields();
     function ucits_LoginPage_Binder_bind($target) {
-        var $doc, $root, var$4, $el_loginBtn, $el_adminLoginBtn;
+        var $doc, $root, var$4, $el_loginBtn, $el_adminLoginBtn, $nodes, $i, var$9, $attr, var$11, $fragment;
         $doc = $rt_globals.window.document;
         $root = $doc.createElement("div");
         var$4 = "<div>     <h1>Login Page</h1>     <button data-field=\"loginBtn\">Login as User</button>     <button data-field=\"adminLoginBtn\">Login as Admin</button> </div> ";
         $root.innerHTML = var$4;
         $target = $rt_nullCheck($target);
         $target.$element2 = $root;
-        $el_loginBtn = $root.querySelector("[data-field=\'loginBtn\']");
+        $el_loginBtn = null;
+        $el_adminLoginBtn = null;
+        $nodes = $root.querySelectorAll("[data-field]");
+        $i = 0;
+        while ($i < $nodes.length) {
+            a: {
+                var$9 = $nodes.item($i);
+                $attr = $rt_str(var$9.getAttribute("data-field"));
+                var$11 = (-1);
+                $attr = $rt_nullCheck($attr);
+                switch ($attr.$hashCode()) {
+                    case 710679202:
+                        if (!$attr.$equals($rt_s(44)))
+                            break a;
+                        var$11 = 1;
+                        break a;
+                    case 2022732339:
+                        if (!$attr.$equals($rt_s(45)))
+                            break a;
+                        var$11 = 0;
+                        break a;
+                    default:
+                }
+            }
+            b: {
+                switch (var$11) {
+                    case 0:
+                        break;
+                    case 1:
+                        $el_adminLoginBtn = var$9;
+                        var$9 = $el_loginBtn;
+                        break b;
+                    default:
+                        var$9 = $el_loginBtn;
+                        break b;
+                }
+            }
+            $i = $i + 1 | 0;
+            $el_loginBtn = var$9;
+        }
+        $fragment = $doc.createDocumentFragment();
+        while ($root.hasChildNodes() ? 1 : 0) {
+            var$4 = $root.firstChild;
+            $fragment.appendChild(var$4);
+        }
         if ($el_loginBtn !== null)
             $target.$loginBtn = $el_loginBtn;
-        $el_adminLoginBtn = $root.querySelector("[data-field=\'adminLoginBtn\']");
         if ($el_adminLoginBtn !== null)
             $target.$adminLoginBtn = $el_adminLoginBtn;
+        $root.appendChild($fragment);
         return $root;
     }
     function ucits_DashboardPage$onShow$lambda$_1_8() {
@@ -3417,6 +3505,7 @@
         jl_RuntimeException__init_1($this);
     }
     var otpp_ResourceAccessor = $rt_classWithoutFields();
+    var ucits_GreetingService = $rt_classWithoutFields(0);
     var jl_NoSuchFieldError = $rt_classWithoutFields(jl_IncompatibleClassChangeError);
     function jl_NoSuchFieldError__init_(var_0) {
         var var_1 = new jl_NoSuchFieldError();
@@ -3428,30 +3517,64 @@
     }
     var ucits_DashboardPage_Binder = $rt_classWithoutFields();
     function ucits_DashboardPage_Binder_bind($target) {
-        var $doc, $root, var$4, $el_container, $widgetElement, $currentClasses, $placeholderClasses, var$9, $placeholderId, $placeholderStyle, $currentStyle, var$13;
+        var $doc, $root, var$4, $el_container, $nodes, $i, var$8, $attr, var$10, $fragment, $widgetElement, $currentClasses, $placeholderClasses, $placeholderId, $placeholderStyle, $currentStyle, var$18;
         $doc = $rt_globals.window.document;
         $root = $doc.createElement("div");
-        var$4 = "<div>     <h1>Dashboard</h1>     <div data-field=\"content\"></div>     <div data-field=\"userBtn\"></div>     <div data-field=\"backBtn\"></div> </div> ";
+        var$4 = "<div>     <h1>Dashboard</h1>     <div data-field=\"container\"></div> </div> ";
         $root.innerHTML = var$4;
         $target = $rt_nullCheck($target);
         $target.$element0 = $root;
-        $el_container = $root.querySelector("[data-field=\'container\']");
+        $el_container = null;
+        $nodes = $root.querySelectorAll("[data-field]");
+        $i = 0;
+        while ($i < $nodes.length) {
+            a: {
+                var$8 = $nodes.item($i);
+                $attr = $rt_str(var$8.getAttribute("data-field"));
+                var$10 = (-1);
+                $attr = $rt_nullCheck($attr);
+                switch ($attr.$hashCode()) {
+                    case -410956671:
+                        if (!$attr.$equals($rt_s(46)))
+                            break a;
+                        var$10 = 0;
+                        break a;
+                    default:
+                }
+            }
+            b: {
+                switch (var$10) {
+                    case 0:
+                        break;
+                    default:
+                        var$8 = $el_container;
+                        break b;
+                }
+            }
+            $i = $i + 1 | 0;
+            $el_container = var$8;
+        }
+        $fragment = $doc.createDocumentFragment();
+        while ($root.hasChildNodes() ? 1 : 0) {
+            var$4 = $root.firstChild;
+            $fragment.appendChild(var$4);
+        }
         if ($el_container !== null && $target.$container !== null) {
-            $widgetElement = $rt_nullCheck($target.$container).$getElement();
+            $widgetElement = $rt_nullCheck($target.$container).$element;
             if ($widgetElement !== null) {
                 $currentClasses = $rt_str($widgetElement.className);
                 $placeholderClasses = $rt_str($el_container.className);
                 if ($placeholderClasses !== null && !$placeholderClasses.$isEmpty()) {
                     if ($currentClasses === null)
-                        var$4 = $rt_s(41);
+                        var$4 = $rt_s(47);
                     else {
-                        var$4 = jl_StringBuilder__init_();
-                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$4, $currentClasses)), 32);
-                        var$4 = jl_StringBuilder_toString(var$4);
+                        var$8 = jl_StringBuilder__init_();
+                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$8, $currentClasses)), 32);
+                        var$4 = jl_StringBuilder_toString(var$8);
                     }
-                    var$9 = jl_StringBuilder__init_();
-                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$9, var$4)), $placeholderClasses);
-                    var$4 = $rt_ustr(jl_StringBuilder_toString(var$9));
+                    var$8 = jl_StringBuilder__init_();
+                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$8, var$4)), $placeholderClasses);
+                    var$4 = $rt_ustr(jl_StringBuilder_toString(var$8));
                     $widgetElement.className = var$4;
                 }
                 $placeholderId = $rt_str($el_container.getAttribute("id"));
@@ -3461,20 +3584,21 @@
                 if ($placeholderStyle !== null && !$placeholderStyle.$isEmpty()) {
                     $currentStyle = $rt_str($widgetElement.getAttribute("style"));
                     if ($currentStyle === null)
-                        var$9 = $rt_s(41);
+                        var$4 = $rt_s(47);
                     else {
-                        var$9 = jl_StringBuilder__init_();
-                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$9, $currentStyle)), 59);
-                        var$9 = jl_StringBuilder_toString(var$9);
+                        var$18 = jl_StringBuilder__init_();
+                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$18, $currentStyle)), 59);
+                        var$4 = jl_StringBuilder_toString(var$18);
                     }
-                    var$13 = jl_StringBuilder__init_();
-                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$13, var$9)), $placeholderStyle);
-                    var$13 = jl_StringBuilder_toString(var$13);
-                    $widgetElement.setAttribute("style", $rt_ustr(var$13));
+                    var$18 = jl_StringBuilder__init_();
+                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$18, var$4)), $placeholderStyle);
+                    var$4 = jl_StringBuilder_toString(var$18);
+                    $widgetElement.setAttribute("style", $rt_ustr(var$4));
                 }
                 $el_container.parentNode.replaceChild($widgetElement, $el_container);
             }
         }
+        $root.appendChild($fragment);
         return $root;
     }
     function ucits_DashboardPage() {
@@ -3499,10 +3623,10 @@
         var$2 = "";
         var$1.innerText = var$2;
         $navbar = ucitw_Navbar__init_();
-        $navbar.$setBrand($rt_s(42));
+        $navbar.$setBrand($rt_s(48));
         $navbar.$setSticky(1);
-        $navbar.$addLink($rt_s(43), ucits_DashboardPage$onShow$lambda$_1_0__init_());
-        $navbar.$addLink($rt_s(44), ucits_DashboardPage$onShow$lambda$_1_1__init_($this));
+        $navbar.$addLink($rt_s(49), ucits_DashboardPage$onShow$lambda$_1_0__init_());
+        $navbar.$addLink($rt_s(50), ucits_DashboardPage$onShow$lambda$_1_1__init_($this));
         var$2 = $rt_nullCheck($this.$container).$element;
         var$1 = $navbar.$element;
         var$2.appendChild(var$1);
@@ -3516,22 +3640,22 @@
         var$1 = $col1.$element;
         var$2.appendChild(var$1);
         $card = ucitw_Card__init_();
-        var$2 = $this.$username === null ? $rt_s(45) : $this.$username;
+        var$2 = $this.$username === null ? $rt_s(51) : $this.$username;
         var$1 = jl_StringBuilder__init_();
-        jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$1, $rt_s(46))), var$2);
+        jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$1, $rt_s(52))), var$2);
         $card.$setTitle(jl_StringBuilder_toString(var$1));
         $card.$setText($rt_nullCheck($this.$service).$getGreeting());
         var$2 = $col1.$element;
         var$1 = $card.$element;
         var$2.appendChild(var$1);
         $profileBtn = ucitw_Button__init_();
-        $profileBtn.$setText($rt_s(47));
+        $profileBtn.$setText($rt_s(53));
         ucitw_Button$Type_$callClinit();
         $profileBtn.$setType(ucitw_Button$Type_PRIMARY);
         $profileBtn.$addClickListener(ucits_DashboardPage$onShow$lambda$_1_2__init_($this));
         $card.$addContent($profileBtn);
-        $r1 = ucitw_RadioButton__init_($rt_s(48), $rt_s(49));
-        $r2 = ucitw_RadioButton__init_($rt_s(48), $rt_s(50));
+        $r1 = ucitw_RadioButton__init_($rt_s(54), $rt_s(55));
+        $r2 = ucitw_RadioButton__init_($rt_s(54), $rt_s(56));
         $r1.$addChangeHandler(ucits_DashboardPage$onShow$lambda$_1_3__init_());
         $r2.$addChangeHandler(ucits_DashboardPage$onShow$lambda$_1_4__init_());
         var$2 = $col1.$element;
@@ -3548,12 +3672,12 @@
         $alert = ucitw_Alert__init_();
         ucitw_Alert$Type_$callClinit();
         $alert.$setType0(ucitw_Alert$Type_INFO);
-        $alert.$setText($rt_s(51));
+        $alert.$setText($rt_s(57));
         var$2 = $col2.$element;
         var$1 = $alert.$element;
         var$2.appendChild(var$1);
         $logoutBtn = ucitw_Button__init_();
-        $logoutBtn.$setText($rt_s(52));
+        $logoutBtn.$setText($rt_s(58));
         $logoutBtn.$setType(ucitw_Button$Type_DANGER);
         $logoutBtn.$addClickListener(ucits_DashboardPage$onShow$lambda$_1_5__init_($this));
         var$1 = $col2.$element;
@@ -3567,12 +3691,12 @@
         var$1 = $col2.$element;
         var$13 = $slider.$element;
         var$1.appendChild(var$13);
-        $toggle = ucitw_Switch__init_($rt_s(53));
+        $toggle = ucitw_Switch__init_($rt_s(59));
         $toggle.$addChangeHandler(ucits_DashboardPage$onShow$lambda$_1_7__init_($alert, $toggle));
         var$2 = $col2.$element;
         var$1 = $toggle.$element;
         var$2.appendChild(var$1);
-        $agree = ucitw_Checkbox__init_($rt_s(54));
+        $agree = ucitw_Checkbox__init_($rt_s(60));
         $agree.$addChangeHandler(ucits_DashboardPage$onShow$lambda$_1_8__init_($agree, $logoutBtn));
         var$2 = $col2.$element;
         var$1 = $agree.$element;
@@ -3586,21 +3710,21 @@
             var$4 = ucitw_Button$Type_WARNING;
             $logoutBtn = $rt_nullCheck($logoutBtn);
             $logoutBtn.$setType(var$4);
-            $logoutBtn.$setText($rt_s(55));
+            $logoutBtn.$setText($rt_s(61));
         } else {
             ucitw_Button$Type_$callClinit();
             var$4 = ucitw_Button$Type_DANGER;
             $logoutBtn = $rt_nullCheck($logoutBtn);
             $logoutBtn.$setType(var$4);
-            $logoutBtn.$setText($rt_s(56));
+            $logoutBtn.$setText($rt_s(62));
         }
     }
     function ucits_DashboardPage_lambda$onShow$7($alert, $toggle, $e) {
         var var$4, var$5;
         $toggle = $rt_nullCheck($toggle);
-        var$4 = !$toggle.$isChecked() ? $rt_s(57) : $rt_s(58);
+        var$4 = !$toggle.$isChecked() ? $rt_s(63) : $rt_s(64);
         var$5 = jl_StringBuilder__init_();
-        jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$5, $rt_s(59))), var$4);
+        jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$5, $rt_s(65))), var$4);
         var$4 = jl_StringBuilder_toString(var$5);
         $alert = $rt_nullCheck($alert);
         $alert.$setText(var$4);
@@ -3610,7 +3734,7 @@
         $slider = $rt_nullCheck($slider);
         var$4 = $slider.$getValue1();
         var$5 = jl_StringBuilder__init_();
-        jl_StringBuilder_append1($rt_nullCheck(jl_StringBuilder_append(var$5, $rt_s(60))), var$4);
+        jl_StringBuilder_append1($rt_nullCheck(jl_StringBuilder_append(var$5, $rt_s(66))), var$4);
         var$5 = jl_StringBuilder_toString(var$5);
         $alert = $rt_nullCheck($alert);
         $alert.$setText(var$5);
@@ -3627,14 +3751,14 @@
     function ucits_DashboardPage_lambda$onShow$2($this, $e) {
         var $params;
         $params = ju_HashMap__init_();
-        $params.$put($rt_s(18), $rt_s(61));
-        $params.$put($rt_s(19), $rt_s(62));
+        $params.$put($rt_s(18), $rt_s(67));
+        $params.$put($rt_s(19), $rt_s(68));
         $rt_nullCheck($this.$navigation2).$goTo($rt_s(14), $params);
     }
     function ucits_DashboardPage_lambda$onShow$1($this, $e) {
         var $params;
         $params = ju_HashMap__init_();
-        $params.$put($rt_s(18), $rt_s(61));
+        $params.$put($rt_s(18), $rt_s(67));
         $rt_nullCheck($this.$navigation2).$goTo($rt_s(14), $params);
     }
     function ucits_DashboardPage_lambda$onShow$0($e) {
@@ -3644,7 +3768,7 @@
     function otci_IntegerUtil_toUnsignedLogRadixString($value, $radixLog2) {
         var $radix, $mask, $sz, $chars, $pos, $target, var$9, $target_0, var$11;
         if (!$value)
-            return $rt_s(63);
+            return $rt_s(69);
         $radix = 1 << $radixLog2;
         $mask = $radix - 1 | 0;
         $sz = (((32 - jl_Integer_numberOfLeadingZeros($value) | 0) + $radixLog2 | 0) - 1 | 0) / $radixLog2 | 0;
@@ -3735,11 +3859,8 @@
         return ju_HashMap$EntryIterator__init_($this.$associatedMap0);
     }
     var ucits_DashboardPage_Factory = $rt_classWithoutFields();
-    var ucits_DashboardPage_Factory_instance = null;
     function ucits_DashboardPage_Factory_getInstance() {
-        if (ucits_DashboardPage_Factory_instance === null)
-            ucits_DashboardPage_Factory_instance = ucits_DashboardPage_Factory_createInstance();
-        return ucits_DashboardPage_Factory_instance;
+        return ucits_DashboardPage_Factory_createInstance();
     }
     function ucits_DashboardPage_Factory_createInstance() {
         var $bean;
@@ -3805,13 +3926,13 @@
         var var$2, var$3, var$4;
         if (!$sticky) {
             var$2 = $this.$element;
-            var$3 = $rt_ustr($rt_nullCheck($rt_str($this.$element.className)).$replace($rt_s(64), $rt_s(41)));
+            var$3 = $rt_ustr($rt_nullCheck($rt_str($this.$element.className)).$replace($rt_s(70), $rt_s(47)));
             var$2.className = var$3;
         } else {
             var$2 = $this.$element;
             var$3 = $rt_str($this.$element.className);
             var$4 = jl_StringBuilder__init_();
-            jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$4, var$3)), $rt_s(64));
+            jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$4, var$3)), $rt_s(70));
             var$3 = $rt_ustr(jl_StringBuilder_toString(var$4));
             var$2.className = var$3;
         }
@@ -3911,12 +4032,12 @@
     function otj_TestEntryPoint_launchers(var$1, var$2) {
         var var$3;
         var$3 = $rt_nullCheck(var$1);
-        if (jl_String_equals(var$3, $rt_s(65))) {
+        if (jl_String_equals(var$3, $rt_s(71))) {
             $rt_nullCheck(var$2).$add(otj_TestEntryPoint$LauncherImpl0__init_());
             return;
         }
-        if (!jl_String_equals(var$3, $rt_s(66)))
-            $rt_throw(jl_IllegalArgumentException__init_1($rt_s(67)));
+        if (!jl_String_equals(var$3, $rt_s(72)))
+            $rt_throw(jl_IllegalArgumentException__init_1($rt_s(73)));
         var$1 = otj_TestEntryPoint$LauncherImpl1__init_();
         $rt_nullCheck(var$2).$add(var$1);
     }
@@ -3956,7 +4077,7 @@
     }
     var ju_Objects = $rt_classWithoutFields();
     function ju_Objects_requireNonNull($obj) {
-        return ju_Objects_requireNonNull0($obj, $rt_s(41));
+        return ju_Objects_requireNonNull0($obj, $rt_s(47));
     }
     function ju_Objects_requireNonNull0($obj, $message) {
         if ($obj !== null)
@@ -4021,7 +4142,7 @@
         var var$1, var$2;
         var$1 = jl_System_currentTimeMillis();
         var$2 = jl_StringBuilder__init_();
-        jl_StringBuilder_append3($rt_nullCheck(jl_StringBuilder_append(var$2, $rt_s(68))), var$1);
+        jl_StringBuilder_append3($rt_nullCheck(jl_StringBuilder_append(var$2, $rt_s(74))), var$1);
         return jl_StringBuilder_toString(var$2);
     }
     function ucits_LoginPage() {
@@ -4057,7 +4178,7 @@
         var$4[$rt_checkUpperBound(0, var$4)] = $rt_s(17);
         $rt_nullCheck(var$2).$setRoles(var$3);
         $params = ju_HashMap__init_();
-        $params.$put($rt_s(16), $rt_s(69));
+        $params.$put($rt_s(16), $rt_s(75));
         $rt_nullCheck($this.$navigation).$goTo($rt_s(13), $params);
     }
     function ucits_LoginPage_lambda$onShow$0($this, $e) {
@@ -4065,10 +4186,10 @@
         var$2 = $this.$securityProvider;
         var$3 = $rt_createArray(jl_String, 1);
         var$4 = var$3.data;
-        var$4[$rt_checkUpperBound(0, var$4)] = $rt_s(70);
+        var$4[$rt_checkUpperBound(0, var$4)] = $rt_s(76);
         $rt_nullCheck(var$2).$setRoles(var$3);
         $params = ju_HashMap__init_();
-        $params.$put($rt_s(16), $rt_s(71));
+        $params.$put($rt_s(16), $rt_s(77));
         $rt_nullCheck($this.$navigation).$goTo($rt_s(13), $params);
     }
     function ucits_App() {
@@ -4331,7 +4452,7 @@
         $js = $o;
         $type = $rt_str(typeof $js);
         $type = $rt_nullCheck($type);
-        $isObject = !$type.$equals($rt_s(72)) && !$type.$equals($rt_s(73)) ? 0 : 1;
+        $isObject = !$type.$equals($rt_s(78)) && !$type.$equals($rt_s(79)) ? 0 : 1;
         if ($isObject && $o[$rt_jso_marker] === true)
             return $o;
         if (otji_JSWrapper_wrappers !== null) {
@@ -4344,7 +4465,7 @@
                 otji_JSWrapper_wrappers.set($js, new $rt_globals.WeakRef($wrapper));
                 return $wrapper;
             }
-            if ($type.$equals($rt_s(74))) {
+            if ($type.$equals($rt_s(80))) {
                 $jsString = $js;
                 $existingRef = otji_JSWrapper_stringWrappers.get($jsString);
                 $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
@@ -4356,7 +4477,7 @@
                 otji_JSWrapper_register$js_body$_4(otji_JSWrapper_stringFinalizationRegistry, $wrapperAsJs, $jsString);
                 return $wrapper;
             }
-            if ($type.$equals($rt_s(75))) {
+            if ($type.$equals($rt_s(81))) {
                 $jsNumber = $js;
                 $existingRef = otji_JSWrapper_numberWrappers.get($jsNumber);
                 $existing = (typeof $existingRef === 'undefined' ? 1 : 0) ? void 0 : $existingRef.deref();
@@ -4368,7 +4489,7 @@
                 otji_JSWrapper_register$js_body$_4(otji_JSWrapper_numberFinalizationRegistry, $wrapperAsJs, $jsNumber);
                 return $wrapper;
             }
-            if ($type.$equals($rt_s(76))) {
+            if ($type.$equals($rt_s(82))) {
                 $existingRef = otji_JSWrapper_undefinedWrapper;
                 $existing = $existingRef === null ? void 0 : $existingRef.deref();
                 if (!(typeof $existing === 'undefined' ? 1 : 0))
@@ -4635,7 +4756,7 @@
             $stream.$append8(jl_StringBuilder_toString(var$3));
         }
         a: {
-            $stream.$append8($rt_s(77));
+            $stream.$append8($rt_s(83));
             $stackTrace = $e.$getStackTrace();
             if ($stackTrace !== null) {
                 var$6 = $stackTrace.data;
@@ -4646,14 +4767,14 @@
                         break a;
                     var$8 = $rt_checkLowerBound(var$8);
                     $element = var$6[var$8];
-                    $stream.$append8($rt_s(78));
-                    $rt_nullCheck($stream.$append($element)).$append8($rt_s(77));
+                    $stream.$append8($rt_s(84));
+                    $rt_nullCheck($stream.$append($element)).$append8($rt_s(83));
                     var$8 = var$8 + 1 | 0;
                 }
             }
         }
         if ($e.$getCause() !== null && $e.$getCause() !== $e) {
-            $stream.$append8($rt_s(79));
+            $stream.$append8($rt_s(85));
             otj_TestJsEntryPoint_printStackTrace($e.$getCause(), $stream);
         }
     }
@@ -4850,11 +4971,8 @@
         $this.$input2.addEventListener("change", otji_JS_function($listener, "handleEvent"));
     }
     var ucits_UserProfilePage_Factory = $rt_classWithoutFields();
-    var ucits_UserProfilePage_Factory_instance = null;
     function ucits_UserProfilePage_Factory_getInstance() {
-        if (ucits_UserProfilePage_Factory_instance === null)
-            ucits_UserProfilePage_Factory_instance = ucits_UserProfilePage_Factory_createInstance();
-        return ucits_UserProfilePage_Factory_instance;
+        return ucits_UserProfilePage_Factory_createInstance();
     }
     function ucits_UserProfilePage_Factory_createInstance() {
         var $bean;
@@ -4961,11 +5079,11 @@
         return var$1;
     }
     function ucitw_Alert$Type__clinit_() {
-        ucitw_Alert$Type_PRIMARY = ucitw_Alert$Type__init_($rt_s(31), 0, $rt_s(80));
-        ucitw_Alert$Type_SUCCESS = ucitw_Alert$Type__init_($rt_s(33), 1, $rt_s(81));
-        ucitw_Alert$Type_DANGER = ucitw_Alert$Type__init_($rt_s(35), 2, $rt_s(82));
-        ucitw_Alert$Type_WARNING = ucitw_Alert$Type__init_($rt_s(37), 3, $rt_s(83));
-        ucitw_Alert$Type_INFO = ucitw_Alert$Type__init_($rt_s(39), 4, $rt_s(84));
+        ucitw_Alert$Type_PRIMARY = ucitw_Alert$Type__init_($rt_s(34), 0, $rt_s(86));
+        ucitw_Alert$Type_SUCCESS = ucitw_Alert$Type__init_($rt_s(36), 1, $rt_s(87));
+        ucitw_Alert$Type_DANGER = ucitw_Alert$Type__init_($rt_s(38), 2, $rt_s(88));
+        ucitw_Alert$Type_WARNING = ucitw_Alert$Type__init_($rt_s(40), 3, $rt_s(89));
+        ucitw_Alert$Type_INFO = ucitw_Alert$Type__init_($rt_s(42), 4, $rt_s(90));
         ucitw_Alert$Type_$VALUES = ucitw_Alert$Type_$values();
     }
     $rt_packages([-1, "java", 0, "util", 0, "lang"
@@ -5006,10 +5124,10 @@
     ju_Map, 0, jl_Object, [], 3, 3, 0, 0, 0,
     ju_AbstractMap, 0, jl_Object, [ju_Map], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_AbstractMap__init_)],
     ju_TemplateCollections$AbstractImmutableMap, 0, ju_AbstractMap, [], 1, 0, 0, 0, ["$_init_", $rt_wrapFunction0(ju_TemplateCollections$AbstractImmutableMap__init_)],
-    ju_Collections$2, 0, ju_TemplateCollections$AbstractImmutableMap, [], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(ju_Collections$2__init_0), "$entrySet", $rt_wrapFunction0(ju_Collections$2_entrySet), "$get", $rt_wrapFunction1(ju_Collections$2_get), "$containsKey", $rt_wrapFunction1(ju_Collections$2_containsKey)],
+    ju_Collections$2, 0, ju_TemplateCollections$AbstractImmutableMap, [], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(ju_Collections$2__init_0), "$entrySet", $rt_wrapFunction0(ju_Collections$2_entrySet), "$get", $rt_wrapFunction1(ju_Collections$2_get)],
     jl_Long, 0, jl_Number, [jl_Comparable], 0, 3, 0, jl_Long_$callClinit, 0,
     ucita_IsWidget, 0, jl_Object, [], 3, 3, 0, 0, 0,
-    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_), "$getElement", $rt_wrapFunction0(ucitw_Widget_getElement)],
+    ucitw_Widget, 0, jl_Object, [ucita_IsWidget], 1, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Widget__init_)],
     otj_TestEntryPoint$Launcher, 0, jl_Object, [], 3, 0, 0, 0, 0,
     otj_TestEntryPoint$LauncherImpl1, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl1__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl1_launch)],
     otj_TestEntryPoint$LauncherImpl0, 0, jl_Object, [otj_TestEntryPoint$Launcher], 0, 0, 0, 0, ["$_init_", $rt_wrapFunction0(otj_TestEntryPoint$LauncherImpl0__init_0), "$launch", $rt_wrapFunction1(otj_TestEntryPoint$LauncherImpl0_launch)],
@@ -5092,6 +5210,7 @@
     ju_HashMap$AbstractMapIterator, 0, jl_Object, [], 0, 0, 0, 0, ["$_init_16", $rt_wrapFunction1(ju_HashMap$AbstractMapIterator__init_0), "$hasNext", $rt_wrapFunction0(ju_HashMap$AbstractMapIterator_hasNext), "$checkConcurrentMod", $rt_wrapFunction0(ju_HashMap$AbstractMapIterator_checkConcurrentMod), "$makeNext", $rt_wrapFunction0(ju_HashMap$AbstractMapIterator_makeNext)],
     jl_NullPointerException, "NullPointerException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NullPointerException__init_1), "$_init_", $rt_wrapFunction0(jl_NullPointerException__init_2)],
     otpp_ResourceAccessor, 0, jl_Object, [], 4, 0, 0, 0, 0,
+    ucits_GreetingService, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_NoSuchFieldError, 0, jl_IncompatibleClassChangeError, [], 0, 3, 0, 0, ["$_init_0", $rt_wrapFunction1(jl_NoSuchFieldError__init_0)],
     ucits_DashboardPage_Binder, 0, jl_Object, [], 0, 3, 0, 0, 0,
     ucits_DashboardPage, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_DashboardPage__init_0), "$onShow", $rt_wrapFunction0(ucits_DashboardPage_onShow)],
@@ -5112,7 +5231,7 @@
     ju_HashMap$HashEntry, 0, ju_MapEntry, [], 0, 0, 0, 0, ["$_init_20", $rt_wrapFunction2(ju_HashMap$HashEntry__init_0)],
     jlr_Type, 0, jl_Object, [], 3, 3, 0, 0, 0,
     jl_ArrayStoreException, "ArrayStoreException", 2, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(jl_ArrayStoreException__init_0)],
-    ucits_HelloService, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_HelloService__init_0), "$getGreeting", $rt_wrapFunction0(ucits_HelloService_getGreeting)],
+    ucits_HelloService, 0, jl_Object, [ucits_GreetingService], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_HelloService__init_0), "$getGreeting", $rt_wrapFunction0(ucits_HelloService_getGreeting)],
     ucits_LoginPage, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_LoginPage__init_0), "$onShow", $rt_wrapFunction0(ucits_LoginPage_onShow)],
     ucits_App, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucits_App__init_0), "$onModuleLoad", $rt_wrapFunction0(ucits_App_onModuleLoad)],
     ju_HashMap, 0, ju_AbstractMap, [jl_Cloneable, ji_Serializable], 0, 3, 0, 0, ["$newElementArray", $rt_wrapFunction1(ju_HashMap_newElementArray), "$_init_", $rt_wrapFunction0(ju_HashMap__init_0), "$_init_3", $rt_wrapFunction1(ju_HashMap__init_2), "$_init_19", $rt_wrapFunction2(ju_HashMap__init_4), "$clear", $rt_wrapFunction0(ju_HashMap_clear), "$containsKey", $rt_wrapFunction1(ju_HashMap_containsKey), "$entrySet", $rt_wrapFunction0(ju_HashMap_entrySet), "$get", $rt_wrapFunction1(ju_HashMap_get), "$entryByKey",
@@ -5124,9 +5243,9 @@
     ucitw_Card, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Card__init_0), "$setTitle", $rt_wrapFunction1(ucitw_Card_setTitle), "$setText", $rt_wrapFunction1(ucitw_Card_setText), "$addContent", $rt_wrapFunction1(ucitw_Card_addContent)],
     ucitw_Row, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Row__init_0)],
     jl_NoClassDefFoundError, 0, jl_LinkageError, [], 0, 3, 0, 0, 0,
-    ju_NoSuchElementException, "NoSuchElementException", 1, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_NoSuchElementException__init_0)],
-    otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0]);
-    $rt_metadata([otci_CharFlow, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_15", $rt_wrapFunction1(otci_CharFlow__init_)],
+    ju_NoSuchElementException, "NoSuchElementException", 1, jl_RuntimeException, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ju_NoSuchElementException__init_0)]]);
+    $rt_metadata([otjc_JSWeakRef, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
+    otci_CharFlow, 0, jl_Object, [], 0, 3, 0, 0, ["$_init_15", $rt_wrapFunction1(otci_CharFlow__init_)],
     otjc_JSFinalizationRegistry, 0, jl_Object, [otj_JSObject], 1, 3, 0, 0, 0,
     otj_TestJsEntryPoint, 0, jl_Object, [], 4, 0, 0, 0, 0,
     ucitw_Slider, 0, ucitw_Widget, [], 0, 3, 0, 0, ["$_init_", $rt_wrapFunction0(ucitw_Slider__init_0), "$setMin", $rt_wrapFunction1(ucitw_Slider_setMin), "$setMax", $rt_wrapFunction1(ucitw_Slider_setMax), "$getValue1", $rt_wrapFunction0(ucitw_Slider_getValue), "$setValue", $rt_wrapFunction1(ucitw_Slider_setValue), "$addChangeHandler", $rt_wrapFunction1(ucitw_Slider_addChangeHandler)],
@@ -5170,8 +5289,8 @@
         return new $rt_array(this.type, dataCopy);
     });
     $rt_stringPool(["Either src or dest is null", "String is null", "String is empty", "String contains invalid digits: ", "String contains digits out of radix ", ": ", "The value is too big for int type: ", "Illegal radix: ", "btn ", "alert ", "null", ";", "=", "dashboard", "user-profile", "login", "username", "admin", "userId", "name", "Unknown page role: ", "N/A", "Unknown Source", ")", "App instance should not be null", "Navigation should be injected", "DashboardPage should not be null", "HelloService should be injected",
-    "Container widget should be injected", "Hello", "col-", "PRIMARY", "btn-primary", "SUCCESS", "btn-success", "DANGER", "btn-danger", "WARNING", "btn-warning", "INFO", "btn-info", "", "Tearay App", "Home", "Profile", "Guest", "Welcome ", "Go to User Profile", "options", "Option A", "Option B", "This is an info alert from the Widget library!", "Logout", "Enable Notifications", "I agree to the terms", "Logout (Disabled)", "Logout (Enabled)", "OFF", "ON", "Notifications: ", "Slider value: ", "12345", "TeaVM User",
-    "0", " sticky-top", "uk.co.instanto.tearay.sample.DITest.testDashboardInjection()V", "uk.co.instanto.tearay.sample.DITest.testAppInjection()V", "Invalid test name", "Hello from Injected Service! Time: ", "Administrator", "user", "RegularUser", "object", "function", "string", "number", "undefined", "\n", "\tat ", "Caused by: ", "alert-primary", "alert-success", "alert-danger", "alert-warning", "alert-info"]);
+    "Container widget should be injected", "Hello", "col-", "idSpan", "backBtn", "nameSpan", "PRIMARY", "btn-primary", "SUCCESS", "btn-success", "DANGER", "btn-danger", "WARNING", "btn-warning", "INFO", "btn-info", "adminLoginBtn", "loginBtn", "container", "", "Tearay App", "Home", "Profile", "Guest", "Welcome ", "Go to User Profile", "options", "Option A", "Option B", "This is an info alert from the Widget library!", "Logout", "Enable Notifications", "I agree to the terms", "Logout (Disabled)", "Logout (Enabled)",
+    "OFF", "ON", "Notifications: ", "Slider value: ", "12345", "TeaVM User", "0", " sticky-top", "uk.co.instanto.tearay.sample.DITest.testDashboardInjection()V", "uk.co.instanto.tearay.sample.DITest.testAppInjection()V", "Invalid test name", "Hello from Injected Service! Time: ", "Administrator", "user", "RegularUser", "object", "function", "string", "number", "undefined", "\n", "\tat ", "Caused by: ", "alert-primary", "alert-success", "alert-danger", "alert-warning", "alert-info"]);
     jl_String.prototype.toString = function() {
         return $rt_ustr(this);
     };
