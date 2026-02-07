@@ -2,3 +2,4 @@ target/
 *.log
 .idea/
 *.iml
+tearay/tearay-app/js/
