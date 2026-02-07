@@ -109,8 +109,6 @@ public class TemplatedProcessor extends AbstractProcessor {
         String escapedHtml = htmlContent.replace("\n", " ").replace("\"", "\\\"");
         bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
 
-        List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
-
         // Assign root to 'element' field if exists
         // Assign root if a field "element" exists (Convention for this PoC)
         // In a real framework, we'd look for an interface like IsWidget or a specific annotation.
@@ -159,10 +157,6 @@ public class TemplatedProcessor extends AbstractProcessor {
                 bindMethod.addStatement("  el_$L = candidate", field.getSimpleName());
             }
             bindMethod.addStatement("  break");
-            if (field.getAnnotation(DataField.class) != null) {
-                dataFields.add(field);
-                bindMethod.addStatement("$T el_$L = null", htmlElementClass, field.getSimpleName());
-            }
         }
 
         if (!dataFields.isEmpty()) {
@@ -186,7 +180,7 @@ public class TemplatedProcessor extends AbstractProcessor {
 
                 // Query element
                 bindMethod.addStatement("$T el_$L = ($T) root.querySelector($S)",
-                        htmlElementClass, field.getSimpleName(), htmlElementClass, "[data-field='" + dataFieldName + "']");
+                        htmlElementClass, field.getSimpleName(), htmlElementClass, "[data-field='" + name + "']");
 
                 bindMethod.beginControlFlow("if (el_$L != null)", field.getSimpleName());
 
