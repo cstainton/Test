@@ -2437,7 +2437,7 @@
     }
     var ucits_DashboardPage_Binder = $rt_classWithoutFields();
     function ucits_DashboardPage_Binder_bind($target) {
-        var $doc, $root, var$4, $el_container, $widgetElement, $currentClasses, $placeholderClasses, var$9, $placeholderId, $placeholderStyle, $currentStyle, var$13;
+        var $doc, $root, var$4, $el_container, $fragment, $widgetElement, $currentClasses, $placeholderClasses, var$10, $placeholderId, $placeholderStyle, $currentStyle, var$14;
         $doc = $rt_globals.window.document;
         $root = $doc.createElement("div");
         var$4 = "<div>     <h1>Dashboard</h1>     <div data-field=\"content\"></div>     <div data-field=\"userBtn\"></div>     <div data-field=\"backBtn\"></div> </div> ";
@@ -2445,6 +2445,11 @@
         $target = $rt_nullCheck($target);
         $target.$element = $root;
         $el_container = $root.querySelector("[data-field=\'container\']");
+        $fragment = $doc.createDocumentFragment();
+        while ($root.hasChildNodes() ? 1 : 0) {
+            var$4 = $root.firstChild;
+            $fragment.appendChild(var$4);
+        }
         if ($el_container !== null && $target.$container !== null) {
             $widgetElement = $rt_nullCheck($target.$container).$element0;
             if ($widgetElement !== null) {
@@ -2452,15 +2457,15 @@
                 $placeholderClasses = $rt_str($el_container.className);
                 if ($placeholderClasses !== null && !$placeholderClasses.$isEmpty()) {
                     if ($currentClasses === null)
-                        var$4 = $rt_s(11);
+                        var$10 = $rt_s(11);
                     else {
                         var$4 = jl_StringBuilder__init_();
                         jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$4, $currentClasses)), 32);
-                        var$4 = jl_StringBuilder_toString(var$4);
+                        var$10 = jl_StringBuilder_toString(var$4);
                     }
-                    var$9 = jl_StringBuilder__init_();
-                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$9, var$4)), $placeholderClasses);
-                    var$4 = $rt_ustr(jl_StringBuilder_toString(var$9));
+                    var$4 = jl_StringBuilder__init_();
+                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$4, var$10)), $placeholderClasses);
+                    var$4 = $rt_ustr(jl_StringBuilder_toString(var$4));
                     $widgetElement.className = var$4;
                 }
                 $placeholderId = $rt_str($el_container.getAttribute("id"));
@@ -2470,20 +2475,21 @@
                 if ($placeholderStyle !== null && !$placeholderStyle.$isEmpty()) {
                     $currentStyle = $rt_str($widgetElement.getAttribute("style"));
                     if ($currentStyle === null)
-                        var$9 = $rt_s(11);
+                        var$10 = $rt_s(11);
                     else {
-                        var$9 = jl_StringBuilder__init_();
-                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$9, $currentStyle)), 59);
-                        var$9 = jl_StringBuilder_toString(var$9);
+                        var$4 = jl_StringBuilder__init_();
+                        jl_StringBuilder_append0($rt_nullCheck(jl_StringBuilder_append(var$4, $currentStyle)), 59);
+                        var$10 = jl_StringBuilder_toString(var$4);
                     }
-                    var$13 = jl_StringBuilder__init_();
-                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$13, var$9)), $placeholderStyle);
-                    var$13 = jl_StringBuilder_toString(var$13);
-                    $widgetElement.setAttribute("style", $rt_ustr(var$13));
+                    var$4 = jl_StringBuilder__init_();
+                    jl_StringBuilder_append($rt_nullCheck(jl_StringBuilder_append(var$4, var$10)), $placeholderStyle);
+                    var$14 = jl_StringBuilder_toString(var$4);
+                    $widgetElement.setAttribute("style", $rt_ustr(var$14));
                 }
                 $el_container.parentNode.replaceChild($widgetElement, $el_container);
             }
         }
+        $root.appendChild($fragment);
         return $root;
     }
     function ucits_DashboardPage() {
