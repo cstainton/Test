@@ -22,6 +22,9 @@ import org.jsoup.nodes.Element;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
@@ -66,7 +69,7 @@ public class TemplatedProcessor extends AbstractProcessor {
 
         // Verify DataFields
         Document jsoupDoc = Jsoup.parse(htmlContent);
-        List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
+        List<VariableElement> fields = getAllFields(typeElement);
         boolean hasErrors = false;
 
         for (VariableElement field : fields) {
@@ -79,8 +82,6 @@ public class TemplatedProcessor extends AbstractProcessor {
                  if (jsoupDoc.select("[data-field=" + name + "]").isEmpty()) {
                      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                          "Template " + templateName + " does not contain data-field='" + name + "'", field);
-                     // Don't set hasErrors = true to allow generation for other fields if possible, or fail gracefully
-                     // For now, let's stop generation if there's an error to be strict.
                      hasErrors = true;
                  }
              }
@@ -110,8 +111,6 @@ public class TemplatedProcessor extends AbstractProcessor {
         bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
 
         // Assign root to 'element' field if exists
-        // Assign root if a field "element" exists (Convention for this PoC)
-        // In a real framework, we'd look for an interface like IsWidget or a specific annotation.
         for (VariableElement field : fields) {
              if (field.getSimpleName().toString().equals("element") &&
                  com.squareup.javapoet.TypeName.get(field.asType()).equals(htmlElementClass)) {
@@ -159,42 +158,6 @@ public class TemplatedProcessor extends AbstractProcessor {
             bindMethod.addStatement("  break");
         }
 
-        if (!dataFields.isEmpty()) {
-            bindMethod.addStatement("$T<$T> nodes = root.querySelectorAll($S)",
-                    nodeListClass,
-                    WildcardTypeName.subtypeOf(elementClass),
-                    "[data-field]");
-
-            bindMethod.beginControlFlow("for (int i = 0; i < nodes.getLength(); i++)");
-            bindMethod.addStatement("$T candidate = ($T) nodes.item(i)", htmlElementClass, htmlElementClass);
-            bindMethod.addStatement("String attr = candidate.getAttribute($S)", "data-field");
-
-            bindMethod.beginControlFlow("switch (attr)");
-
-            for (VariableElement field : dataFields) {
-                DataField dataField = field.getAnnotation(DataField.class);
-                String name = dataField.value();
-                if (name.isEmpty()) {
-                    name = field.getSimpleName().toString();
-                }
-
-                // Query element
-                bindMethod.addStatement("$T el_$L = ($T) root.querySelector($S)",
-                        htmlElementClass, field.getSimpleName(), htmlElementClass, "[data-field='" + name + "']");
-
-                bindMethod.beginControlFlow("if (el_$L != null)", field.getSimpleName());
-
-                // Check if field is HTMLElement
-                 TypeElement htmlElementType = processingEnv.getElementUtils().getTypeElement("org.teavm.jso.dom.html.HTMLElement");
-                 if (htmlElementType != null && processingEnv.getTypeUtils().isAssignable(field.asType(), htmlElementType.asType())) {
-                bindMethod.addCode("case $S:\n", name);
-                bindMethod.addStatement("  el_$L = candidate", field.getSimpleName());
-                bindMethod.addStatement("  break");
-            }
-
-            bindMethod.endControlFlow(); // switch
-            bindMethod.endControlFlow(); // for
-        }
         bindMethod.endControlFlow(); // switch
         bindMethod.endControlFlow(); // for
 
@@ -221,11 +184,7 @@ public class TemplatedProcessor extends AbstractProcessor {
                         field.getSimpleName());
                  } else {
                      // Assume Widget or Component with 'element' field
-                     // Check if target field is not null (initialized)
                      bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
-                     // Assume target.$L has .element field or .getElement() method?
-                     // Convention: .element field access or IsWidget interface?
-                     // I'll assume .element field for now based on previous code.
                      bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
 
                      bindMethod.beginControlFlow("if (widgetElement != null)");
@@ -234,37 +193,7 @@ public class TemplatedProcessor extends AbstractProcessor {
 
                      bindMethod.endControlFlow();
                  }
-
-                } else {
-                    // Nested component
-                    bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
-                    bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
-                    bindMethod.beginControlFlow("if (widgetElement != null)");
-
-                    // Merge attributes (simplified)
-                    bindMethod.addStatement("String placeholderClasses = el_$L.getClassName()", field.getSimpleName());
-                    bindMethod.beginControlFlow("if (placeholderClasses != null && !placeholderClasses.isEmpty())");
-                    bindMethod.addStatement("String currentClasses = widgetElement.getClassName()");
-                    bindMethod.addStatement("widgetElement.setClassName((currentClasses != null ? currentClasses + \" \" : \"\") + placeholderClasses)");
-                    bindMethod.endControlFlow();
-
-                    bindMethod.addStatement("String placeholderId = el_$L.getAttribute(\"id\")", field.getSimpleName());
-                    bindMethod.beginControlFlow("if (placeholderId != null && !placeholderId.isEmpty())");
-                    bindMethod.addStatement("widgetElement.setAttribute(\"id\", placeholderId)");
-                    bindMethod.endControlFlow();
-
-                    bindMethod.addStatement("String placeholderStyle = el_$L.getAttribute(\"style\")", field.getSimpleName());
-                    bindMethod.beginControlFlow("if (placeholderStyle != null && !placeholderStyle.isEmpty())");
-                    bindMethod.addStatement("String currentStyle = widgetElement.getAttribute(\"style\")");
-                    bindMethod.addStatement("widgetElement.setAttribute(\"style\", (currentStyle != null ? currentStyle + \";\" : \"\") + placeholderStyle)");
-                    bindMethod.endControlFlow();
-
-                    // Replace in DOM
-                    bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
-                    bindMethod.endControlFlow();
-                    bindMethod.endControlFlow();
-                }
-                bindMethod.endControlFlow();
+                 bindMethod.endControlFlow();
             }
         }
 
@@ -473,5 +402,14 @@ public class TemplatedProcessor extends AbstractProcessor {
                  return null;
              }
          }
+    }
+
+    private List<VariableElement> getAllFields(TypeElement typeElement) {
+        List<VariableElement> fields = new ArrayList<>(ElementFilter.fieldsIn(typeElement.getEnclosedElements()));
+        TypeMirror superclass = typeElement.getSuperclass();
+        if (superclass.getKind() == TypeKind.DECLARED) {
+             fields.addAll(getAllFields((TypeElement) ((DeclaredType) superclass).asElement()));
+        }
+        return fields;
     }
 }
