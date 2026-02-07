@@ -22,6 +22,9 @@ import org.jsoup.nodes.Element;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
@@ -66,7 +69,7 @@ public class TemplatedProcessor extends AbstractProcessor {
 
         // Verify DataFields
         Document jsoupDoc = Jsoup.parse(htmlContent);
-        List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
+        List<VariableElement> fields = getAllFields(typeElement);
         boolean hasErrors = false;
 
         for (VariableElement field : fields) {
@@ -399,5 +402,14 @@ public class TemplatedProcessor extends AbstractProcessor {
                  return null;
              }
          }
+    }
+
+    private List<VariableElement> getAllFields(TypeElement typeElement) {
+        List<VariableElement> fields = new ArrayList<>(ElementFilter.fieldsIn(typeElement.getEnclosedElements()));
+        TypeMirror superclass = typeElement.getSuperclass();
+        if (superclass.getKind() == TypeKind.DECLARED) {
+             fields.addAll(getAllFields((TypeElement) ((DeclaredType) superclass).asElement()));
+        }
+        return fields;
     }
 }

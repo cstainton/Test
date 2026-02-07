@@ -16,6 +16,8 @@ import javax.annotation.processing.*;
 import javax.inject.Inject;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
@@ -96,14 +98,16 @@ public class IOCProcessor extends AbstractProcessor {
         boolean isTemplated = typeElement.getAnnotation(Templated.class) != null;
 
         List<VariableElement> injectionPoints = new ArrayList<>();
-        for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
+        List<VariableElement> allFields = getAllFields(typeElement);
+        for (VariableElement field : allFields) {
             if (field.getAnnotation(Inject.class) != null) {
                 injectionPoints.add(field);
             }
         }
 
         List<ExecutableElement> postConstructMethods = new ArrayList<>();
-        for (ExecutableElement method : ElementFilter.methodsIn(typeElement.getEnclosedElements())) {
+        List<ExecutableElement> allMethods = getAllMethods(typeElement);
+        for (ExecutableElement method : allMethods) {
             if (method.getAnnotation(PostConstruct.class) != null) {
                 postConstructMethods.add(method);
             }
@@ -113,6 +117,24 @@ public class IOCProcessor extends AbstractProcessor {
                 injectionPoints, postConstructMethods, resolutionMap);
 
         visitor.visit(beanDef);
+    }
+
+    private List<VariableElement> getAllFields(TypeElement typeElement) {
+        List<VariableElement> fields = new ArrayList<>(ElementFilter.fieldsIn(typeElement.getEnclosedElements()));
+        TypeMirror superclass = typeElement.getSuperclass();
+        if (superclass.getKind() == TypeKind.DECLARED) {
+             fields.addAll(getAllFields((TypeElement) ((DeclaredType) superclass).asElement()));
+        }
+        return fields;
+    }
+
+    private List<ExecutableElement> getAllMethods(TypeElement typeElement) {
+        List<ExecutableElement> methods = new ArrayList<>(ElementFilter.methodsIn(typeElement.getEnclosedElements()));
+        TypeMirror superclass = typeElement.getSuperclass();
+        if (superclass.getKind() == TypeKind.DECLARED) {
+             methods.addAll(getAllMethods((TypeElement) ((DeclaredType) superclass).asElement()));
+        }
+        return methods;
     }
 
     private void generateBootstrapper(TypeElement entryPoint) throws IOException {
