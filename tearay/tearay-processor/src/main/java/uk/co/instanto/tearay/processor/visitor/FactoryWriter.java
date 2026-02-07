@@ -1,6 +1,7 @@
 package uk.co.instanto.tearay.processor.visitor;
 
 import uk.co.instanto.tearay.processor.model.BeanDefinition;
+import uk.co.instanto.tearay.processor.model.InjectionPoint;
 import com.squareup.javapoet.*;
 
 import javax.annotation.processing.Filer;
@@ -9,6 +10,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.io.IOException;
@@ -63,29 +65,69 @@ public class FactoryWriter implements BeanVisitor {
         createMethod.addStatement("$T bean = new $T()", typeName, typeName);
 
         // Injection
-        for (VariableElement field : bean.getInjectionPoints()) {
-            TypeMirror fieldType = field.asType();
+        for (InjectionPoint injectionPoint : bean.getInjectionPoints()) {
+            VariableElement field = injectionPoint.getField();
+            TypeMirror fieldType = injectionPoint.getType();
             String fieldTypeName = fieldType.toString();
-            if (fieldTypeName.contains("<")) {
-                fieldTypeName = fieldTypeName.substring(0, fieldTypeName.indexOf("<"));
+            // Handle generics (strip them for class lookup, unless it's Provider)
+            String rawTypeName = fieldTypeName;
+            if (rawTypeName.contains("<")) {
+                rawTypeName = rawTypeName.substring(0, rawTypeName.indexOf("<"));
             }
 
-            ClassName dependencyFactory;
-            if (fieldTypeName.equals("uk.co.instanto.tearay.api.Navigation")) {
-                dependencyFactory = ClassName.get("uk.co.instanto.tearay.impl", "NavigationImpl_Factory");
-                createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
-            } else if (fieldTypeName.startsWith("uk.co.instanto.tearay.widgets.")) {
-                // Direct instantiation for widgets
-                createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(fieldTypeName));
-            } else if (resolutionMap.containsKey(fieldTypeName)) {
-                // Found in resolution map - use the implementation's factory
-                TypeElement implElement = resolutionMap.get(fieldTypeName);
-                String implPackage = processingEnv.getElementUtils().getPackageOf(implElement).getQualifiedName().toString();
-                dependencyFactory = ClassName.get(implPackage, implElement.getSimpleName() + "_Factory");
-                createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
+            if (rawTypeName.equals("javax.inject.Provider")) {
+                // Handle Provider<T> injection
+                if (fieldType instanceof DeclaredType) {
+                    DeclaredType declaredType = (DeclaredType) fieldType;
+                    if (!declaredType.getTypeArguments().isEmpty()) {
+                        TypeMirror typeArg = declaredType.getTypeArguments().get(0);
+                        String typeArgName = typeArg.toString();
+                        if (typeArgName.contains("<")) {
+                            typeArgName = typeArgName.substring(0, typeArgName.indexOf("<"));
+                        }
+
+                        // We need the factory for the type argument
+                        ClassName dependencyFactory;
+                        if (resolutionMap.containsKey(typeArgName)) {
+                             // Found in resolution map - use the implementation's factory
+                             TypeElement implElement = resolutionMap.get(typeArgName);
+                             String implPackage = processingEnv.getElementUtils().getPackageOf(implElement).getQualifiedName().toString();
+                             dependencyFactory = ClassName.get(implPackage, implElement.getSimpleName() + "_Factory");
+                             createMethod.addStatement("bean.$L = () -> $T.getInstance()", field.getSimpleName(), dependencyFactory);
+                        } else if (typeArgName.startsWith("uk.co.instanto.tearay.widgets.")) {
+                           // Provider of widget? Maybe rare but possible. Widgets are usually new'd.
+                           // But usually widgets are dependent scoped so maybe new'd is correct.
+                           // If it's a widget, we probably just return () -> new Widget().
+                           createMethod.addStatement("bean.$L = () -> new $T()", field.getSimpleName(), ClassName.bestGuess(typeArgName));
+                        } else {
+                             // Regular bean provider
+                             dependencyFactory = ClassName.bestGuess(typeArgName + "_Factory");
+                             createMethod.addStatement("bean.$L = () -> $T.getInstance()", field.getSimpleName(), dependencyFactory);
+                        }
+                    } else {
+                        // Raw Provider type - log error
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Provider injection requires a type argument: " + field.getSimpleName(), field);
+                    }
+                }
             } else {
-                dependencyFactory = ClassName.bestGuess(fieldTypeName + "_Factory");
-                createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
+                // Regular Injection
+                ClassName dependencyFactory;
+                if (rawTypeName.equals("uk.co.instanto.tearay.api.Navigation")) {
+                    dependencyFactory = ClassName.get("uk.co.instanto.tearay.impl", "NavigationImpl_Factory");
+                    createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
+                } else if (rawTypeName.startsWith("uk.co.instanto.tearay.widgets.")) {
+                    // Direct instantiation for widgets
+                    createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(rawTypeName));
+                } else if (resolutionMap.containsKey(rawTypeName)) {
+                    // Found in resolution map - use the implementation's factory
+                    TypeElement implElement = resolutionMap.get(rawTypeName);
+                    String implPackage = processingEnv.getElementUtils().getPackageOf(implElement).getQualifiedName().toString();
+                    dependencyFactory = ClassName.get(implPackage, implElement.getSimpleName() + "_Factory");
+                    createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
+                } else {
+                    dependencyFactory = ClassName.bestGuess(rawTypeName + "_Factory");
+                    createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
+                }
             }
         }
 

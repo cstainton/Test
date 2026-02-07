@@ -7,6 +7,7 @@ import uk.co.instanto.tearay.api.PostConstruct;
 import uk.co.instanto.tearay.api.Templated;
 import uk.co.instanto.tearay.api.Page;
 import uk.co.instanto.tearay.processor.model.BeanDefinition;
+import uk.co.instanto.tearay.processor.model.InjectionPoint;
 import uk.co.instanto.tearay.processor.visitor.BeanVisitor;
 import uk.co.instanto.tearay.processor.visitor.FactoryWriter;
 import com.squareup.javapoet.*;
@@ -97,11 +98,14 @@ public class IOCProcessor extends AbstractProcessor {
                               typeElement.getAnnotation(EntryPoint.class) != null;
         boolean isTemplated = typeElement.getAnnotation(Templated.class) != null;
 
-        List<VariableElement> injectionPoints = new ArrayList<>();
+        List<InjectionPoint> injectionPoints = new ArrayList<>();
         List<VariableElement> allFields = getAllFields(typeElement);
+        DeclaredType typeMirror = (DeclaredType) typeElement.asType();
+
         for (VariableElement field : allFields) {
             if (field.getAnnotation(Inject.class) != null) {
-                injectionPoints.add(field);
+                TypeMirror fieldType = processingEnv.getTypeUtils().asMemberOf(typeMirror, field);
+                injectionPoints.add(new InjectionPoint(field, fieldType));
             }
         }
 
