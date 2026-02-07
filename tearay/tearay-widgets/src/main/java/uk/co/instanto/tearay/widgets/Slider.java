@@ -32,6 +32,5 @@ public class Slider extends Widget {
 
     public void addChangeHandler(org.teavm.jso.dom.events.EventListener<?> listener) {
         this.element.addEventListener("change", listener);
-        this.element.addEventListener("input", listener);
     }
 }

@@ -3445,7 +3445,7 @@
         var var$1, var$2, $navbar, $row, $col1, $card, $profileBtn, $r1, $r2, $col2, $alert, $logoutBtn, var$13, $slider, $toggle, $agree;
         var$1 = $rt_nullCheck($this.$container).$element;
         var$2 = "";
-        var$1.innerHTML = var$2;
+        var$1.innerText = var$2;
         $navbar = ucitw_Navbar__init_();
         $navbar.$setBrand($rt_s(38));
         $navbar.$setSticky(1);
@@ -4628,7 +4628,6 @@
     }
     function ucitw_Slider_addChangeHandler($this, $listener) {
         $this.$element.addEventListener("change", otji_JS_function($listener, "handleEvent"));
-        $this.$element.addEventListener("input", otji_JS_function($listener, "handleEvent"));
     }
     function jl_Class() {
         var a = this; jl_Object.call(a);

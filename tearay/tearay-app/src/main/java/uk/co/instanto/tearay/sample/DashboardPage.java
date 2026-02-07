@@ -16,7 +16,7 @@ public class DashboardPage {
     public Navigation navigation;
 
     @Inject
-    public HelloService service;
+    public GreetingService service;
 
     @PageState
     public String username;
@@ -29,7 +29,7 @@ public class DashboardPage {
     @PageShowing
     public void onShow() {
         // Clear previous content if re-used
-        container.element.setInnerHTML("");
+        container.element.setInnerText("");
 
         // Navbar
         Navbar navbar = new Navbar();

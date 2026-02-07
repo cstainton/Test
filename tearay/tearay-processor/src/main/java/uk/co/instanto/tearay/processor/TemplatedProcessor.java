@@ -6,6 +6,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.google.auto.service.AutoService;
 
 import javax.annotation.processing.*;
@@ -17,6 +18,10 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 
 @AutoService(Processor.class)
@@ -54,6 +59,8 @@ public class TemplatedProcessor extends AbstractProcessor {
         ClassName htmlElementClass = ClassName.get("org.teavm.jso.dom.html", "HTMLElement");
         ClassName windowClass = ClassName.get("org.teavm.jso.browser", "Window");
         ClassName documentClass = ClassName.get("org.teavm.jso.dom.html", "HTMLDocument");
+        ClassName nodeListClass = ClassName.get("org.teavm.jso.dom.xml", "NodeList");
+        ClassName elementClass = ClassName.get("org.teavm.jso.dom.xml", "Element");
 
         MethodSpec.Builder bindMethod = MethodSpec.methodBuilder("bind")
                 .addModifiers(javax.lang.model.element.Modifier.PUBLIC, javax.lang.model.element.Modifier.STATIC)
@@ -64,8 +71,6 @@ public class TemplatedProcessor extends AbstractProcessor {
         bindMethod.addStatement("$T root = doc.createElement($S)", htmlElementClass, "div");
 
         // Simple escaping for the demo.
-        // NOTE: JavaPoet $S handles quoting, but we need to flatten newlines to keep the string cleaner in generated source.
-        // We do NOT escape quotes manually because JavaPoet does that.
         String escapedHtml = htmlContent.replace("\n", " ");
         bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
 
@@ -86,12 +91,33 @@ public class TemplatedProcessor extends AbstractProcessor {
                 if (dataFieldName.isEmpty()) {
                     dataFieldName = field.getSimpleName().toString();
                 }
+                bindMethod.addCode("case $S:\n", dataFieldName);
+                bindMethod.addStatement("  if (el_$L == null) el_$L = ($T) candidate", field.getSimpleName(), field.getSimpleName(), htmlElementClass);
+                bindMethod.addStatement("  break");
+            }
+            bindMethod.endControlFlow(); // switch
+            bindMethod.endControlFlow(); // for
 
+            for (VariableElement field : dataFields) {
+                // Reuse existing binding logic structure but check el_field != null
                 bindMethod.addStatement("$T el_$L = root.querySelector($S)",
                     htmlElementClass,
                     field.getSimpleName(),
                     "[data-field='" + dataFieldName + "']");
+            }
+        }
 
+        // 2. Move to DocumentFragment to avoid reflows during manipulation
+        ClassName fragmentClass = ClassName.get("org.teavm.jso.dom.xml", "DocumentFragment");
+        bindMethod.addStatement("$T fragment = doc.createDocumentFragment()", fragmentClass);
+        bindMethod.beginControlFlow("while (root.hasChildNodes())");
+        bindMethod.addStatement("fragment.appendChild(root.getFirstChild())");
+        bindMethod.endControlFlow();
+
+        // 3. Process fields
+        for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
+            DataField dataField = field.getAnnotation(DataField.class);
+            if (dataField != null) {
                 bindMethod.beginControlFlow("if (el_$L != null)", field.getSimpleName());
 
                 // Check if the field type is HTMLElement
@@ -102,49 +128,29 @@ public class TemplatedProcessor extends AbstractProcessor {
                         field.getSimpleName());
                 } else {
                     // Assume it is a nested component.
-                    // 1. Check if the component is injected. (If not, we might need to instantiate it, but let's assume IOC handles it)
-                    // The IOCProcessor injects the bean. Here we just need to SWAP the element.
-                    // But wait, if we are in the Binder, 'target' is already instantiated.
-                    // 'target.field' should be populated by IOC if it has @Inject.
-
-                    // Logic:
-                    // 1. Get the component instance from the field.
-                    // 2. Access its 'element' field (Convention!).
-                    // 3. Replace 'el_field' with 'component.element' in the DOM.
-
                     bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
-                    // We need to access target.field.element.
-                    // Since we don't know the exact type structure at compile time easily without reflection or strict rules,
-                    // we will cast to a convention or assume public field 'element'.
-                    // For this PoC, we assume the component has a public 'element' field of type HTMLElement.
-                    // We can't easily check fields of other classes in APT without full TypeMirror resolution, which is doable but verbose.
-                    // Let's generate code that assumes it exists.
-
                     bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
                     bindMethod.beginControlFlow("if (widgetElement != null)");
 
-                    // Merge attributes from placeholder to widget
-                    // 1. Merge CSS classes
+                    // Merge attributes
                     bindMethod.addStatement("String currentClasses = widgetElement.getClassName()");
                     bindMethod.addStatement("String placeholderClasses = el_$L.getClassName()", field.getSimpleName());
                     bindMethod.beginControlFlow("if (placeholderClasses != null && !placeholderClasses.isEmpty())");
                     bindMethod.addStatement("widgetElement.setClassName((currentClasses != null ? currentClasses + \" \" : \"\") + placeholderClasses)");
                     bindMethod.endControlFlow();
 
-                    // 2. Copy ID if present on placeholder
                     bindMethod.addStatement("String placeholderId = el_$L.getAttribute(\"id\")", field.getSimpleName());
                     bindMethod.beginControlFlow("if (placeholderId != null && !placeholderId.isEmpty())");
                     bindMethod.addStatement("widgetElement.setAttribute(\"id\", placeholderId)");
                     bindMethod.endControlFlow();
 
-                    // 3. Copy Style
                     bindMethod.addStatement("String placeholderStyle = el_$L.getAttribute(\"style\")", field.getSimpleName());
                     bindMethod.beginControlFlow("if (placeholderStyle != null && !placeholderStyle.isEmpty())");
-                    // Simple concatenation for style string; robust parsing is too complex for this PoC
                     bindMethod.addStatement("String currentStyle = widgetElement.getAttribute(\"style\")");
                     bindMethod.addStatement("widgetElement.setAttribute(\"style\", (currentStyle != null ? currentStyle + \";\" : \"\") + placeholderStyle)");
                     bindMethod.endControlFlow();
 
+                    // Replace in DOM (now in Fragment)
                     bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
                     bindMethod.endControlFlow();
 
@@ -155,6 +161,7 @@ public class TemplatedProcessor extends AbstractProcessor {
             }
         }
 
+        bindMethod.addStatement("root.appendChild(fragment)");
         bindMethod.addStatement("return root");
 
         TypeSpec binderClass = TypeSpec.classBuilder(binderName)
@@ -167,17 +174,27 @@ public class TemplatedProcessor extends AbstractProcessor {
                 .writeTo(processingEnv.getFiler());
     }
 
+    private final Map<String, String> templateCache = new HashMap<>();
+
     private String readTemplate(TypeElement typeElement, String templateName) {
          String packageName = processingEnv.getElementUtils().getPackageOf(typeElement).getQualifiedName().toString();
+         String cacheKey = packageName + ":" + templateName;
+         if (templateCache.containsKey(cacheKey)) {
+             return templateCache.get(cacheKey);
+         }
+
          // Try SOURCE_PATH first as it is more likely for sources
          try {
              FileObject resource = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, packageName, templateName);
-             return resource.getCharContent(true).toString();
+             String content = resource.getCharContent(true).toString();
+             templateCache.put(cacheKey, content);
+             return content;
          } catch (Exception e) {
-             // Try CLASS_PATH
              try {
                  FileObject resource = processingEnv.getFiler().getResource(StandardLocation.CLASS_PATH, packageName, templateName);
-                 return resource.getCharContent(true).toString();
+                 String content = resource.getCharContent(true).toString();
+                 templateCache.put(cacheKey, content);
+                 return content;
              } catch (Exception ex) {
                  processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not find template: " + templateName + " in package " + packageName, typeElement);
                  return null;
