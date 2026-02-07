@@ -9,7 +9,11 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.WildcardTypeName;
 import com.google.auto.service.AutoService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -21,7 +25,6 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
@@ -33,7 +36,7 @@ public class TemplatedProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        for (Element element : roundEnv.getElementsAnnotatedWith(Templated.class)) {
+        for (javax.lang.model.element.Element element : roundEnv.getElementsAnnotatedWith(Templated.class)) {
             if (element.getKind() != ElementKind.CLASS) continue;
             try {
                 processType((TypeElement) element);
@@ -54,6 +57,30 @@ public class TemplatedProcessor extends AbstractProcessor {
 
         String htmlContent = readTemplate(typeElement, templateName);
         if (htmlContent == null) return;
+
+        // Verify DataFields
+        Document jsoupDoc = Jsoup.parse(htmlContent);
+        List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
+        boolean hasErrors = false;
+
+        for (VariableElement field : fields) {
+             DataField dataField = field.getAnnotation(DataField.class);
+             if (dataField != null) {
+                 String name = dataField.value();
+                 if (name.isEmpty()) {
+                     name = field.getSimpleName().toString();
+                 }
+                 if (jsoupDoc.select("[data-field=" + name + "]").isEmpty()) {
+                     processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                         "Template " + templateName + " does not contain data-field='" + name + "'", field);
+                     // Don't set hasErrors = true to allow generation for other fields if possible, or fail gracefully
+                     // For now, let's stop generation if there's an error to be strict.
+                     hasErrors = true;
+                 }
+             }
+        }
+
+        if (hasErrors) return;
 
         String packageName = processingEnv.getElementUtils().getPackageOf(typeElement).getQualifiedName().toString();
         String binderName = typeElement.getSimpleName() + "_Binder";
@@ -78,7 +105,6 @@ public class TemplatedProcessor extends AbstractProcessor {
 
         // Assign root if a field "element" exists (Convention for this PoC)
         // In a real framework, we'd look for an interface like IsWidget or a specific annotation.
-        List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
         for (VariableElement field : fields) {
              if (field.getSimpleName().toString().equals("element") &&
                  com.squareup.javapoet.TypeName.get(field.asType()).equals(htmlElementClass)) {
@@ -86,27 +112,39 @@ public class TemplatedProcessor extends AbstractProcessor {
              }
         }
 
+        List<VariableElement> dataFields = new ArrayList<>();
         for (VariableElement field : fields) {
-            DataField dataField = field.getAnnotation(DataField.class);
-            if (dataField != null) {
-                String dataFieldName = dataField.value();
-                if (dataFieldName.isEmpty()) {
-                    dataFieldName = field.getSimpleName().toString();
-                }
-                bindMethod.addCode("case $S:\n", dataFieldName);
-                bindMethod.addStatement("  if (el_$L == null) el_$L = ($T) candidate", field.getSimpleName(), field.getSimpleName(), htmlElementClass);
-                bindMethod.addStatement("  break");
+            if (field.getAnnotation(DataField.class) != null) {
+                dataFields.add(field);
+                bindMethod.addStatement("$T el_$L = null", htmlElementClass, field.getSimpleName());
             }
-            bindMethod.endControlFlow(); // switch
-            bindMethod.endControlFlow(); // for
+        }
+
+        if (!dataFields.isEmpty()) {
+            bindMethod.addStatement("$T<$T> nodes = root.querySelectorAll($S)",
+                    nodeListClass,
+                    WildcardTypeName.subtypeOf(elementClass),
+                    "[data-field]");
+
+            bindMethod.beginControlFlow("for (int i = 0; i < nodes.getLength(); i++)");
+            bindMethod.addStatement("$T candidate = ($T) nodes.item(i)", htmlElementClass, htmlElementClass);
+            bindMethod.addStatement("String attr = candidate.getAttribute($S)", "data-field");
+
+            bindMethod.beginControlFlow("switch (attr)");
 
             for (VariableElement field : dataFields) {
-                // Reuse existing binding logic structure but check el_field != null
-                bindMethod.addStatement("$T el_$L = root.querySelector($S)",
-                    htmlElementClass,
-                    field.getSimpleName(),
-                    "[data-field='" + dataFieldName + "']");
+                DataField dataField = field.getAnnotation(DataField.class);
+                String name = dataField.value();
+                if (name.isEmpty()) {
+                    name = field.getSimpleName().toString();
+                }
+                bindMethod.addCode("case $S:\n", name);
+                bindMethod.addStatement("  el_$L = candidate", field.getSimpleName());
+                bindMethod.addStatement("  break");
             }
+
+            bindMethod.endControlFlow(); // switch
+            bindMethod.endControlFlow(); // for
         }
 
         // 2. Move to DocumentFragment to avoid reflows during manipulation
