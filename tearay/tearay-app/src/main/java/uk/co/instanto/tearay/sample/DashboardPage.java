@@ -16,7 +16,7 @@ public class DashboardPage {
     public Navigation navigation;
 
     @Inject
-    public HelloService service;
+    public GreetingService service;
 
     @PageState
     public String username;

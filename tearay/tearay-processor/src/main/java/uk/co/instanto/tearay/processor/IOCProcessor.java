@@ -16,6 +16,8 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,10 +39,28 @@ public class IOCProcessor extends AbstractProcessor {
         beans.addAll(roundEnv.getElementsAnnotatedWith(Templated.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Page.class));
 
+        // Build Interface Resolution Map
+        Map<String, TypeElement> resolutionMap = new HashMap<>();
+        for (Element element : beans) {
+            if (element.getKind() == ElementKind.CLASS) {
+                TypeElement typeElement = (TypeElement) element;
+                for (TypeMirror interfaceType : typeElement.getInterfaces()) {
+                    // For now, map the interface canonical name to the implementing class
+                    // This assumes a simple 1:1 mapping or last-one-wins for PoC
+                    String interfaceName = interfaceType.toString();
+                    // Clean generics if present (simple approach)
+                    if (interfaceName.contains("<")) {
+                        interfaceName = interfaceName.substring(0, interfaceName.indexOf("<"));
+                    }
+                    resolutionMap.put(interfaceName, typeElement);
+                }
+            }
+        }
+
         for (Element element : beans) {
             if (element.getKind() != ElementKind.CLASS) continue;
             try {
-                processBean((TypeElement) element);
+                processBean((TypeElement) element, resolutionMap);
             } catch (Exception e) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error processing bean " + element + ": " + e.getMessage(), element);
                 e.printStackTrace();
@@ -60,7 +80,7 @@ public class IOCProcessor extends AbstractProcessor {
         return false;
     }
 
-    private void processBean(TypeElement typeElement) throws IOException {
+    private void processBean(TypeElement typeElement, Map<String, TypeElement> resolutionMap) throws IOException {
         String packageName = processingEnv.getElementUtils().getPackageOf(typeElement).getQualifiedName().toString();
         String factoryName = typeElement.getSimpleName() + "_Factory";
         ClassName typeName = ClassName.get(typeElement);
@@ -111,18 +131,29 @@ public class IOCProcessor extends AbstractProcessor {
         for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
             if (field.getAnnotation(Inject.class) != null) {
                 TypeMirror fieldType = field.asType();
+                String fieldTypeName = fieldType.toString();
+                 if (fieldTypeName.contains("<")) {
+                    fieldTypeName = fieldTypeName.substring(0, fieldTypeName.indexOf("<"));
+                }
+
                 // Assumes fieldType is a class that has a generated factory.
                 // For interfaces, this simple PoC fails (would need a resolution map).
                 // We assume concrete classes for now.
                 ClassName dependencyFactory;
-                if (fieldType.toString().equals("uk.co.instanto.tearay.api.Navigation")) {
+                if (fieldTypeName.equals("uk.co.instanto.tearay.api.Navigation")) {
                     dependencyFactory = ClassName.get("uk.co.instanto.tearay.impl", "NavigationImpl_Factory");
                     createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
-                } else if (fieldType.toString().startsWith("uk.co.instanto.tearay.widgets.")) {
+                } else if (fieldTypeName.startsWith("uk.co.instanto.tearay.widgets.")) {
                     // Direct instantiation for widgets
-                    createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(fieldType.toString()));
+                    createMethod.addStatement("bean.$L = new $T()", field.getSimpleName(), ClassName.bestGuess(fieldTypeName));
+                } else if (resolutionMap.containsKey(fieldTypeName)) {
+                     // Found in resolution map - use the implementation's factory
+                     TypeElement implElement = resolutionMap.get(fieldTypeName);
+                     String implPackage = processingEnv.getElementUtils().getPackageOf(implElement).getQualifiedName().toString();
+                     dependencyFactory = ClassName.get(implPackage, implElement.getSimpleName() + "_Factory");
+                     createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
                 } else {
-                    dependencyFactory = ClassName.bestGuess(fieldType.toString() + "_Factory");
+                    dependencyFactory = ClassName.bestGuess(fieldTypeName + "_Factory");
                     createMethod.addStatement("bean.$L = $T.getInstance()", field.getSimpleName(), dependencyFactory);
                 }
             }
