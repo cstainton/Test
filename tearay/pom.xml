@@ -11,6 +11,7 @@
     <module>tearay-api</module>
     <module>tearay-processor</module>
     <module>tearay-widgets</module>
+    <module>tearay-ui</module>
     <module>tearay-app</module>
   </modules>
 

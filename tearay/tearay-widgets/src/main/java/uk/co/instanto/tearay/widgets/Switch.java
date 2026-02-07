@@ -3,11 +3,16 @@ package uk.co.instanto.tearay.widgets;
 import org.teavm.jso.browser.Window;
 import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.dom.html.HTMLInputElement;
+import uk.co.instanto.tearay.api.TakesValue;
 
-public class Switch extends Widget {
+public class Switch extends Widget implements TakesValue<Boolean> {
 
     private HTMLInputElement input;
     private HTMLElement label;
+
+    public Switch() {
+        this("");
+    }
 
     public Switch(String labelText) {
         this.element = Window.current().getDocument().createElement("div");
@@ -30,6 +35,16 @@ public class Switch extends Widget {
 
     public boolean isChecked() {
         return input.isChecked();
+    }
+
+    @Override
+    public void setValue(Boolean value) {
+        setChecked(value != null && value);
+    }
+
+    @Override
+    public Boolean getValue() {
+        return isChecked();
     }
 
     public void addChangeHandler(org.teavm.jso.dom.events.EventListener<?> listener) {

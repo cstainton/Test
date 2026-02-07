@@ -2,8 +2,9 @@ package uk.co.instanto.tearay.widgets;
 
 import org.teavm.jso.browser.Window;
 import org.teavm.jso.dom.html.HTMLInputElement;
+import uk.co.instanto.tearay.api.TakesValue;
 
-public class Slider extends Widget {
+public class Slider extends Widget implements TakesValue<Integer> {
 
     private HTMLInputElement input;
 
@@ -22,12 +23,18 @@ public class Slider extends Widget {
         input.setAttribute("max", String.valueOf(max));
     }
 
-    public int getValue() {
+    @Override
+    public Integer getValue() {
         return Integer.parseInt(input.getValue());
     }
 
+    @Override
+    public void setValue(Integer value) {
+        input.setValue(String.valueOf(value != null ? value : 0));
+    }
+
     public void setValue(int value) {
-        input.setValue(String.valueOf(value));
+        setValue(Integer.valueOf(value));
     }
 
     public void addChangeHandler(org.teavm.jso.dom.events.EventListener<?> listener) {

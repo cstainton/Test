@@ -42,6 +42,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>uk.co.instanto.tearay</groupId>
+      <artifactId>tearay-ui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.teavm</groupId>
       <artifactId>teavm-junit</artifactId>
       <scope>test</scope>
@@ -62,6 +67,15 @@
         <configuration>
            <!-- The processor is on the classpath (scope provided), so it should be picked up automatically
                 However, explicit configuration is often safer. -->
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <systemPropertyVariables>
+            <teavm.junit.target>${project.build.directory}/js-tests</teavm.junit.target>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <!-- TeaVM Plugin -->
