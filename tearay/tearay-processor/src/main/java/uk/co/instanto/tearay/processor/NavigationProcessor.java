@@ -2,6 +2,9 @@ package uk.co.instanto.tearay.processor;
 
 import uk.co.instanto.tearay.api.Page;
 import uk.co.instanto.tearay.api.PageShowing;
+import uk.co.instanto.tearay.api.PageShown;
+import uk.co.instanto.tearay.api.PageHiding;
+import uk.co.instanto.tearay.api.PageHidden;
 import uk.co.instanto.tearay.api.PageState;
 import uk.co.instanto.tearay.api.RestrictedAccess;
 import uk.co.instanto.tearay.api.ApplicationScoped;
@@ -59,13 +62,26 @@ public class NavigationProcessor extends AbstractProcessor {
                  }
 
                  List<ExecutableElement> pageShowingMethods = new ArrayList<>();
+                 List<ExecutableElement> pageShownMethods = new ArrayList<>();
+                 List<ExecutableElement> pageHidingMethods = new ArrayList<>();
+                 List<ExecutableElement> pageHiddenMethods = new ArrayList<>();
+
                  for (ExecutableElement method : ElementFilter.methodsIn(typeElement.getEnclosedElements())) {
                      if (method.getAnnotation(PageShowing.class) != null) {
                          pageShowingMethods.add(method);
                      }
+                     if (method.getAnnotation(PageShown.class) != null) {
+                         pageShownMethods.add(method);
+                     }
+                     if (method.getAnnotation(PageHiding.class) != null) {
+                         pageHidingMethods.add(method);
+                     }
+                     if (method.getAnnotation(PageHidden.class) != null) {
+                         pageHiddenMethods.add(method);
+                     }
                  }
 
-                 pageDefinitions.add(new PageDefinition(typeElement, role, restricted, pageStateFields, pageShowingMethods));
+                 pageDefinitions.add(new PageDefinition(typeElement, role, restricted, pageStateFields, pageShowingMethods, pageShownMethods, pageHidingMethods, pageHiddenMethods));
             }
 
             NavigationImplWriter writer = new NavigationImplWriter(processingEnv, securityProviderImpl);

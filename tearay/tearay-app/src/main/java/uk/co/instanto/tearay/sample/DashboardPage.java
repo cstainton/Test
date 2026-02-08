@@ -98,6 +98,12 @@ public class DashboardPage {
         logoutBtn.addClickListener(e -> navigation.goTo("login"));
         col2.element.appendChild(logoutBtn.element);
 
+        Button featuresBtn = new Button();
+        featuresBtn.setText("Feature Demo");
+        featuresBtn.setType(Button.Type.INFO);
+        featuresBtn.addClickListener(e -> navigation.goTo("features"));
+        col2.element.appendChild(featuresBtn.element);
+
         // Slider demo
         Slider slider = new Slider();
         slider.setMin(0);

@@ -1,7 +1,9 @@
 package uk.co.instanto.tearay.bootstrap;
 
 import org.teavm.jso.browser.Window;
+import uk.co.instanto.tearay.api.Dependent;
 
+@Dependent
 public class Button extends Widget {
 
     public enum Type {

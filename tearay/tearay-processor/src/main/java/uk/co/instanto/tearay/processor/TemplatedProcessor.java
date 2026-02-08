@@ -7,6 +7,7 @@ import uk.co.instanto.tearay.api.IsWidget;
 import uk.co.instanto.tearay.api.Bound;
 import uk.co.instanto.tearay.api.Model;
 import uk.co.instanto.tearay.api.TakesValue;
+import uk.co.instanto.tearay.api.EventHandler;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -194,6 +195,62 @@ public class TemplatedProcessor extends AbstractProcessor {
                      bindMethod.endControlFlow();
                  }
                  bindMethod.endControlFlow();
+            }
+        }
+
+        // EVENT HANDLER LOGIC
+        for (ExecutableElement method : ElementFilter.methodsIn(typeElement.getEnclosedElements())) {
+            EventHandler eventHandler = method.getAnnotation(EventHandler.class);
+            if (eventHandler != null) {
+                String targetField = eventHandler.value();
+                String eventType = eventHandler.type();
+                if (eventType.isEmpty()) eventType = "click";
+
+                VariableElement field = null;
+                for (VariableElement f : fields) {
+                    if (f.getSimpleName().toString().equals(targetField)) {
+                        field = f;
+                        break;
+                    }
+                }
+
+                if (field == null) {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                        "Field '" + targetField + "' referenced by @EventHandler not found.", method);
+                    continue;
+                }
+
+                bindMethod.beginControlFlow("if (target.$L != null)", targetField);
+
+                boolean isHtmlElement = processingEnv.getTypeUtils().isAssignable(field.asType(),
+                    processingEnv.getElementUtils().getTypeElement("org.teavm.jso.dom.html.HTMLElement").asType());
+
+                TypeElement isWidgetType = processingEnv.getElementUtils().getTypeElement("uk.co.instanto.tearay.api.IsWidget");
+                boolean isWidget = isWidgetType != null && processingEnv.getTypeUtils().isAssignable(field.asType(), isWidgetType.asType());
+
+                if (isHtmlElement) {
+                    bindMethod.addCode("target.$L.addEventListener($S, e -> target.$L(", targetField, eventType, method.getSimpleName());
+                } else if (isWidget) {
+                    bindMethod.addCode("((uk.co.instanto.tearay.api.IsWidget)target.$L).getElement().addEventListener($S, e -> target.$L(", targetField, eventType, method.getSimpleName());
+                } else {
+                    // Fallback: Assume it has .element field (Composite) or try to find .element
+                    // But for now, error if not IsWidget/HTMLElement
+                     processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                        "Field '" + targetField + "' is not HTMLElement or IsWidget. Event binding may fail.", method);
+                     // Try anyway assuming IsWidget cast might work or just access field.element
+                     bindMethod.addCode("if (target.$L instanceof uk.co.instanto.tearay.api.IsWidget) ((uk.co.instanto.tearay.api.IsWidget)target.$L).getElement().addEventListener($S, e -> target.$L(", targetField, targetField, eventType, method.getSimpleName());
+                }
+
+                if (method.getParameters().isEmpty()) {
+                    bindMethod.addCode("));\n");
+                } else if (method.getParameters().size() == 1) {
+                    bindMethod.addCode("($T)e));\n", method.getParameters().get(0).asType());
+                } else {
+                     processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                        "@EventHandler method must have 0 or 1 parameter.", method);
+                }
+
+                bindMethod.endControlFlow();
             }
         }
 
