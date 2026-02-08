@@ -6,7 +6,7 @@ import uk.co.instanto.tearay.api.EntryPoint;
 import uk.co.instanto.tearay.api.PostConstruct;
 import uk.co.instanto.tearay.api.Templated;
 import uk.co.instanto.tearay.api.Page;
-import uk.co.instanto.tearay.api.Produces;
+import uk.co.instanto.tearay.api.Named;
 import uk.co.instanto.tearay.api.Observes;
 import uk.co.instanto.tearay.processor.model.BeanDefinition;
 import uk.co.instanto.tearay.processor.model.InjectionPoint;
@@ -17,7 +17,6 @@ import com.google.auto.service.AutoService;
 
 import javax.annotation.processing.*;
 import javax.inject.Inject;
-import javax.inject.Qualifier;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
@@ -26,7 +25,11 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
@@ -75,48 +78,16 @@ public class IOCProcessor extends AbstractProcessor {
                     resolutionMap.put(selfName + ":" + qualifier, typeElement);
                 }
 
-        // Build Resolution Map
-        Map<String, String> resolutionMap = new HashMap<>();
-        for (Element element : beans) {
-            if (element.getKind() == ElementKind.CLASS) {
-                TypeElement typeElement = (TypeElement) element;
-                String factoryFQCN = getFactoryName(typeElement);
-                Set<String> qualifiers = getQualifiers(element);
-
-                // Map the class itself
-                resolutionMap.put(getKey(typeElement.getQualifiedName().toString(), qualifiers), factoryFQCN);
-
-                // Map interfaces
                 for (TypeMirror interfaceType : typeElement.getInterfaces()) {
                     String interfaceName = interfaceType.toString();
                     if (interfaceName.contains("<")) {
                         interfaceName = interfaceName.substring(0, interfaceName.indexOf("<"));
                     }
-                    resolutionMap.put(getKey(interfaceName, qualifiers), factoryFQCN);
-                }
 
-                // Map superclass if not Object
-                 TypeMirror superclass = typeElement.getSuperclass();
-                 while (superclass.getKind() == TypeKind.DECLARED) {
-                      TypeElement superEl = (TypeElement) ((DeclaredType) superclass).asElement();
-                      if (superEl.getQualifiedName().toString().equals("java.lang.Object")) break;
-                      resolutionMap.put(getKey(superEl.getQualifiedName().toString(), qualifiers), factoryFQCN);
-                      superclass = superEl.getSuperclass();
-                 }
-
-                // Scan for @Produces
-                for (Element member : element.getEnclosedElements()) {
-                    if (member.getKind() == ElementKind.METHOD && member.getAnnotation(Produces.class) != null) {
-                        ExecutableElement method = (ExecutableElement) member;
-                        String returnType = method.getReturnType().toString();
-                        if (returnType.contains("<")) {
-                            returnType = returnType.substring(0, returnType.indexOf("<"));
-                        }
-                        Set<String> producerQualifiers = getQualifiers(method);
-                        String producerKey = getKey(returnType, producerQualifiers);
-                        // Convention: Pkg.Bean_Method_Factory
-                        String producerFactoryName = getPackageName(typeElement) + "." + typeElement.getSimpleName() + "_" + method.getSimpleName() + "_Factory";
-                        resolutionMap.put(producerKey, producerFactoryName);
+                    if (qualifier != null) {
+                        resolutionMap.put(interfaceName + ":" + qualifier, typeElement);
+                    } else {
+                        resolutionMap.put(interfaceName, typeElement);
                     }
                 }
             }
@@ -147,36 +118,19 @@ public class IOCProcessor extends AbstractProcessor {
         return false;
     }
 
-    private String getFactoryName(TypeElement typeElement) {
-        String pkg = getPackageName(typeElement);
-        return pkg + "." + typeElement.getSimpleName() + "_Factory";
-    }
-
-    private String getPackageName(TypeElement typeElement) {
-        return processingEnv.getElementUtils().getPackageOf(typeElement).getQualifiedName().toString();
-    }
-
-    private String getKey(String typeName, Set<String> qualifiers) {
-        if (qualifiers.isEmpty()) return typeName;
-        return typeName + "|" + String.join("|", qualifiers);
-    }
-
-    private Set<String> getQualifiers(Element element) {
-        Set<String> qualifiers = new TreeSet<>();
-        for (AnnotationMirror am : element.getAnnotationMirrors()) {
-            DeclaredType annotationType = am.getAnnotationType();
-            if (annotationType.asElement().getAnnotation(Qualifier.class) != null) {
-                qualifiers.add(am.toString());
-            }
+    private String getQualifier(Element element) {
+        Named named = element.getAnnotation(Named.class);
+        if (named != null) {
+            return named.value();
         }
-        return qualifiers;
+        return null;
     }
 
-    private void processBean(TypeElement typeElement, Map<String, String> resolutionMap, BeanVisitor visitor) {
+    private void processBean(TypeElement typeElement, Map<String, TypeElement> resolutionMap, BeanVisitor visitor) {
         boolean isSingleton = typeElement.getAnnotation(ApplicationScoped.class) != null ||
                               typeElement.getAnnotation(EntryPoint.class) != null;
         boolean isTemplated = typeElement.getAnnotation(Templated.class) != null;
-        Set<String> qualifiers = getQualifiers(typeElement);
+        String beanQualifier = getQualifier(typeElement);
 
         List<InjectionPoint> injectionPoints = new ArrayList<>();
         List<VariableElement> allFields = getAllFields(typeElement);
@@ -185,36 +139,28 @@ public class IOCProcessor extends AbstractProcessor {
         for (VariableElement field : allFields) {
             if (field.getAnnotation(Inject.class) != null) {
                 TypeMirror fieldType = processingEnv.getTypeUtils().asMemberOf(typeMirror, field);
-                Set<String> fieldQualifiers = getQualifiers(field);
-                injectionPoints.add(new InjectionPoint(field, fieldType, fieldQualifiers));
+                String qualifier = getQualifier(field);
+                injectionPoints.add(new InjectionPoint(field, fieldType, qualifier));
             }
         }
 
         List<ExecutableElement> postConstructMethods = new ArrayList<>();
-        List<ExecutableElement> producerMethods = new ArrayList<>();
-        List<ExecutableElement> observesMethods = new ArrayList<>();
-
+        List<ExecutableElement> observerMethods = new ArrayList<>();
         List<ExecutableElement> allMethods = getAllMethods(typeElement);
         for (ExecutableElement method : allMethods) {
             if (method.getAnnotation(PostConstruct.class) != null) {
                 postConstructMethods.add(method);
             }
-            if (method.getAnnotation(Produces.class) != null) {
-                if (method.getEnclosingElement().equals(typeElement)) {
-                    producerMethods.add(method);
-                }
-            }
-            // Check for @Observes parameter
             for (VariableElement param : method.getParameters()) {
                 if (param.getAnnotation(Observes.class) != null) {
-                    observesMethods.add(method);
+                    observerMethods.add(method);
                     break;
                 }
             }
         }
 
         BeanDefinition beanDef = new BeanDefinition(typeElement, isSingleton, isTemplated,
-                injectionPoints, postConstructMethods, resolutionMap, qualifiers, producerMethods, observesMethods);
+                injectionPoints, postConstructMethods, observerMethods, resolutionMap, beanQualifier);
 
         String signature = computeSignature(beanDef);
         String className = typeElement.getQualifiedName().toString();
@@ -232,52 +178,67 @@ public class IOCProcessor extends AbstractProcessor {
         sb.append(beanDef.isSingleton());
         sb.append(":");
         sb.append(beanDef.isTemplated());
-        sb.append("|Q:");
-        sb.append(String.join(",", beanDef.getQualifiers()));
         sb.append("|");
 
         for (InjectionPoint ip : beanDef.getInjectionPoints()) {
             sb.append(ip.getField().getSimpleName().toString());
             sb.append("=");
             String typeName = ip.getType().toString();
+            // Clean generic
             String rawTypeName = typeName;
              if (rawTypeName.contains("<")) {
                 rawTypeName = rawTypeName.substring(0, rawTypeName.indexOf("<"));
             }
             sb.append(typeName);
-            sb.append("[");
-            sb.append(String.join(",", ip.getQualifiers()));
-            sb.append("]");
+            if (ip.getQualifier() != null) {
+                sb.append("@").append(ip.getQualifier());
+            }
 
-            String key = getKey(rawTypeName, ip.getQualifiers());
-            if (beanDef.getResolutionMap().containsKey(key)) {
-                sb.append("->");
-                sb.append(beanDef.getResolutionMap().get(key));
+            if (rawTypeName.equals("javax.inject.Provider")) {
+                // Extract T
+                if (ip.getType() instanceof DeclaredType) {
+                     DeclaredType declaredType = (DeclaredType) ip.getType();
+                     if (!declaredType.getTypeArguments().isEmpty()) {
+                        TypeMirror typeArg = declaredType.getTypeArguments().get(0);
+                        String typeArgName = typeArg.toString();
+                         if (typeArgName.contains("<")) {
+                            typeArgName = typeArgName.substring(0, typeArgName.indexOf("<"));
+                        }
+
+                        String key = typeArgName;
+                        if (ip.getQualifier() != null) {
+                            key += ":" + ip.getQualifier();
+                        }
+
+                        // Check resolution for typeArgName
+                        if (beanDef.getResolutionMap().containsKey(key)) {
+                            sb.append("->");
+                            sb.append(beanDef.getResolutionMap().get(key).getQualifiedName().toString());
+                        }
+                     }
+                }
+            } else {
+                 String key = rawTypeName;
+                 if (ip.getQualifier() != null) {
+                     key += ":" + ip.getQualifier();
+                 }
+                 // Check resolution for rawTypeName
+                if (beanDef.getResolutionMap().containsKey(key)) {
+                    sb.append("->");
+                    sb.append(beanDef.getResolutionMap().get(key).getQualifiedName().toString());
+                }
             }
 
             sb.append(";");
         }
 
-        sb.append("|PC:");
+        sb.append("|");
         for (ExecutableElement method : beanDef.getPostConstructMethods()) {
             sb.append(method.getSimpleName().toString());
             sb.append(";");
         }
         sb.append("|");
         for (ExecutableElement method : beanDef.getObserverMethods()) {
-            sb.append(method.getSimpleName().toString());
-            sb.append(";");
-        }
-
-        sb.append("|PROD:");
-        for (ExecutableElement method : beanDef.getProducerMethods()) {
-            sb.append(method.getSimpleName().toString());
-            sb.append(method.getReturnType().toString());
-            sb.append(";");
-        }
-
-        sb.append("|OBS:");
-        for (ExecutableElement method : beanDef.getObservesMethods()) {
             sb.append(method.getSimpleName().toString());
             sb.append(";");
         }

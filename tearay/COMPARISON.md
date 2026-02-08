@@ -27,11 +27,11 @@ This document compares the current state of the **Tearay** framework with **Erra
 | **Property Chains** | `@Bound(property="user.address.city")` | Supported via recursive getter generation | ✅ Parity |
 | **Two-Way Sync** | Automatic (Model <-> Widget) | Automatic (Model <-> Widget) | ✅ Parity |
 | **Converters** | Register generic/specific converters | **Missing** (Assumes type match) | ⚠️ Partial |
-| **Validation** | JSR-303 integration | `@Validatable` annotation processor | ✅ Parity (Basic) |
+| **Validation** | JSR-303 integration | **Missing** | ❌ Critical Gap |
 | **Programmatic Binding** | `DataBinder<T>` API | **Missing** | ❌ Missing |
 
 ### Advice:
-*   **Validation**: Implemented basic annotation-based validation (`@NotNull`, `@Size`, `@Min`, `@Max`, `@Pattern`).
+*   **Validation**: Add basic support for validation, perhaps by integrating a lightweight validation library compatible with TeaVM.
 *   **Converters**: Necessary for real-world apps (e.g., binding a `Date` object to a `TextInput`).
 
 ## 3. Navigation
@@ -56,8 +56,8 @@ This document compares the current state of the **Tearay** framework with **Erra
 | **Scopes** | `ApplicationScoped`, `Dependent`, `Singleton` | `ApplicationScoped`, `Dependent` | ✅ Parity |
 | **Injection** | Field, Constructor, Setter | Field Injection only (mostly) | ⚠️ Partial |
 | **Producers** | `@Produces` methods/fields | **Missing** | ❌ Missing |
-| **Events** | `Event<T>`, `@Observes` | `@Observes` supported | ⚠️ Partial (In Progress) |
-| **Qualifiers** | `@Named`, custom qualifiers | `@Named` supported | ⚠️ Partial (In Progress) |
+| **Events** | `Event<T>`, `@Observes` | `@Observes` supported | ✅ Parity |
+| **Qualifiers** | `@Named`, custom qualifiers | `@Named` supported | ✅ Parity |
 | **Proxying** | Client-side proxies for circular deps | **Missing** (Simple factory chains) | ⚠️ Partial |
 
 ### Advice:
@@ -78,8 +78,7 @@ This document compares the current state of the **Tearay** framework with **Erra
 
 ## Summary of Recommendations
 
-1.  **High Priority**: Complete **CDI Events** (`@Observes`) implementation.
-2.  **High Priority**: Complete **CDI Qualifiers** (`@Named`) implementation.
-3.  **Medium Priority**: Implement **CDI Producers** (`@Produces`) to allow more flexible bean creation.
-4.  **Medium Priority**: Add **I18n** support.
-5.  **Medium Priority**: Add **Converters** for data binding.
+1.  **High Priority**: Implement **Data Validation** (JSR-303 style or simpler).
+2.  **Medium Priority**: Implement **CDI Producers** (`@Produces`) to allow more flexible bean creation.
+3.  **Medium Priority**: Add **I18n** support.
+4.  **Medium Priority**: Add **Converters** for data binding.

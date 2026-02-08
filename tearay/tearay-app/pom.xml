@@ -74,6 +74,7 @@
       <!-- Compiler Plugin: Runs the Annotation Processor -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
            <!-- The processor is on the classpath (scope provided), so it should be picked up automatically
                 However, explicit configuration is often safer. -->
@@ -81,6 +82,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
         <configuration>
           <systemPropertyVariables>
             <teavm.junit.target>${project.build.directory}/js-tests</teavm.junit.target>
@@ -103,13 +105,14 @@
               <mainClass>uk.co.instanto.tearay.sample.App</mainClass>
               <targetDirectory>${project.build.directory}/generated/teavm</targetDirectory>
               <minifying>false</minifying>
-              <debugInformationGenerated>false</debugInformationGenerated>
+              <debugInformationGenerated>true</debugInformationGenerated>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
+        <version>3.2.3</version>
         <configuration>
             <failOnMissingWebXml>false</failOnMissingWebXml>
             <webResources>
@@ -123,6 +126,7 @@
       <!-- Assembly Plugin for GitHub Pages -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.3.0</version>
         <configuration>
           <descriptors>
             <descriptor>src/assembly/gh-pages.xml</descriptor>
