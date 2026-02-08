@@ -3,7 +3,9 @@ package uk.co.instanto.tearay.bootstrap;
 import org.teavm.jso.browser.Window;
 import org.teavm.jso.dom.html.HTMLInputElement;
 import uk.co.instanto.tearay.api.TakesValue;
+import uk.co.instanto.tearay.api.Dependent;
 
+@Dependent
 public class Slider extends Widget implements TakesValue<Integer> {
 
     private HTMLInputElement input;

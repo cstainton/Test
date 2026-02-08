@@ -104,6 +104,12 @@ public class DashboardPage {
         featuresBtn.addClickListener(e -> navigation.goTo("features"));
         col2.element.appendChild(featuresBtn.element);
 
+        Button validationBtn = new Button();
+        validationBtn.setText("Validation Demo");
+        validationBtn.setType(Button.Type.SUCCESS);
+        validationBtn.addClickListener(e -> navigation.goTo("validation"));
+        col2.element.appendChild(validationBtn.element);
+
         // Slider demo
         Slider slider = new Slider();
         slider.setMin(0);

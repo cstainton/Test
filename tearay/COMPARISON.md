@@ -27,11 +27,11 @@ This document compares the current state of the **Tearay** framework with **Erra
 | **Property Chains** | `@Bound(property="user.address.city")` | Supported via recursive getter generation | ✅ Parity |
 | **Two-Way Sync** | Automatic (Model <-> Widget) | Automatic (Model <-> Widget) | ✅ Parity |
 | **Converters** | Register generic/specific converters | **Missing** (Assumes type match) | ⚠️ Partial |
-| **Validation** | JSR-303 integration | **Missing** | ❌ Critical Gap |
+| **Validation** | JSR-303 integration | `@Validatable` annotation processor | ✅ Parity (Basic) |
 | **Programmatic Binding** | `DataBinder<T>` API | **Missing** | ❌ Missing |
 
 ### Advice:
-*   **Validation**: Add basic support for validation, perhaps by integrating a lightweight validation library compatible with TeaVM.
+*   **Validation**: Implemented basic annotation-based validation (`@NotNull`, `@Size`, `@Min`, `@Max`, `@Pattern`).
 *   **Converters**: Necessary for real-world apps (e.g., binding a `Date` object to a `TextInput`).
 
 ## 3. Navigation
@@ -79,7 +79,6 @@ This document compares the current state of the **Tearay** framework with **Erra
 ## Summary of Recommendations
 
 1.  **High Priority**: Implement **CDI Events** (`@Observes`) to allow loose coupling between components.
-2.  **High Priority**: Implement **Data Validation** (JSR-303 style or simpler).
-3.  **Medium Priority**: Implement **CDI Producers** (`@Produces`) to allow more flexible bean creation.
-4.  **Medium Priority**: Add **I18n** support.
-5.  **Medium Priority**: Add **Converters** for data binding.
+2.  **Medium Priority**: Implement **CDI Producers** (`@Produces`) to allow more flexible bean creation.
+3.  **Medium Priority**: Add **I18n** support.
+4.  **Medium Priority**: Add **Converters** for data binding.

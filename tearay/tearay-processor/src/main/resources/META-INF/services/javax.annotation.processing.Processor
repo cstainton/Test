@@ -2,3 +2,4 @@ uk.co.instanto.tearay.processor.TemplatedProcessor
 uk.co.instanto.tearay.processor.IOCProcessor
 uk.co.instanto.tearay.processor.NavigationProcessor
 uk.co.instanto.tearay.processor.WireProcessor
+uk.co.instanto.tearay.processor.ValidationProcessor
