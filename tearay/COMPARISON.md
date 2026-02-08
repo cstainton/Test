@@ -11,12 +11,11 @@ This document compares the current state of the **Tearay** framework with **Erra
 | **Element Replacement** | Replaces placeholder with Widget root | Replaces placeholder with `widget.element` | ✅ Parity |
 | **Attribute Merging** | Merges `class`, `style`, `id` from template | Merges `class`, `style`, `id` (implemented in `TemplatedProcessor`) | ✅ Parity |
 | **Nested Components** | `@Inject @DataField MyComponent c;` auto-instantiated | `@Inject @DataField MyComponent c;` manual instantiation required often | ⚠️ Partial |
-| **Event Handling** | `@EventHandler("field")` for UI events | **Missing** | ❌ Critical Gap |
+| **Event Handling** | `@EventHandler("field")` for UI events | `@EventHandler("field")` for UI events | ✅ Parity |
 | **Native Event Sinks** | `@SinkNative` | **Missing** | ❌ Missing |
 | **Shadow DOM** | Supported | Not Supported | ⚪ Low Priority |
 
 ### Advice:
-*   **Immediate Priority**: Implement `@EventHandler` support. This is fundamental for any interactive UI. Without it, developers must manually attach listeners in `@PostConstruct`, which defeats the purpose of declarative UI.
 *   **Enhancement**: Improve nested component handling to ensure child components are properly instantiated and their lifecycle managed by the container.
 
 ## 2. Data Binding
@@ -41,14 +40,14 @@ This document compares the current state of the **Tearay** framework with **Erra
 | :--- | :--- | :--- | :--- |
 | **Page Definition** | `@Page(role = "home")` | `@Page(role = "home")` | ✅ Parity |
 | **Lifecycle: Showing** | `@PageShowing` | `@PageShowing` | ✅ Parity |
-| **Lifecycle: Shown** | `@PageShown` (DOM attached) | **Missing** | ⚠️ Gap |
-| **Lifecycle: Hiding** | `@PageHiding` (Before remove) | **Missing** | ⚠️ Gap |
+| **Lifecycle: Shown** | `@PageShown` (DOM attached) | `@PageShown` (DOM attached) | ✅ Parity |
+| **Lifecycle: Hiding** | `@PageHiding` (Before remove) | `@PageHiding` (Before remove) | ✅ Parity |
 | **Lifecycle: Hidden** | `@PageHidden` (After remove) | `@PageHidden` | ✅ Parity |
 | **State Management** | `@PageState` field injection | `@PageState` field injection | ✅ Parity |
 | **Access Control** | `@RestrictedAccess` integration | `@RestrictedAccess` integration | ✅ Parity |
 
 ### Advice:
-*   **Lifecycle**: Implement `@PageShown` and `@PageHiding`. `@PageShown` is crucial for logic that requires the element to be in the DOM (e.g., initializing 3rd party JS libs, measuring dimensions). `@PageHiding` is crucial for cleanup/cancellation.
+*   **Enhancement**: Consider implementing "Navigation Interceptors" or "Guards" for more complex access control scenarios beyond simple role checks.
 
 ## 4. IOC & CDI Features
 
@@ -79,7 +78,8 @@ This document compares the current state of the **Tearay** framework with **Erra
 
 ## Summary of Recommendations
 
-1.  **High Priority**: Implement **`@EventHandler`**. It's the biggest friction point for UI development right now.
-2.  **High Priority**: Complete **Navigation Lifecycle** (`@PageShown`, `@PageHiding`).
-3.  **Medium Priority**: Implement **CDI Events** (`@Observes`) to allow loose coupling between components.
+1.  **High Priority**: Implement **CDI Events** (`@Observes`) to allow loose coupling between components.
+2.  **High Priority**: Implement **Data Validation** (JSR-303 style or simpler).
+3.  **Medium Priority**: Implement **CDI Producers** (`@Produces`) to allow more flexible bean creation.
 4.  **Medium Priority**: Add **I18n** support.
+5.  **Medium Priority**: Add **Converters** for data binding.
