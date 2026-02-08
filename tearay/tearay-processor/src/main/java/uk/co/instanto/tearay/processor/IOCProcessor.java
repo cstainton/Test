@@ -41,8 +41,21 @@ import java.util.stream.Collectors;
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class IOCProcessor extends AbstractProcessor {
 
+    private ProcessorCache cache;
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        this.cache = new ProcessorCache(processingEnv);
+    }
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        if (roundEnv.processingOver()) {
+            cache.save();
+            return false;
+        }
+
         // Collect all beans: @ApplicationScoped, @EntryPoint, @Templated, and @Page (which implies bean)
         Set<Element> beans = roundEnv.getElementsAnnotatedWith(ApplicationScoped.class).stream().collect(Collectors.toSet());
         beans.addAll(roundEnv.getElementsAnnotatedWith(Dependent.class));
@@ -120,7 +133,84 @@ public class IOCProcessor extends AbstractProcessor {
         BeanDefinition beanDef = new BeanDefinition(typeElement, isSingleton, isTemplated,
                 injectionPoints, postConstructMethods, resolutionMap);
 
-        visitor.visit(beanDef);
+        String signature = computeSignature(beanDef);
+        String className = typeElement.getQualifiedName().toString();
+
+        if (cache.isChanged(className, signature)) {
+            visitor.visit(beanDef);
+            cache.update(className, signature);
+        }
+    }
+
+    private String computeSignature(BeanDefinition beanDef) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(beanDef.getTypeElement().getQualifiedName().toString());
+        sb.append(":");
+        sb.append(beanDef.isSingleton());
+        sb.append(":");
+        sb.append(beanDef.isTemplated());
+        sb.append("|");
+
+        for (InjectionPoint ip : beanDef.getInjectionPoints()) {
+            sb.append(ip.getField().getSimpleName().toString());
+            sb.append("=");
+            String typeName = ip.getType().toString();
+            // Clean generic
+            String rawTypeName = typeName;
+             if (rawTypeName.contains("<")) {
+                rawTypeName = rawTypeName.substring(0, rawTypeName.indexOf("<"));
+            }
+            sb.append(typeName);
+
+            if (rawTypeName.equals("javax.inject.Provider")) {
+                // Extract T
+                if (ip.getType() instanceof DeclaredType) {
+                     DeclaredType declaredType = (DeclaredType) ip.getType();
+                     if (!declaredType.getTypeArguments().isEmpty()) {
+                        TypeMirror typeArg = declaredType.getTypeArguments().get(0);
+                        String typeArgName = typeArg.toString();
+                         if (typeArgName.contains("<")) {
+                            typeArgName = typeArgName.substring(0, typeArgName.indexOf("<"));
+                        }
+
+                        // Check resolution for typeArgName
+                        if (beanDef.getResolutionMap().containsKey(typeArgName)) {
+                            sb.append("->");
+                            sb.append(beanDef.getResolutionMap().get(typeArgName).getQualifiedName().toString());
+                        }
+                     }
+                }
+            } else {
+                 // Check resolution for rawTypeName
+                if (beanDef.getResolutionMap().containsKey(rawTypeName)) {
+                    sb.append("->");
+                    sb.append(beanDef.getResolutionMap().get(rawTypeName).getQualifiedName().toString());
+                }
+            }
+
+            sb.append(";");
+        }
+
+        sb.append("|");
+        for (ExecutableElement method : beanDef.getPostConstructMethods()) {
+            sb.append(method.getSimpleName().toString());
+            sb.append(";");
+        }
+
+        // Compute hash
+        try {
+            java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(sb.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            return String.valueOf(sb.toString().hashCode());
+        }
     }
 
     private List<VariableElement> getAllFields(TypeElement typeElement) {
