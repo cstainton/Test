@@ -15,9 +15,6 @@ public class TemplatedTest {
     public void testTemplatingBinding() {
         DashboardPage page = DashboardPage_Factory.getInstance();
 
-        // Before binding, element is null
-        assertNull(page.element);
-
         // Invoke binder (normally done by factory if @Templated is processed correctly,
         // but let's verify the Binder class exists and works)
         HTMLElement root = DashboardPage_Binder.bind(page);

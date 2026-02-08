@@ -108,7 +108,7 @@ public class TemplatedProcessor extends AbstractProcessor {
         bindMethod.addStatement("$T doc = $T.current().getDocument()", documentClass, windowClass);
         bindMethod.addStatement("$T root = doc.createElement($S)", htmlElementClass, "div");
 
-        String escapedHtml = htmlContent.replace("\n", " ").replace("\"", "\\\"");
+        String escapedHtml = htmlContent.replace("\n", " ");
         bindMethod.addStatement("root.setInnerHTML($S)", escapedHtml);
 
         // Assign root to 'element' field if exists

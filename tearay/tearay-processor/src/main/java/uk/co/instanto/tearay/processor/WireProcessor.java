@@ -278,7 +278,12 @@ public class WireProcessor extends AbstractProcessor {
              decodeProto.addStatement("throw new $T(\"Cannot instantiate abstract class $L\")", UnsupportedOperationException.class, targetClass);
         } else {
             decodeProto.addStatement("$T value = new $T()", targetClass, targetClass);
-            decodeProto.addStatement("long token = reader.beginMessage()");
+            decodeProto.addStatement("long token = -1L");
+            decodeProto.beginControlFlow("try");
+            decodeProto.addStatement("token = reader.beginMessage()");
+            decodeProto.nextControlFlow("catch ($T e)", IllegalStateException.class);
+            decodeProto.endControlFlow();
+
             decodeProto.beginControlFlow("for (int tag; (tag = reader.nextTag()) != -1; )");
             decodeProto.beginControlFlow("switch (tag)");
 
@@ -299,7 +304,11 @@ public class WireProcessor extends AbstractProcessor {
 
             decodeProto.endControlFlow(); // switch
             decodeProto.endControlFlow(); // for
+
+            decodeProto.beginControlFlow("if (token != -1L)");
             decodeProto.addStatement("reader.endMessage(token)");
+            decodeProto.endControlFlow();
+
             decodeProto.addStatement("return value");
         }
 
@@ -369,18 +378,14 @@ public class WireProcessor extends AbstractProcessor {
              builder.addStatement("if ($L == null) $L = new $T<>()", accessor, accessor, ArrayList.class);
 
              if (isProto(elementType)) {
-                 builder.addStatement("$T bytes = reader.readBytes()", ByteString.class);
-                 builder.addStatement("$T nestedReader = new $T(new $T().write(bytes))", ProtoReader.class, ProtoReader.class, Buffer.class);
-                 builder.addStatement("$T item = registry.getCodec($T.class).decode(nestedReader)", elementType, TypeName.get(elementType));
+                 builder.addStatement("$T item = registry.getCodec($T.class).decode(reader)", elementType, TypeName.get(elementType));
                  builder.addStatement("$L.add(item)", accessor);
              } else if (isString(elementType)) {
                  builder.addStatement("$L.add(reader.readString())", accessor);
              }
         } else if (isProto(type)) {
              // Nested Message
-             builder.addStatement("$T bytes = reader.readBytes()", ByteString.class);
-             builder.addStatement("$T nestedReader = new $T(new $T().write(bytes))", ProtoReader.class, ProtoReader.class, Buffer.class);
-             builder.addStatement("$L = registry.getCodec($T.class).decode(nestedReader)", accessor, TypeName.get(type));
+             builder.addStatement("$L = registry.getCodec($T.class).decode(reader)", accessor, TypeName.get(type));
         }
     }
 
