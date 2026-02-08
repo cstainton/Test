@@ -62,6 +62,19 @@ public class IOCProcessor extends AbstractProcessor {
         beans.addAll(roundEnv.getElementsAnnotatedWith(Templated.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Page.class));
 
+        // Build Interface Resolution Map (Interface Name + Qualifier -> Implementation)
+        Map<String, TypeElement> resolutionMap = new HashMap<>();
+        for (Element element : beans) {
+            if (element.getKind() == ElementKind.CLASS) {
+                TypeElement typeElement = (TypeElement) element;
+                String qualifier = getQualifier(element);
+
+                // Map the class itself
+                String selfName = typeElement.getQualifiedName().toString();
+                if (qualifier != null) {
+                    resolutionMap.put(selfName + ":" + qualifier, typeElement);
+                }
+
         // Build Resolution Map
         Map<String, String> resolutionMap = new HashMap<>();
         for (Element element : beans) {
@@ -247,6 +260,11 @@ public class IOCProcessor extends AbstractProcessor {
 
         sb.append("|PC:");
         for (ExecutableElement method : beanDef.getPostConstructMethods()) {
+            sb.append(method.getSimpleName().toString());
+            sb.append(";");
+        }
+        sb.append("|");
+        for (ExecutableElement method : beanDef.getObserverMethods()) {
             sb.append(method.getSimpleName().toString());
             sb.append(";");
         }

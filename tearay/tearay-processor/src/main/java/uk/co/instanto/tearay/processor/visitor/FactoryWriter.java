@@ -102,6 +102,23 @@ public class FactoryWriter implements BeanVisitor {
             createMethod.addStatement("$T.bind(bean)", binderClass);
         }
 
+        // Event Observer Registration
+        if (!bean.getObserverMethods().isEmpty()) {
+            ClassName eventBusClass = ClassName.get("uk.co.instanto.tearay.impl", "EventBus");
+            for (ExecutableElement method : bean.getObserverMethods()) {
+                // Find parameter annotated with @Observes
+                for (VariableElement param : method.getParameters()) {
+                    if (param.getAnnotation(uk.co.instanto.tearay.api.Observes.class) != null) {
+                        TypeMirror eventType = param.asType();
+                        // Register: EventBus.register(EventType.class, e -> bean.method(e))
+                        createMethod.addStatement("$T.register($T.class, e -> bean.$L(($T) e))",
+                            eventBusClass, ClassName.bestGuess(eventType.toString()), method.getSimpleName(), ClassName.bestGuess(eventType.toString()));
+                        break;
+                    }
+                }
+            }
+        }
+
         // PostConstruct
         for (ExecutableElement method : bean.getPostConstructMethods()) {
             createMethod.addStatement("bean.$L()", method.getSimpleName());

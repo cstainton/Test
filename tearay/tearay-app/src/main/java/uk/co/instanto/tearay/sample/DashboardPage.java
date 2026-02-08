@@ -110,6 +110,18 @@ public class DashboardPage {
         validationBtn.addClickListener(e -> navigation.goTo("validation"));
         col2.element.appendChild(validationBtn.element);
 
+        Button qualifierBtn = new Button();
+        qualifierBtn.setText("Qualifier Demo");
+        qualifierBtn.setType(Button.Type.WARNING);
+        qualifierBtn.addClickListener(e -> navigation.goTo("qualifier"));
+        col2.element.appendChild(qualifierBtn.element);
+
+        Button eventBtn = new Button();
+        eventBtn.setText("Event Demo");
+        eventBtn.setType(Button.Type.INFO);
+        eventBtn.addClickListener(e -> navigation.goTo("events"));
+        col2.element.appendChild(eventBtn.element);
+
         // Slider demo
         Slider slider = new Slider();
         slider.setMin(0);

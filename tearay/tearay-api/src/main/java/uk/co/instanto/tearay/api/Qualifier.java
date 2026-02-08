@@ -1,14 +1,13 @@
 package uk.co.instanto.tearay.api;
 
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 
-/**
- * Identifies the event parameter of an observer method.
- */
+@Target(ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface Observes {
+@Documented
+public @interface Qualifier {
 }

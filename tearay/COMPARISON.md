@@ -56,8 +56,8 @@ This document compares the current state of the **Tearay** framework with **Erra
 | **Scopes** | `ApplicationScoped`, `Dependent`, `Singleton` | `ApplicationScoped`, `Dependent` | ✅ Parity |
 | **Injection** | Field, Constructor, Setter | Field Injection only (mostly) | ⚠️ Partial |
 | **Producers** | `@Produces` methods/fields | **Missing** | ❌ Missing |
-| **Events** | `Event<T>`, `@Observes` | **Missing** | ❌ Critical Gap |
-| **Qualifiers** | `@Named`, custom qualifiers | **Missing** (Basic interface resolution) | ❌ Missing |
+| **Events** | `Event<T>`, `@Observes` | `@Observes` supported | ⚠️ Partial (In Progress) |
+| **Qualifiers** | `@Named`, custom qualifiers | `@Named` supported | ⚠️ Partial (In Progress) |
 | **Proxying** | Client-side proxies for circular deps | **Missing** (Simple factory chains) | ⚠️ Partial |
 
 ### Advice:
@@ -78,7 +78,8 @@ This document compares the current state of the **Tearay** framework with **Erra
 
 ## Summary of Recommendations
 
-1.  **High Priority**: Implement **CDI Events** (`@Observes`) to allow loose coupling between components.
-2.  **Medium Priority**: Implement **CDI Producers** (`@Produces`) to allow more flexible bean creation.
-3.  **Medium Priority**: Add **I18n** support.
-4.  **Medium Priority**: Add **Converters** for data binding.
+1.  **High Priority**: Complete **CDI Events** (`@Observes`) implementation.
+2.  **High Priority**: Complete **CDI Qualifiers** (`@Named`) implementation.
+3.  **Medium Priority**: Implement **CDI Producers** (`@Produces`) to allow more flexible bean creation.
+4.  **Medium Priority**: Add **I18n** support.
+5.  **Medium Priority**: Add **Converters** for data binding.

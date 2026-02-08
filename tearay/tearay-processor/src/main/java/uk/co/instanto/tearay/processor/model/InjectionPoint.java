@@ -8,6 +8,12 @@ import java.util.Collections;
 public class InjectionPoint {
     private final VariableElement field;
     private final TypeMirror type;
+    private final String qualifier;
+
+    public InjectionPoint(VariableElement field, TypeMirror type, String qualifier) {
+        this.field = field;
+        this.type = type;
+        this.qualifier = qualifier;
     private final Set<String> qualifiers;
 
     public InjectionPoint(VariableElement field, TypeMirror type, Set<String> qualifiers) {

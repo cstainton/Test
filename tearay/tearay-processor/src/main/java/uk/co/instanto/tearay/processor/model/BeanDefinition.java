@@ -14,6 +14,14 @@ public class BeanDefinition {
     private final boolean isTemplated;
     private final List<InjectionPoint> injectionPoints;
     private final List<ExecutableElement> postConstructMethods;
+    private final List<ExecutableElement> observerMethods;
+    private final Map<String, TypeElement> resolutionMap;
+    private final String qualifier;
+
+    public BeanDefinition(TypeElement typeElement, boolean isSingleton, boolean isTemplated,
+                          List<InjectionPoint> injectionPoints, List<ExecutableElement> postConstructMethods,
+                          List<ExecutableElement> observerMethods,
+                          Map<String, TypeElement> resolutionMap, String qualifier) {
     private final Map<String, String> resolutionMap;
     private final Set<String> qualifiers;
     private final List<ExecutableElement> producerMethods;
@@ -28,6 +36,7 @@ public class BeanDefinition {
         this.isTemplated = isTemplated;
         this.injectionPoints = injectionPoints;
         this.postConstructMethods = postConstructMethods;
+        this.observerMethods = observerMethods;
         this.resolutionMap = resolutionMap;
         this.qualifiers = qualifiers != null ? qualifiers : Collections.emptySet();
         this.producerMethods = producerMethods != null ? producerMethods : Collections.emptyList();
