@@ -48,7 +48,7 @@ public class TemplatedProcessorTest {
         assertThat(compilation)
             .generatedSourceFile("uk.co.instanto.tearay.processor.SimplePage_Binder")
             .contentsAsUtf8String()
-            .contains("switch (attr)");
+            .contains("switch (key)");
 
         assertThat(compilation)
             .generatedSourceFile("uk.co.instanto.tearay.processor.SimplePage_Binder")
@@ -90,6 +90,44 @@ public class TemplatedProcessorTest {
 
         assertThat(compilation)
             .generatedSourceFile("uk.co.instanto.tearay.processor.ElementPage_Binder")
+            .contentsAsUtf8String()
+            .contains("target.element = root");
+    }
+
+    @Test
+    public void testInheritedElementFieldBinding() {
+         JavaFileObject parent = JavaFileObjects.forSourceLines(
+            "uk.co.instanto.tearay.processor.ParentPage",
+            "package uk.co.instanto.tearay.processor;",
+            "",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "public class ParentPage {",
+            "    public HTMLElement element;",
+            "}"
+        );
+
+         JavaFileObject source = JavaFileObjects.forSourceLines(
+            "uk.co.instanto.tearay.processor.InheritedPage",
+            "package uk.co.instanto.tearay.processor;",
+            "",
+            "import uk.co.instanto.tearay.api.Templated;",
+            "import uk.co.instanto.tearay.api.DataField;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Templated(\"SimplePage.html\")",
+            "public class InheritedPage extends ParentPage {",
+            "}"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new TemplatedProcessor())
+            .compile(parent, source);
+
+        assertThat(compilation).succeeded();
+
+        assertThat(compilation)
+            .generatedSourceFile("uk.co.instanto.tearay.processor.InheritedPage_Binder")
             .contentsAsUtf8String()
             .contains("target.element = root");
     }
