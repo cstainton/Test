@@ -65,5 +65,9 @@ public class DashboardPage {
 nav.goTo("dashboard");
 ```
 
+## Documentation
+
+*   [Comparison with Errai](COMPARISON.md)
+
 ## License
 This project is a Proof of Concept and serves as a technical demonstration.
