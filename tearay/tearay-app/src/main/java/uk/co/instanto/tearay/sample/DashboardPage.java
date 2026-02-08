@@ -33,6 +33,22 @@ public class DashboardPage {
     @Inject @DataField
     public TableWidget userTable;
 
+    @Inject @DataField
+    public Button qualifierBtn;
+
+    @Inject @DataField
+    public Button eventBtn;
+
+    @EventHandler("qualifierBtn")
+    public void onQualifierDemo() {
+        navigation.goTo("qualifier");
+    }
+
+    @EventHandler("eventBtn")
+    public void onEventDemo() {
+        navigation.goTo("events");
+    }
+
     @PageShowing
     public void onShow() {
         // Clear previous content if re-used
@@ -97,18 +113,6 @@ public class DashboardPage {
         logoutBtn.setType(Button.Type.DANGER);
         logoutBtn.addClickListener(e -> navigation.goTo("login"));
         col2.element.appendChild(logoutBtn.element);
-
-        Button qualifierBtn = new Button();
-        qualifierBtn.setText("Qualifier Demo");
-        qualifierBtn.setType(Button.Type.WARNING);
-        qualifierBtn.addClickListener(e -> navigation.goTo("qualifier"));
-        col2.element.appendChild(qualifierBtn.element);
-
-        Button eventBtn = new Button();
-        eventBtn.setText("Event Demo");
-        eventBtn.setType(Button.Type.INFO);
-        eventBtn.addClickListener(e -> navigation.goTo("events"));
-        col2.element.appendChild(eventBtn.element);
 
         // Slider demo
         Slider slider = new Slider();
