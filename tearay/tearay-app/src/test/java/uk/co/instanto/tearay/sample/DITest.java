@@ -7,7 +7,7 @@ import org.teavm.junit.TeaVMTestRunner;
 import static org.junit.Assert.*;
 
 @RunWith(TeaVMTestRunner.class)
-@SkipJVM // Skip JVM execution as these tests rely on JSO (Window, Document) available only in JS environment
+@SkipJVM
 public class DITest {
 
     @Test

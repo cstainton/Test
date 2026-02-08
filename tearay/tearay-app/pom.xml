@@ -30,6 +30,12 @@
     </dependency>
     <dependency>
       <groupId>org.teavm</groupId>
+      <artifactId>teavm-core</artifactId>
+      <version>${teavm.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.teavm</groupId>
       <artifactId>teavm-jso</artifactId>
     </dependency>
      <dependency>
@@ -75,6 +81,7 @@
         <configuration>
           <systemPropertyVariables>
             <teavm.junit.target>${project.build.directory}/js-tests</teavm.junit.target>
+            <teavm.junit.js.runner>browser-chrome</teavm.junit.js.runner>
           </systemPropertyVariables>
         </configuration>
       </plugin>
