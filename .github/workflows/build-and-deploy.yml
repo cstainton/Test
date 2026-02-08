@@ -13,9 +13,6 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    concurrency:
-      group: "tearay-app-build"
-      cancel-in-progress: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
