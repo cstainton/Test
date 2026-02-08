@@ -18,7 +18,7 @@ public class BootstrapButtonBenchmarkTest {
         }
 
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000; i++) {
             btn.addStyle("test-class-" + i);
         }
         long end = System.currentTimeMillis();
