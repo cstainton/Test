@@ -136,5 +136,45 @@ public class DashboardPage {
         userTable.addRow("1", "Alice", "Admin", "Active");
         userTable.addRow("2", "Bob", "User", "Inactive");
         userTable.addRow("3", "Charlie", "Developer", "Active");
+
+        // --- Material Design / MDB Demo ---
+
+        // Dropdown
+        Dropdown dropdown = new Dropdown();
+        dropdown.setText("Actions");
+        dropdown.addItem("Action 1", () -> Window.alert("Action 1 clicked"));
+        dropdown.addItem("Action 2", () -> Window.alert("Action 2 clicked"));
+        col1.element.appendChild(dropdown.element);
+
+        // Offcanvas (Drawer)
+        Offcanvas offcanvas = new Offcanvas();
+        offcanvas.setTitle("My Drawer");
+        Button closeDrawerBtn = new Button();
+        closeDrawerBtn.setText("Close");
+        closeDrawerBtn.addClickListener(e -> offcanvas.hide());
+        offcanvas.addBody(closeDrawerBtn);
+        // Append offcanvas to body or container so it is in DOM
+        container.element.appendChild(offcanvas.element);
+
+        Button openDrawerBtn = new Button();
+        openDrawerBtn.setText("Open Drawer");
+        openDrawerBtn.setType(Button.Type.PRIMARY);
+        openDrawerBtn.addClickListener(e -> offcanvas.show());
+        col1.element.appendChild(openDrawerBtn.element);
+
+        // Floating Action Button (FAB)
+        FloatingActionButton fab = new FloatingActionButton();
+        fab.setIcon("fas fa-plus"); // Requires FontAwesome
+        fab.addClickListener(e -> Window.alert("FAB Clicked"));
+        col2.element.appendChild(fab.element);
+
+        // Floating Label
+        FloatingLabel floatingLabel = new FloatingLabel();
+        TextBox tb = new TextBox();
+        // Placeholder is required for floating label to work (css :placeholder-shown)
+        tb.getElement().setAttribute("placeholder", "name@example.com");
+        floatingLabel.setInput(tb);
+        floatingLabel.setLabel("Email Address");
+        col2.element.appendChild(floatingLabel.element);
     }
 }
