@@ -1,0 +1,809 @@
+Apache Maven 3.9.12 (848fbb4bf2d427b72bdb2471c22fced7ebd9a7a1)
+Maven home: /opt/homebrew/Cellar/maven/3.9.12/libexec
+Java version: 25.0.2, vendor: Homebrew, runtime: /opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home
+Default locale: en_GB, platform encoding: UTF-8
+OS name: "mac os x", version: "26.2", arch: "aarch64", family: "mac"
+[DEBUG] Created new class realm maven.api
+[DEBUG] Importing foreign packages into class realm maven.api
+[DEBUG]   Imported: javax.annotation.* < plexus.core
+[DEBUG]   Imported: javax.annotation.security.* < plexus.core
+[DEBUG]   Imported: javax.inject.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.artifact < plexus.core
+[DEBUG]   Imported: org.apache.maven.classrealm < plexus.core
+[DEBUG]   Imported: org.apache.maven.cli < plexus.core
+[DEBUG]   Imported: org.apache.maven.configuration < plexus.core
+[DEBUG]   Imported: org.apache.maven.exception < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution.scope < plexus.core
+[DEBUG]   Imported: org.apache.maven.graph < plexus.core
+[DEBUG]   Imported: org.apache.maven.lifecycle < plexus.core
+[DEBUG]   Imported: org.apache.maven.model < plexus.core
+[DEBUG]   Imported: org.apache.maven.monitor < plexus.core
+[DEBUG]   Imported: org.apache.maven.plugin < plexus.core
+[DEBUG]   Imported: org.apache.maven.profiles < plexus.core
+[DEBUG]   Imported: org.apache.maven.project < plexus.core
+[DEBUG]   Imported: org.apache.maven.reporting < plexus.core
+[DEBUG]   Imported: org.apache.maven.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.rtinfo < plexus.core
+[DEBUG]   Imported: org.apache.maven.settings < plexus.core
+[DEBUG]   Imported: org.apache.maven.toolchain < plexus.core
+[DEBUG]   Imported: org.apache.maven.usability < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authentication < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authorization < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.events < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.observers < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.proxy < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.resource < plexus.core
+[DEBUG]   Imported: org.codehaus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.* < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.component < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.configuration < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.container < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.context < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.lifecycle < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.logging < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.personality < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.Xpp3Dom < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParser < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParserException < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlSerializer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.* < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.artifact < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.collection < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.deployment < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.graph < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.installation < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.internal.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.metadata < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.repository < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.resolution < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.spi < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.transfer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.util < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.version < plexus.core
+[DEBUG]   Imported: org.fusesource.jansi.* < plexus.core
+[DEBUG]   Imported: org.slf4j.* < plexus.core
+[DEBUG]   Imported: org.slf4j.event.* < plexus.core
+[DEBUG]   Imported: org.slf4j.helpers.* < plexus.core
+[DEBUG]   Imported: org.slf4j.spi.* < plexus.core
+[DEBUG] Populating class realm maven.api
+[DEBUG] Created adapter factory; available factories [file-lock, rwlock-local, semaphore-local, noop]; available name mappers [discriminating, file-gaecv, file-gav, file-hgaecv, file-hgav, file-static, gaecv, gav, static]
+[INFO] Error stacktraces are turned on.
+[DEBUG] Message scheme: color
+[DEBUG] Message styles: debug info warning error success failure strong mojo project
+[DEBUG] Reading global settings from /opt/homebrew/Cellar/maven/3.9.12/libexec/conf/settings.xml
+[DEBUG] Reading user settings from /Users/carls/.m2/settings.xml
+[DEBUG] Reading global toolchains from /opt/homebrew/Cellar/maven/3.9.12/libexec/conf/toolchains.xml
+[DEBUG] Reading user toolchains from /Users/carls/.m2/toolchains.xml
+[DEBUG] Using local repository at /Users/carls/.m2/repository
+[DEBUG] Using manager EnhancedLocalRepositoryManager with priority 10.0 for /Users/carls/.m2/repository
+[INFO] Scanning for projects...
+[DEBUG] Extension realms for project uk.co.instanto:tearay-parent-pom:pom:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging pom from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:teavm-stomp:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:tearay-rpc-common:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:tearay-rpc-core:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:tearay-proto-generator:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:tearay-annotation-processor:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:tearay-rpc-teavm:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:tearay-integration-tests:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project uk.co.instanto:tearay-demo:jar:1.0.0-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] === REACTOR BUILD PLAN ================================================
+[DEBUG] Project: uk.co.instanto:tearay-integration-tests:jar:1.0.0-SNAPSHOT
+[DEBUG] Tasks:   [clean, compile]
+[DEBUG] Style:   Regular
+[DEBUG] =======================================================================
+[INFO] 
+[INFO] --------------< uk.co.instanto:tearay-integration-tests >---------------
+[INFO] Building tearay-integration-tests 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Creating adapter using nameMapper 'gaecv' and factory 'rwlock-local'
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] === PROJECT BUILD PLAN ================================================
+[DEBUG] Project:       uk.co.instanto:tearay-integration-tests:1.0.0-SNAPSHOT
+[DEBUG] Dependencies (collect): []
+[DEBUG] Dependencies (resolve): [compile]
+[DEBUG] Repositories (dependencies): [tos-releases (https://artifacts.tonofstain.co.uk/repository/tos-releases, default, releases+snapshots), tos-snapshots (https://artifacts.tonofstain.co.uk/repository/tos-snapshots, default, releases+snapshots), central (https://repo.maven.apache.org/maven2, default, releases)]
+[DEBUG] Repositories (plugins)     : [central (https://repo.maven.apache.org/maven2, default, releases)]
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean (default-clean)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <directory default-value="${project.build.directory}"/>
+  <excludeDefaultDirectories default-value="false">${maven.clean.excludeDefaultDirectories}</excludeDefaultDirectories>
+  <failOnError default-value="true">${maven.clean.failOnError}</failOnError>
+  <fast default-value="false">${maven.clean.fast}</fast>
+  <fastDir>${maven.clean.fastDir}</fastDir>
+  <fastMode default-value="background">${maven.clean.fastMode}</fastMode>
+  <followSymLinks default-value="false">${maven.clean.followSymLinks}</followSymLinks>
+  <outputDirectory default-value="${project.build.outputDirectory}"/>
+  <reportDirectory default-value="${project.build.outputDirectory}"/>
+  <retryOnError default-value="true">${maven.clean.retryOnError}</retryOnError>
+  <session default-value="${session}"/>
+  <skip default-value="false">${maven.clean.skip}</skip>
+  <testOutputDirectory default-value="${project.build.testOutputDirectory}"/>
+  <verbose>${maven.clean.verbose}</verbose>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-resources-plugin:3.3.1:resources (default-resources)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <addDefaultExcludes default-value="true"/>
+  <buildFilters default-value="${project.build.filters}"/>
+  <encoding default-value="${project.build.sourceEncoding}"/>
+  <escapeWindowsPaths default-value="true"/>
+  <fileNameFiltering default-value="false"/>
+  <includeEmptyDirs default-value="false"/>
+  <outputDirectory default-value="${project.build.outputDirectory}"/>
+  <overwrite default-value="false"/>
+  <project default-value="${project}"/>
+  <resources default-value="${project.resources}"/>
+  <session default-value="${session}"/>
+  <skip default-value="false">${maven.resources.skip}</skip>
+  <supportMultiLineFiltering default-value="false"/>
+  <useBuildFilters default-value="true"/>
+  <useDefaultDelimiters default-value="true"/>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <annotationProcessorPaths>
+    <path>
+      <groupId>uk.co.instanto</groupId>
+      <artifactId>tearay-annotation-processor</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </path>
+  </annotationProcessorPaths>
+  <basedir default-value="${basedir}"/>
+  <buildDirectory default-value="${project.build.directory}"/>
+  <compilePath default-value="${project.compileClasspathElements}"/>
+  <compileSourceRoots default-value="${project.compileSourceRoots}"/>
+  <compilerId default-value="javac">${maven.compiler.compilerId}</compilerId>
+  <compilerReuseStrategy default-value="${reuseCreated}">${maven.compiler.compilerReuseStrategy}</compilerReuseStrategy>
+  <compilerVersion>${maven.compiler.compilerVersion}</compilerVersion>
+  <debug default-value="true">${maven.compiler.debug}</debug>
+  <debuglevel>${maven.compiler.debuglevel}</debuglevel>
+  <encoding default-value="${project.build.sourceEncoding}">${encoding}</encoding>
+  <executable>${maven.compiler.executable}</executable>
+  <failOnError default-value="true">${maven.compiler.failOnError}</failOnError>
+  <failOnWarning default-value="false">${maven.compiler.failOnWarning}</failOnWarning>
+  <forceJavacCompilerUse default-value="false">${maven.compiler.forceJavacCompilerUse}</forceJavacCompilerUse>
+  <fork default-value="false">${maven.compiler.fork}</fork>
+  <generatedSourcesDirectory default-value="${project.build.directory}/generated-sources/annotations"/>
+  <maxmem>${maven.compiler.maxmem}</maxmem>
+  <meminitial>${maven.compiler.meminitial}</meminitial>
+  <mojoExecution default-value="${mojoExecution}"/>
+  <optimize default-value="false">${maven.compiler.optimize}</optimize>
+  <outputDirectory default-value="${project.build.outputDirectory}"/>
+  <parameters default-value="false">${maven.compiler.parameters}</parameters>
+  <project default-value="${project}"/>
+  <projectArtifact default-value="${project.artifact}"/>
+  <release>17</release>
+  <session default-value="${session}"/>
+  <showDeprecation default-value="false">${maven.compiler.showDeprecation}</showDeprecation>
+  <showWarnings default-value="false">${maven.compiler.showWarnings}</showWarnings>
+  <skipMain>${maven.main.skip}</skipMain>
+  <skipMultiThreadWarning default-value="false">${maven.compiler.skipMultiThreadWarning}</skipMultiThreadWarning>
+  <source default-value="1.6">${maven.compiler.source}</source>
+  <staleMillis default-value="0">${lastModGranularityMs}</staleMillis>
+  <target default-value="1.6">${maven.compiler.target}</target>
+  <useIncrementalCompilation default-value="true">${maven.compiler.useIncrementalCompilation}</useIncrementalCompilation>
+  <verbose default-value="false">${maven.compiler.verbose}</verbose>
+</configuration>
+[DEBUG] =======================================================================
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-common:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-common:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-common:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-common:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-parent-pom:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-parent-pom:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-core:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-core:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-core:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-rpc-core:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:teavm-stomp:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:teavm-stomp:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:teavm-stomp:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:teavm-stomp:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-annotation-processor:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-annotation-processor:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-annotation-processor:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Skipped remote request for uk.co.instanto:tearay-annotation-processor:1.0.0-SNAPSHOT/maven-metadata.xml locally installed metadata up-to-date
+[DEBUG] Dependency collection stats {ConflictMarker.analyzeTime=236041, ConflictMarker.markTime=77625, ConflictMarker.nodeCount=89, ConflictIdSorter.graphTime=112250, ConflictIdSorter.topsortTime=81958, ConflictIdSorter.conflictIdCount=47, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=2020584, ConflictResolver.conflictItemCount=83, DfDependencyCollector.collectTime=48387208, DfDependencyCollector.transformTime=3013375}
+[DEBUG] uk.co.instanto:tearay-integration-tests:jar:1.0.0-SNAPSHOT
+[DEBUG]    uk.co.instanto:tearay-rpc-common:jar:1.0.0-SNAPSHOT:compile
+[DEBUG]       com.squareup.okio:okio-jvm:jar:3.9.0:compile
+[DEBUG]          org.jetbrains.kotlin:kotlin-stdlib:jar:1.9.21:compile
+[DEBUG]             org.jetbrains:annotations:jar:13.0:compile
+[DEBUG]       org.slf4j:slf4j-api:jar:2.0.12:compile (version managed from 2.0.12)
+[DEBUG]    uk.co.instanto:tearay-rpc-core:jar:1.0.0-SNAPSHOT:compile
+[DEBUG]       org.teavm:teavm-classlib:jar:0.10.0:compile (version managed from 0.10.0)
+[DEBUG]          org.teavm:teavm-platform:jar:0.10.0:compile
+[DEBUG]          org.teavm:teavm-jso-impl:jar:0.10.0:compile
+[DEBUG]             org.teavm:teavm-relocated-libs-rhino:jar:0.10.0:runtime
+[DEBUG]                org.mozilla:rhino:jar:1.7.14:runtime
+[DEBUG]          org.teavm:teavm-metaprogramming-impl:jar:0.10.0:compile
+[DEBUG]             org.teavm:teavm-metaprogramming-api:jar:0.10.0:runtime
+[DEBUG]             org.teavm:teavm-relocated-libs-commons-io:jar:0.10.0:runtime
+[DEBUG]             org.teavm:teavm-relocated-libs-asm:jar:0.10.0:runtime
+[DEBUG]                org.ow2.asm:asm:jar:9.7:runtime
+[DEBUG]          commons-io:commons-io:jar:2.16.1:compile
+[DEBUG]          com.jcraft:jzlib:jar:1.1.3:compile
+[DEBUG]          joda-time:joda-time:jar:2.12.2:compile
+[DEBUG]       org.teavm:teavm-jso:jar:0.10.0:compile (version managed from 0.10.0)
+[DEBUG]       org.teavm:teavm-jso-apis:jar:0.10.0:compile (version managed from 0.10.0)
+[DEBUG]          org.teavm:teavm-interop:jar:0.10.0:compile
+[DEBUG]       uk.co.instanto:teavm-stomp:jar:1.0.0-SNAPSHOT:compile
+[DEBUG]          org.teavm:teavm-extras-slf4j:jar:0.10.0:compile (version managed from 0.10.0)
+[DEBUG]    com.squareup.wire:wire-runtime-jvm:jar:4.9.3:compile
+[DEBUG]       org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:compile
+[DEBUG]          org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.9.10:compile
+[DEBUG]       org.jetbrains.kotlin:kotlin-stdlib-common:jar:1.9.10:compile
+[DEBUG]    junit:junit:jar:4.13.2:test
+[DEBUG]       org.hamcrest:hamcrest-core:jar:1.3:test
+[DEBUG]    org.slf4j:slf4j-simple:jar:2.0.12:test
+[DEBUG]    uk.co.instanto:tearay-annotation-processor:jar:1.0.0-SNAPSHOT:provided
+[DEBUG]       com.squareup:javapoet:jar:1.13.0:provided
+[DEBUG]       com.squareup.wire:wire-schema:jar:4.9.3:provided
+[DEBUG]          com.squareup.wire:wire-runtime:jar:4.9.3:provided
+[DEBUG]             com.squareup.okio:okio:jar:3.6.0:provided
+[DEBUG]       com.squareup.wire:wire-java-generator:jar:4.9.3:provided
+[DEBUG]          com.squareup.wire:wire-schema-jvm:jar:4.9.3:provided
+[DEBUG]             com.squareup:kotlinpoet-jvm:jar:1.15.1:provided
+[DEBUG]                org.jetbrains.kotlin:kotlin-reflect:jar:1.9.20:provided
+[DEBUG]          com.google.guava:guava:jar:32.0.1-jre:provided
+[DEBUG]             com.google.guava:failureaccess:jar:1.0.1:provided
+[DEBUG]             com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:provided
+[DEBUG]             com.google.code.findbugs:jsr305:jar:3.0.2:provided
+[DEBUG]             org.checkerframework:checker-qual:jar:3.33.0:provided
+[DEBUG]             com.google.errorprone:error_prone_annotations:jar:2.18.0:provided
+[DEBUG]             com.google.j2objc:j2objc-annotations:jar:2.8:provided
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ tearay-integration-tests ---
+[DEBUG] Dependency collection stats {ConflictMarker.analyzeTime=7959, ConflictMarker.markTime=19708, ConflictMarker.nodeCount=3, ConflictIdSorter.graphTime=3917, ConflictIdSorter.topsortTime=3958, ConflictIdSorter.conflictIdCount=3, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=48500, ConflictResolver.conflictItemCount=3, DfDependencyCollector.collectTime=6008750, DfDependencyCollector.transformTime=91000}
+[DEBUG] org.apache.maven.plugins:maven-clean-plugin:jar:3.2.0
+[DEBUG]    org.apache.maven.shared:maven-shared-utils:jar:3.3.4:compile
+[DEBUG]       commons-io:commons-io:jar:2.6:compile
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-clean-plugin:3.2.0
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-clean-plugin:3.2.0
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-clean-plugin:3.2.0
+[DEBUG]   Included: org.apache.maven.plugins:maven-clean-plugin:jar:3.2.0
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-utils:jar:3.3.4
+[DEBUG]   Included: commons-io:commons-io:jar:2.6
+[DEBUG] Loading mojo org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-clean-plugin:3.2.0, parent: jdk.internal.loader.ClassLoaders$AppClassLoader@5bc2b487]
+[DEBUG] Configuring mojo execution 'org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean:default-clean' with basic configurator -->
+[DEBUG]   (f) directory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target
+[DEBUG]   (f) excludeDefaultDirectories = false
+[DEBUG]   (f) failOnError = true
+[DEBUG]   (f) fast = false
+[DEBUG]   (f) fastMode = background
+[DEBUG]   (f) followSymLinks = false
+[DEBUG]   (f) outputDirectory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[DEBUG]   (f) reportDirectory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[DEBUG]   (f) retryOnError = true
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@260ff5b7
+[DEBUG]   (f) skip = false
+[DEBUG]   (f) testOutputDirectory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/test-classes
+[DEBUG] -- end configuration --
+[INFO] Deleting /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target
+[INFO] Deleting file /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+[INFO] Deleting file /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/maven-status/maven-compiler-plugin/compile/default-compile
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/maven-status/maven-compiler-plugin/compile
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/maven-status/maven-compiler-plugin
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/maven-status
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources/annotations
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources
+[INFO] Deleting directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target
+[DEBUG] Skipping non-existing directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[DEBUG] Skipping non-existing directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/test-classes
+[DEBUG] Skipping non-existing directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ tearay-integration-tests ---
+[DEBUG] Dependency collection stats {ConflictMarker.analyzeTime=18833, ConflictMarker.markTime=23875, ConflictMarker.nodeCount=13, ConflictIdSorter.graphTime=7333, ConflictIdSorter.topsortTime=5834, ConflictIdSorter.conflictIdCount=9, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=87209, ConflictResolver.conflictItemCount=13, DfDependencyCollector.collectTime=14498416, DfDependencyCollector.transformTime=151500}
+[DEBUG] org.apache.maven.plugins:maven-resources-plugin:jar:3.3.1
+[DEBUG]    org.codehaus.plexus:plexus-interpolation:jar:1.26:runtime
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:3.5.1:compile
+[DEBUG]    org.apache.maven.shared:maven-filtering:jar:3.3.1:compile
+[DEBUG]       javax.inject:javax.inject:jar:1:compile
+[DEBUG]       org.slf4j:slf4j-api:jar:1.7.36:compile
+[DEBUG]       org.sonatype.plexus:plexus-build-api:jar:0.0.7:compile
+[DEBUG]    commons-io:commons-io:jar:2.11.0:compile
+[DEBUG]    org.apache.commons:commons-lang3:jar:3.12.0:compile
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-resources-plugin:3.3.1
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-resources-plugin:3.3.1
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-resources-plugin:3.3.1
+[DEBUG]   Included: org.apache.maven.plugins:maven-resources-plugin:jar:3.3.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.26
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:3.5.1
+[DEBUG]   Included: org.apache.maven.shared:maven-filtering:jar:3.3.1
+[DEBUG]   Included: org.sonatype.plexus:plexus-build-api:jar:0.0.7
+[DEBUG]   Included: commons-io:commons-io:jar:2.11.0
+[DEBUG]   Included: org.apache.commons:commons-lang3:jar:3.12.0
+[DEBUG] Loading mojo org.apache.maven.plugins:maven-resources-plugin:3.3.1:resources from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-resources-plugin:3.3.1, parent: jdk.internal.loader.ClassLoaders$AppClassLoader@5bc2b487]
+[DEBUG] Configuring mojo execution 'org.apache.maven.plugins:maven-resources-plugin:3.3.1:resources:default-resources' with basic configurator -->
+[DEBUG]   (f) addDefaultExcludes = true
+[DEBUG]   (f) buildFilters = []
+[DEBUG]   (f) encoding = UTF-8
+[DEBUG]   (f) escapeWindowsPaths = true
+[DEBUG]   (f) fileNameFiltering = false
+[DEBUG]   (s) includeEmptyDirs = false
+[DEBUG]   (s) outputDirectory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[DEBUG]   (s) overwrite = false
+[DEBUG]   (f) project = MavenProject: uk.co.instanto:tearay-integration-tests:1.0.0-SNAPSHOT @ /Users/carls/Documents/InstantoSDK/tearay-integration-tests/pom.xml
+[DEBUG]   (s) resources = [Resource {targetPath: null, filtering: false, FileSet {directory: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/resources, PatternSet [includes: {}, excludes: {}]}}]
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@260ff5b7
+[DEBUG]   (f) skip = false
+[DEBUG]   (f) supportMultiLineFiltering = false
+[DEBUG]   (f) useBuildFilters = true
+[DEBUG]   (s) useDefaultDelimiters = true
+[DEBUG] -- end configuration --
+[DEBUG] properties used:
+[DEBUG] apple.awt.application.name: Launcher
+[DEBUG] classworlds.conf: /opt/homebrew/Cellar/maven/3.9.12/libexec/bin/m2.conf
+[DEBUG] env.ANTIGRAVITY_AGENT: 1
+[DEBUG] env.ANTIGRAVITY_CLI_ALIAS: agy
+[DEBUG] env.COLORTERM: truecolor
+[DEBUG] env.COMMAND_MODE: unix2003
+[DEBUG] env.GIT_ASKPASS: /Applications/Antigravity.app/Contents/Resources/app/extensions/git/dist/askpass.sh
+[DEBUG] env.HOME: /Users/carls
+[DEBUG] env.HOMEBREW_CELLAR: /opt/homebrew/Cellar
+[DEBUG] env.HOMEBREW_PREFIX: /opt/homebrew
+[DEBUG] env.HOMEBREW_REPOSITORY: /opt/homebrew
+[DEBUG] env.INFOPATH: /opt/homebrew/share/info:/opt/homebrew/share/info:
+[DEBUG] env.JAVA_HOME: /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
+[DEBUG] env.LANG: C.UTF-8
+[DEBUG] env.LOGNAME: carls
+[DEBUG] env.MAVEN_CMD_LINE_ARGS:  clean compile -X -pl tearay-integration-tests
+[DEBUG] env.MAVEN_PROJECTBASEDIR: /Users/carls/Documents/InstantoSDK
+[DEBUG] env.MallocNanoZone: 0
+[DEBUG] env.OLDPWD: /Users/carls/Documents/InstantoSDK
+[DEBUG] env.OSLogRateLimit: 64
+[DEBUG] env.PAGER: cat
+[DEBUG] env.PATH: /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pmk/env/global/bin:/Users/carls/.orbstack/bin:/Users/carls/.antigravity/extensions/vscjava.vscode-java-debug-0.58.5-universal/bundled/scripts/noConfigScripts:/Users/carls/.orbstack/bin
+[DEBUG] env.PWD: /Users/carls/Documents/InstantoSDK
+[DEBUG] env.SHELL: /bin/zsh
+[DEBUG] env.SHLVL: 1
+[DEBUG] env.SSH_AUTH_SOCK: /private/tmp/com.apple.launchd.T5R684PIFV/Listeners
+[DEBUG] env.TERM: xterm-256color
+[DEBUG] env.TERM_PROGRAM: vscode
+[DEBUG] env.TERM_PROGRAM_VERSION: 1.107.0
+[DEBUG] env.TMPDIR: /var/folders/96/mc34q07j3fd43kdczb2f5c2h0000gn/T/
+[DEBUG] env.USER: carls
+[DEBUG] env.USER_ZDOTDIR: /Users/carls
+[DEBUG] env.VSCODE_GIT_ASKPASS_EXTRA_ARGS: 
+[DEBUG] env.VSCODE_GIT_ASKPASS_MAIN: /Applications/Antigravity.app/Contents/Resources/app/extensions/git/dist/askpass-main.js
+[DEBUG] env.VSCODE_GIT_ASKPASS_NODE: /Applications/Antigravity.app/Contents/Frameworks/Antigravity Helper (Plugin).app/Contents/MacOS/Antigravity Helper (Plugin)
+[DEBUG] env.VSCODE_GIT_IPC_HANDLE: /var/folders/96/mc34q07j3fd43kdczb2f5c2h0000gn/T/vscode-git-ab8f6f3b1d.sock
+[DEBUG] env.VSCODE_INJECTION: 1
+[DEBUG] env.VSCODE_JAVA_EXEC: /Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java
+[DEBUG] env.VSCODE_JDWP_ADAPTER_ENDPOINTS: /Users/carls/.antigravity/extensions/vscjava.vscode-java-debug-0.58.5-universal/.noConfigDebugAdapterEndpoints/endpoint-4a04baad2a2cdc15.txt
+[DEBUG] env.VSCODE_LOGIN_INITIALIZED: 1
+[DEBUG] env.VSCODE_PROFILE_INITIALIZED: 1
+[DEBUG] env.VSCODE_PYTHON_AUTOACTIVATE_GUARD: 1
+[DEBUG] env.XPC_FLAGS: 0x0
+[DEBUG] env.XPC_SERVICE_NAME: 0
+[DEBUG] env.ZDOTDIR: /Users/carls
+[DEBUG] env.__CFBundleIdentifier: com.google.antigravity
+[DEBUG] env.__CF_USER_TEXT_ENCODING: 0x1F5:0:2
+[DEBUG] file.encoding: UTF-8
+[DEBUG] file.separator: /
+[DEBUG] ftp.nonProxyHosts: local|*.local|169.254/16|*.169.254/16
+[DEBUG] http.nonProxyHosts: local|*.local|169.254/16|*.169.254/16
+[DEBUG] java.class.path: /opt/homebrew/Cellar/maven/3.9.12/libexec/boot/plexus-classworlds-2.9.0.jar
+[DEBUG] java.class.version: 69.0
+[DEBUG] java.home: /opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home
+[DEBUG] java.io.tmpdir: /var/folders/96/mc34q07j3fd43kdczb2f5c2h0000gn/T/
+[DEBUG] java.library.path: /Users/carls/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+[DEBUG] java.runtime.name: OpenJDK Runtime Environment
+[DEBUG] java.runtime.version: 25.0.2
+[DEBUG] java.specification.name: Java Platform API Specification
+[DEBUG] java.specification.vendor: Oracle Corporation
+[DEBUG] java.specification.version: 25
+[DEBUG] java.vendor: Homebrew
+[DEBUG] java.vendor.url: https://github.com/Homebrew/homebrew-core/issues
+[DEBUG] java.vendor.url.bug: https://github.com/Homebrew/homebrew-core/issues
+[DEBUG] java.vendor.version: Homebrew
+[DEBUG] java.version: 25.0.2
+[DEBUG] java.version.date: 2026-01-20
+[DEBUG] java.vm.compressedOopsMode: Zero based
+[DEBUG] java.vm.info: mixed mode, sharing
+[DEBUG] java.vm.name: OpenJDK 64-Bit Server VM
+[DEBUG] java.vm.specification.name: Java Virtual Machine Specification
+[DEBUG] java.vm.specification.vendor: Oracle Corporation
+[DEBUG] java.vm.specification.version: 25
+[DEBUG] java.vm.vendor: Homebrew
+[DEBUG] java.vm.version: 25.0.2
+[DEBUG] jdk.debug: release
+[DEBUG] library.jansi.path: /opt/homebrew/Cellar/maven/3.9.12/libexec/lib/jansi-native
+[DEBUG] line.separator: 
+
+[DEBUG] maven.build.timestamp: 2026-02-06T01:23:14Z
+[DEBUG] maven.build.version: Apache Maven 3.9.12 (848fbb4bf2d427b72bdb2471c22fced7ebd9a7a1)
+[DEBUG] maven.compiler.release: 17
+[DEBUG] maven.conf: /opt/homebrew/Cellar/maven/3.9.12/libexec/conf
+[DEBUG] maven.home: /opt/homebrew/Cellar/maven/3.9.12/libexec
+[DEBUG] maven.multiModuleProjectDirectory: /Users/carls/Documents/InstantoSDK
+[DEBUG] maven.version: 3.9.12
+[DEBUG] native.encoding: UTF-8
+[DEBUG] os.arch: aarch64
+[DEBUG] os.name: Mac OS X
+[DEBUG] os.version: 26.2
+[DEBUG] path.separator: :
+[DEBUG] project.baseUri: file:/Users/carls/Documents/InstantoSDK/tearay-integration-tests/
+[DEBUG] project.build.sourceEncoding: UTF-8
+[DEBUG] slf4j.version: 2.0.12
+[DEBUG] socksNonProxyHosts: local|*.local|169.254/16|*.169.254/16
+[DEBUG] stderr.encoding: UTF-8
+[DEBUG] stdin.encoding: UTF-8
+[DEBUG] stdout.encoding: UTF-8
+[DEBUG] sun.arch.data.model: 64
+[DEBUG] sun.boot.library.path: /opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home/lib
+[DEBUG] sun.cpu.endian: little
+[DEBUG] sun.io.unicode.encoding: UnicodeBig
+[DEBUG] sun.java.command: org.codehaus.plexus.classworlds.launcher.Launcher clean compile -X -pl tearay-integration-tests
+[DEBUG] sun.java.launcher: SUN_STANDARD
+[DEBUG] sun.jnu.encoding: UTF-8
+[DEBUG] sun.management.compiler: HotSpot 64-Bit Tiered Compilers
+[DEBUG] teavm.version: 0.10.0
+[DEBUG] user.country: GB
+[DEBUG] user.dir: /Users/carls/Documents/InstantoSDK
+[DEBUG] user.home: /Users/carls
+[DEBUG] user.language: en
+[DEBUG] user.name: carls
+[DEBUG] wire.version: 4.9.3
+[DEBUG] Using 'UTF-8' encoding to copy filtered resources.
+[DEBUG] Using 'UTF-8' encoding to copy filtered properties files.
+[DEBUG] resource with targetPath null
+directory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/resources
+excludes []
+includes []
+[INFO] skip non existing resourceDirectory /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/resources
+[DEBUG] no user filter components
+[INFO] 
+[INFO] --- compiler:3.8.1:compile (default-compile) @ tearay-integration-tests ---
+[DEBUG] Using mirror maven-default-http-blocker (http://0.0.0.0/) for apache.snapshots (http://repository.apache.org/snapshots).
+[DEBUG] Using mirror maven-default-http-blocker (http://0.0.0.0/) for codehaus.snapshots (http://snapshots.repository.codehaus.org).
+[DEBUG] Using mirror maven-default-http-blocker (http://0.0.0.0/) for ow2-snapshot (http://repository.ow2.org/nexus/content/repositories/snapshots).
+[DEBUG] Dependency collection stats {ConflictMarker.analyzeTime=132292, ConflictMarker.markTime=87875, ConflictMarker.nodeCount=118, ConflictIdSorter.graphTime=57750, ConflictIdSorter.topsortTime=19166, ConflictIdSorter.conflictIdCount=45, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=583625, ConflictResolver.conflictItemCount=72, DfDependencyCollector.collectTime=54422917, DfDependencyCollector.transformTime=892750}
+[DEBUG] org.apache.maven.plugins:maven-compiler-plugin:jar:3.8.1
+[DEBUG]    org.apache.maven:maven-plugin-api:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model:jar:3.0:compile
+[DEBUG]       org.sonatype.sisu:sisu-inject-plexus:jar:1.4.2:compile
+[DEBUG]          org.sonatype.sisu:sisu-inject-bean:jar:1.4.2:compile
+[DEBUG]             org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7:compile
+[DEBUG]    org.apache.maven:maven-artifact:jar:3.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-utils:jar:2.0.4:compile
+[DEBUG]    org.apache.maven:maven-core:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-aether-provider:jar:3.0:runtime
+[DEBUG]       org.sonatype.aether:aether-impl:jar:1.7:compile
+[DEBUG]          org.sonatype.aether:aether-spi:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-api:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-util:jar:1.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.14:compile
+[DEBUG]       org.codehaus.plexus:plexus-classworlds:jar:2.2.3:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.7.1:compile (version managed from default)
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven.shared:maven-shared-utils:jar:3.2.1:compile
+[DEBUG]       commons-io:commons-io:jar:2.5:compile
+[DEBUG]    org.apache.maven.shared:maven-shared-incremental:jar:1.1:compile
+[DEBUG]    org.codehaus.plexus:plexus-java:jar:0.9.10:compile
+[DEBUG]       org.ow2.asm:asm:jar:6.2:compile
+[DEBUG]       com.thoughtworks.qdox:qdox:jar:2.0-M9:compile (version managed from default)
+[DEBUG]    org.codehaus.plexus:plexus-compiler-api:jar:2.8.4:compile
+[DEBUG]    org.codehaus.plexus:plexus-compiler-manager:jar:2.8.4:compile
+[DEBUG]    org.codehaus.plexus:plexus-compiler-javac:jar:2.8.4:runtime
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.1
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.1
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.1
+[DEBUG]   Included: org.apache.maven.plugins:maven-compiler-plugin:jar:3.8.1
+[DEBUG]   Included: org.sonatype.sisu:sisu-inject-bean:jar:1.4.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:2.0.4
+[DEBUG]   Included: org.sonatype.aether:aether-util:jar:1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.14
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.7.1
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-utils:jar:3.2.1
+[DEBUG]   Included: commons-io:commons-io:jar:2.5
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-incremental:jar:1.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-java:jar:0.9.10
+[DEBUG]   Included: org.ow2.asm:asm:jar:6.2
+[DEBUG]   Included: com.thoughtworks.qdox:qdox:jar:2.0-M9
+[DEBUG]   Included: org.codehaus.plexus:plexus-compiler-api:jar:2.8.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-compiler-manager:jar:2.8.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-compiler-javac:jar:2.8.4
+[DEBUG] Loading mojo org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.1, parent: jdk.internal.loader.ClassLoaders$AppClassLoader@5bc2b487]
+[DEBUG] Configuring mojo execution 'org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile:default-compile' with basic configurator -->
+[DEBUG]   (s) groupId = uk.co.instanto
+[DEBUG]   (s) artifactId = tearay-annotation-processor
+[DEBUG]   (s) version = 1.0.0-SNAPSHOT
+[DEBUG]   (f) annotationProcessorPaths = [uk.co.instanto:tearay-annotation-processor:1.0.0-SNAPSHOT.jar]
+[DEBUG]   (f) basedir = /Users/carls/Documents/InstantoSDK/tearay-integration-tests
+[DEBUG]   (f) buildDirectory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target
+[DEBUG]   (f) compilePath = [/Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes, /Users/carls/.m2/repository/uk/co/instanto/tearay-rpc-common/1.0.0-SNAPSHOT/tearay-rpc-common-1.0.0-SNAPSHOT.jar, /Users/carls/.m2/repository/com/squareup/okio/okio-jvm/3.9.0/okio-jvm-3.9.0.jar, /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.9.21/kotlin-stdlib-1.9.21.jar, /Users/carls/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar, /Users/carls/.m2/repository/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar, /Users/carls/.m2/repository/uk/co/instanto/tearay-rpc-core/1.0.0-SNAPSHOT/tearay-rpc-core-1.0.0-SNAPSHOT.jar, /Users/carls/.m2/repository/org/teavm/teavm-classlib/0.10.0/teavm-classlib-0.10.0.jar, /Users/carls/.m2/repository/org/teavm/teavm-platform/0.10.0/teavm-platform-0.10.0.jar, /Users/carls/.m2/repository/org/teavm/teavm-jso-impl/0.10.0/teavm-jso-impl-0.10.0.jar, /Users/carls/.m2/repository/org/teavm/teavm-metaprogramming-impl/0.10.0/teavm-metaprogramming-impl-0.10.0.jar, /Users/carls/.m2/repository/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar, /Users/carls/.m2/repository/com/jcraft/jzlib/1.1.3/jzlib-1.1.3.jar, /Users/carls/.m2/repository/joda-time/joda-time/2.12.2/joda-time-2.12.2.jar, /Users/carls/.m2/repository/org/teavm/teavm-jso/0.10.0/teavm-jso-0.10.0.jar, /Users/carls/.m2/repository/org/teavm/teavm-jso-apis/0.10.0/teavm-jso-apis-0.10.0.jar, /Users/carls/.m2/repository/org/teavm/teavm-interop/0.10.0/teavm-interop-0.10.0.jar, /Users/carls/.m2/repository/uk/co/instanto/teavm-stomp/1.0.0-SNAPSHOT/teavm-stomp-1.0.0-SNAPSHOT.jar, /Users/carls/.m2/repository/org/teavm/teavm-extras-slf4j/0.10.0/teavm-extras-slf4j-0.10.0.jar, /Users/carls/.m2/repository/com/squareup/wire/wire-runtime-jvm/4.9.3/wire-runtime-jvm-4.9.3.jar, /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.10/kotlin-stdlib-jdk8-1.9.10.jar, /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.9.10/kotlin-stdlib-jdk7-1.9.10.jar, /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.9.10/kotlin-stdlib-common-1.9.10.jar, /Users/carls/.m2/repository/uk/co/instanto/tearay-annotation-processor/1.0.0-SNAPSHOT/tearay-annotation-processor-1.0.0-SNAPSHOT.jar, /Users/carls/.m2/repository/com/squareup/javapoet/1.13.0/javapoet-1.13.0.jar, /Users/carls/.m2/repository/com/squareup/wire/wire-schema/4.9.3/wire-schema-4.9.3.jar, /Users/carls/.m2/repository/com/squareup/wire/wire-runtime/4.9.3/wire-runtime-4.9.3.jar, /Users/carls/.m2/repository/com/squareup/okio/okio/3.6.0/okio-3.6.0.jar, /Users/carls/.m2/repository/com/squareup/wire/wire-java-generator/4.9.3/wire-java-generator-4.9.3.jar, /Users/carls/.m2/repository/com/squareup/wire/wire-schema-jvm/4.9.3/wire-schema-jvm-4.9.3.jar, /Users/carls/.m2/repository/com/squareup/kotlinpoet-jvm/1.15.1/kotlinpoet-jvm-1.15.1.jar, /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.9.20/kotlin-reflect-1.9.20.jar, /Users/carls/.m2/repository/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.jar, /Users/carls/.m2/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar, /Users/carls/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar, /Users/carls/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar, /Users/carls/.m2/repository/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar, /Users/carls/.m2/repository/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar, /Users/carls/.m2/repository/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar]
+[DEBUG]   (f) compileSourceRoots = [/Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java]
+[DEBUG]   (f) compilerId = javac
+[DEBUG]   (f) debug = true
+[DEBUG]   (f) encoding = UTF-8
+[DEBUG]   (f) failOnError = true
+[DEBUG]   (f) failOnWarning = false
+[DEBUG]   (f) forceJavacCompilerUse = false
+[DEBUG]   (f) fork = false
+[DEBUG]   (f) generatedSourcesDirectory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources/annotations
+[DEBUG]   (f) mojoExecution = org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile {execution: default-compile}
+[DEBUG]   (f) optimize = false
+[DEBUG]   (f) outputDirectory = /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[DEBUG]   (f) parameters = false
+[DEBUG]   (f) project = MavenProject: uk.co.instanto:tearay-integration-tests:1.0.0-SNAPSHOT @ /Users/carls/Documents/InstantoSDK/tearay-integration-tests/pom.xml
+[DEBUG]   (f) projectArtifact = uk.co.instanto:tearay-integration-tests:jar:1.0.0-SNAPSHOT
+[DEBUG]   (s) release = 17
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@260ff5b7
+[DEBUG]   (f) showDeprecation = false
+[DEBUG]   (f) showWarnings = false
+[DEBUG]   (f) skipMultiThreadWarning = false
+[DEBUG]   (f) source = 1.6
+[DEBUG]   (f) staleMillis = 0
+[DEBUG]   (s) target = 1.6
+[DEBUG]   (f) useIncrementalCompilation = true
+[DEBUG]   (f) verbose = false
+[DEBUG] -- end configuration --
+[DEBUG] Using compiler 'javac'.
+[DEBUG] Adding /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources/annotations to compile source roots:
+  /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java
+[DEBUG] New compile source roots:
+  /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java
+  /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources/annotations
+[DEBUG] CompilerReuseStrategy: reuseCreated
+[DEBUG] useIncrementalCompilation enabled
+[DEBUG] Stale source detected: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java/uk/co/instanto/integration/service/dto/MyData.java
+[DEBUG] Stale source detected: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java/uk/co/instanto/integration/service/dto/Address.java
+[DEBUG] Stale source detected: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java/uk/co/instanto/integration/service/MyDataService.java
+[DEBUG] Stale source detected: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java/uk/co/instanto/integration/service/dto/Organization.java
+[DEBUG] Stale source detected: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java/uk/co/instanto/integration/service/dto/Employee.java
+[DEBUG] Stale source detected: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java/uk/co/instanto/integration/service/dto/EmployeeHiredEvent.java
+[DEBUG] Stale source detected: /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java/uk/co/instanto/integration/service/dto/Department.java
+[INFO] Changes detected - recompiling the module!
+[DEBUG] Classpath:
+[DEBUG]  /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+[DEBUG]  /Users/carls/.m2/repository/uk/co/instanto/tearay-rpc-common/1.0.0-SNAPSHOT/tearay-rpc-common-1.0.0-SNAPSHOT.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/okio/okio-jvm/3.9.0/okio-jvm-3.9.0.jar
+[DEBUG]  /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.9.21/kotlin-stdlib-1.9.21.jar
+[DEBUG]  /Users/carls/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar
+[DEBUG]  /Users/carls/.m2/repository/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar
+[DEBUG]  /Users/carls/.m2/repository/uk/co/instanto/tearay-rpc-core/1.0.0-SNAPSHOT/tearay-rpc-core-1.0.0-SNAPSHOT.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-classlib/0.10.0/teavm-classlib-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-platform/0.10.0/teavm-platform-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-jso-impl/0.10.0/teavm-jso-impl-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-metaprogramming-impl/0.10.0/teavm-metaprogramming-impl-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar
+[DEBUG]  /Users/carls/.m2/repository/com/jcraft/jzlib/1.1.3/jzlib-1.1.3.jar
+[DEBUG]  /Users/carls/.m2/repository/joda-time/joda-time/2.12.2/joda-time-2.12.2.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-jso/0.10.0/teavm-jso-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-jso-apis/0.10.0/teavm-jso-apis-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-interop/0.10.0/teavm-interop-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/uk/co/instanto/teavm-stomp/1.0.0-SNAPSHOT/teavm-stomp-1.0.0-SNAPSHOT.jar
+[DEBUG]  /Users/carls/.m2/repository/org/teavm/teavm-extras-slf4j/0.10.0/teavm-extras-slf4j-0.10.0.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/wire/wire-runtime-jvm/4.9.3/wire-runtime-jvm-4.9.3.jar
+[DEBUG]  /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.10/kotlin-stdlib-jdk8-1.9.10.jar
+[DEBUG]  /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.9.10/kotlin-stdlib-jdk7-1.9.10.jar
+[DEBUG]  /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.9.10/kotlin-stdlib-common-1.9.10.jar
+[DEBUG]  /Users/carls/.m2/repository/uk/co/instanto/tearay-annotation-processor/1.0.0-SNAPSHOT/tearay-annotation-processor-1.0.0-SNAPSHOT.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/javapoet/1.13.0/javapoet-1.13.0.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/wire/wire-schema/4.9.3/wire-schema-4.9.3.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/wire/wire-runtime/4.9.3/wire-runtime-4.9.3.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/okio/okio/3.6.0/okio-3.6.0.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/wire/wire-java-generator/4.9.3/wire-java-generator-4.9.3.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/wire/wire-schema-jvm/4.9.3/wire-schema-jvm-4.9.3.jar
+[DEBUG]  /Users/carls/.m2/repository/com/squareup/kotlinpoet-jvm/1.15.1/kotlinpoet-jvm-1.15.1.jar
+[DEBUG]  /Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.9.20/kotlin-reflect-1.9.20.jar
+[DEBUG]  /Users/carls/.m2/repository/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.jar
+[DEBUG]  /Users/carls/.m2/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar
+[DEBUG]  /Users/carls/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
+[DEBUG]  /Users/carls/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar
+[DEBUG]  /Users/carls/.m2/repository/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar
+[DEBUG]  /Users/carls/.m2/repository/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar
+[DEBUG]  /Users/carls/.m2/repository/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar
+[DEBUG] Source roots:
+[DEBUG]  /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java
+[DEBUG]  /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources/annotations
+[DEBUG] Command line options:
+[DEBUG] -d /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes -classpath /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes:/Users/carls/.m2/repository/uk/co/instanto/tearay-rpc-common/1.0.0-SNAPSHOT/tearay-rpc-common-1.0.0-SNAPSHOT.jar:/Users/carls/.m2/repository/com/squareup/okio/okio-jvm/3.9.0/okio-jvm-3.9.0.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.9.21/kotlin-stdlib-1.9.21.jar:/Users/carls/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar:/Users/carls/.m2/repository/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar:/Users/carls/.m2/repository/uk/co/instanto/tearay-rpc-core/1.0.0-SNAPSHOT/tearay-rpc-core-1.0.0-SNAPSHOT.jar:/Users/carls/.m2/repository/org/teavm/teavm-classlib/0.10.0/teavm-classlib-0.10.0.jar:/Users/carls/.m2/repository/org/teavm/teavm-platform/0.10.0/teavm-platform-0.10.0.jar:/Users/carls/.m2/repository/org/teavm/teavm-jso-impl/0.10.0/teavm-jso-impl-0.10.0.jar:/Users/carls/.m2/repository/org/teavm/teavm-metaprogramming-impl/0.10.0/teavm-metaprogramming-impl-0.10.0.jar:/Users/carls/.m2/repository/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar:/Users/carls/.m2/repository/com/jcraft/jzlib/1.1.3/jzlib-1.1.3.jar:/Users/carls/.m2/repository/joda-time/joda-time/2.12.2/joda-time-2.12.2.jar:/Users/carls/.m2/repository/org/teavm/teavm-jso/0.10.0/teavm-jso-0.10.0.jar:/Users/carls/.m2/repository/org/teavm/teavm-jso-apis/0.10.0/teavm-jso-apis-0.10.0.jar:/Users/carls/.m2/repository/org/teavm/teavm-interop/0.10.0/teavm-interop-0.10.0.jar:/Users/carls/.m2/repository/uk/co/instanto/teavm-stomp/1.0.0-SNAPSHOT/teavm-stomp-1.0.0-SNAPSHOT.jar:/Users/carls/.m2/repository/org/teavm/teavm-extras-slf4j/0.10.0/teavm-extras-slf4j-0.10.0.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-runtime-jvm/4.9.3/wire-runtime-jvm-4.9.3.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.10/kotlin-stdlib-jdk8-1.9.10.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.9.10/kotlin-stdlib-jdk7-1.9.10.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.9.10/kotlin-stdlib-common-1.9.10.jar:/Users/carls/.m2/repository/uk/co/instanto/tearay-annotation-processor/1.0.0-SNAPSHOT/tearay-annotation-processor-1.0.0-SNAPSHOT.jar:/Users/carls/.m2/repository/com/squareup/javapoet/1.13.0/javapoet-1.13.0.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-schema/4.9.3/wire-schema-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-runtime/4.9.3/wire-runtime-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/okio/okio/3.6.0/okio-3.6.0.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-java-generator/4.9.3/wire-java-generator-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-schema-jvm/4.9.3/wire-schema-jvm-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/kotlinpoet-jvm/1.15.1/kotlinpoet-jvm-1.15.1.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.9.20/kotlin-reflect-1.9.20.jar:/Users/carls/.m2/repository/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.jar:/Users/carls/.m2/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar:/Users/carls/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/carls/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/carls/.m2/repository/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar:/Users/carls/.m2/repository/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar:/Users/carls/.m2/repository/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar: -sourcepath /Users/carls/Documents/InstantoSDK/tearay-integration-tests/src/main/java:/Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources/annotations: -s /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/generated-sources/annotations -processorpath /Users/carls/.m2/repository/uk/co/instanto/tearay-annotation-processor/1.0.0-SNAPSHOT/tearay-annotation-processor-1.0.0-SNAPSHOT.jar:/Users/carls/.m2/repository/com/squareup/javapoet/1.13.0/javapoet-1.13.0.jar:/Users/carls/.m2/repository/com/google/auto/service/auto-service/1.1.1/auto-service-1.1.1.jar:/Users/carls/.m2/repository/com/google/auto/service/auto-service-annotations/1.1.1/auto-service-annotations-1.1.1.jar:/Users/carls/.m2/repository/com/google/auto/auto-common/1.2.1/auto-common-1.2.1.jar:/Users/carls/.m2/repository/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.jar:/Users/carls/.m2/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar:/Users/carls/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/carls/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/carls/.m2/repository/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar:/Users/carls/.m2/repository/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar:/Users/carls/.m2/repository/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar:/Users/carls/.m2/repository/uk/co/instanto/tearay-rpc-common/1.0.0-SNAPSHOT/tearay-rpc-common-1.0.0-SNAPSHOT.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-runtime-jvm/4.9.3/wire-runtime-jvm-4.9.3.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.10/kotlin-stdlib-jdk8-1.9.10.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.9.21/kotlin-stdlib-1.9.21.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.9.10/kotlin-stdlib-common-1.9.10.jar:/Users/carls/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.9.10/kotlin-stdlib-jdk7-1.9.10.jar:/Users/carls/.m2/repository/com/squareup/okio/okio-jvm/3.9.0/okio-jvm-3.9.0.jar:/Users/carls/.m2/repository/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-schema/4.9.3/wire-schema-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-runtime/4.9.3/wire-runtime-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/okio/okio/3.6.0/okio-3.6.0.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-java-generator/4.9.3/wire-java-generator-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/wire/wire-schema-jvm/4.9.3/wire-schema-jvm-4.9.3.jar:/Users/carls/.m2/repository/com/squareup/kotlinpoet-jvm/1.15.1/kotlinpoet-jvm-1.15.1.jar:/Users/carls/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.9.20/kotlin-reflect-1.9.20.jar: -g -nowarn --release 17 -encoding UTF-8
+[DEBUG] incrementalBuildHelper#beforeRebuildExecution
+[INFO] Compiling 7 source files to /Users/carls/Documents/InstantoSDK/tearay-integration-tests/target/classes
+DEBUG: TearayProcessor initialized
+DEBUG: TearayProcessor process round. Annotations: 2
+DEBUG WIRE: Schema loaded with 8 files
+DEBUG WIRE: Processing uk/co/instanto/integration/service/dto/proto/Address.proto with 1 types
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/Users/carls/.m2/repository/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+DEBUG ERROR generating type: uk.co.instanto.integration.service.dto.proto.Address
+DEBUG Type dump: MessageType(type=uk.co.instanto.integration.service.dto.proto.Address, location=/Users/carls/Documents/InstantoSDK/target/tearay_protos_debug/uk/co/instanto/integration/service/dto/proto/Address.proto:6:1, documentation=, name=Address, declaredFields=[street, city], extensionFields=[], oneOfs=[], nestedTypes=[], nestedExtendList=[], extensionsList=[], reserveds=[], options=com.squareup.wire.schema.Options@443cdaa4, syntax=proto3)
+java.lang.RuntimeException: NPE generating type uk.co.instanto.integration.service.dto.proto.Address in uk/co/instanto/integration/service/dto/proto/Address.proto
+	at uk.co.instanto.tearay.rpc.processor.WireGenerator.generateWireClasses(WireGenerator.java:134)
+	at uk.co.instanto.tearay.rpc.processor.TearayProcessor.process(TearayProcessor.java:57)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.callProcessor(JavacProcessingEnvironment.java:956)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.discoverAndRunProcs(JavacProcessingEnvironment.java:872)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment$Round.run(JavacProcessingEnvironment.java:1188)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.doProcessing(JavacProcessingEnvironment.java:1301)
+	at jdk.compiler/com.sun.tools.javac.main.JavaCompiler.processAnnotations(JavaCompiler.java:1262)
+	at jdk.compiler/com.sun.tools.javac.main.JavaCompiler.compile(JavaCompiler.java:938)
+	at jdk.compiler/com.sun.tools.javac.api.JavacTaskImpl.lambda$doCall$0(JavacTaskImpl.java:104)
+	at jdk.compiler/com.sun.tools.javac.api.JavacTaskImpl.invocationHelper(JavacTaskImpl.java:152)
+	at jdk.compiler/com.sun.tools.javac.api.JavacTaskImpl.doCall(JavacTaskImpl.java:100)
+	at jdk.compiler/com.sun.tools.javac.api.JavacTaskImpl.call(JavacTaskImpl.java:94)
+	at org.codehaus.plexus.compiler.javac.JavaxToolsCompiler.compileInProcess(JavaxToolsCompiler.java:126)
+	at org.codehaus.plexus.compiler.javac.JavacCompiler.performCompile(JavacCompiler.java:174)
+	at org.apache.maven.plugin.compiler.AbstractCompilerMojo.execute(AbstractCompilerMojo.java:1134)
+	at org.apache.maven.plugin.compiler.CompilerMojo.execute(CompilerMojo.java:187)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:126)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2(MojoExecutor.java:328)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute(MojoExecutor.java:316)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:212)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:174)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.access$000(MojoExecutor.java:75)
+	at org.apache.maven.lifecycle.internal.MojoExecutor$1.run(MojoExecutor.java:162)
+	at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute(DefaultMojosExecutionStrategy.java:39)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:159)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:105)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:73)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:53)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:118)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:261)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:173)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:101)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:919)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:285)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:207)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:255)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:201)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:361)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:314)
+Caused by: com.google.common.util.concurrent.UncheckedExecutionException: java.lang.NullPointerException: Cannot invoke "com.squareup.wire.schema.ProtoType.getSimpleName()" because the return value of "com.squareup.wire.schema.Field.getType()" is null
+	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2085)
+	at com.google.common.cache.LocalCache.get(LocalCache.java:4011)
+	at com.google.common.cache.LocalCache.getOrLoad(LocalCache.java:4034)
+	at com.google.common.cache.LocalCache$LocalLoadingCache.get(LocalCache.java:5010)
+	at com.google.common.cache.LocalCache$LocalLoadingCache.getUnchecked(LocalCache.java:5017)
+	at com.squareup.wire.java.JavaGenerator.generateMessage(JavaGenerator.java:742)
+	at com.squareup.wire.java.JavaGenerator.generateType(JavaGenerator.java:628)
+	at uk.co.instanto.tearay.rpc.processor.WireGenerator.generateWireClasses(WireGenerator.java:129)
+	... 40 more
+Caused by: java.lang.NullPointerException: Cannot invoke "com.squareup.wire.schema.ProtoType.getSimpleName()" because the return value of "com.squareup.wire.schema.Field.getType()" is null
+	at com.squareup.wire.java.JavaGenerator$2.load(JavaGenerator.java:234)
+	at com.squareup.wire.java.JavaGenerator$2.load(JavaGenerator.java:215)
+	at com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3570)
+	at com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2312)
+	at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2189)
+	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2079)
+	... 47 more
+DEBUG: TearayProcessor process round. Annotations: 0
+[DEBUG] incrementalBuildHelper#afterRebuildExecution
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] General error: NPE generating type uk.co.instanto.integration.service.dto.proto.Address in uk/co/instanto/integration/service/dto/proto/Address.proto
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.587 s
+[INFO] Finished at: 2026-02-06T01:23:15Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project tearay-integration-tests: Compilation failure
+[ERROR] General error: NPE generating type uk.co.instanto.integration.service.dto.proto.Address in uk/co/instanto/integration/service/dto/proto/Address.proto
+[ERROR] 
+[ERROR] -> [Help 1]
+org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project tearay-integration-tests: Compilation failure
+General error: NPE generating type uk.co.instanto.integration.service.dto.proto.Address in uk/co/instanto/integration/service/dto/proto/Address.proto
+
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2 (MojoExecutor.java:333)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:316)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:105)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:73)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:53)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:118)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:261)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:173)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:101)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:919)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:285)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:207)
+    at jdk.internal.reflect.DirectMethodHandleAccessor.invoke (DirectMethodHandleAccessor.java:104)
+    at java.lang.reflect.Method.invoke (Method.java:565)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:255)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:201)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:361)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:314)
+Caused by: org.apache.maven.plugin.compiler.CompilationFailureException: Compilation failure
+General error: NPE generating type uk.co.instanto.integration.service.dto.proto.Address in uk/co/instanto/integration/service/dto/proto/Address.proto
+
+    at org.apache.maven.plugin.compiler.AbstractCompilerMojo.execute (AbstractCompilerMojo.java:1220)
+    at org.apache.maven.plugin.compiler.CompilerMojo.execute (CompilerMojo.java:187)
+    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:126)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2 (MojoExecutor.java:328)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:316)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:105)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:73)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:53)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:118)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:261)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:173)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:101)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:919)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:285)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:207)
+    at jdk.internal.reflect.DirectMethodHandleAccessor.invoke (DirectMethodHandleAccessor.java:104)
+    at java.lang.reflect.Method.invoke (Method.java:565)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:255)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:201)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:361)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:314)
+[ERROR] 
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[DEBUG] Shutting down adapter factory; available factories [file-lock, rwlock-local, semaphore-local, noop]; available name mappers [discriminating, file-gaecv, file-gav, file-hgaecv, file-hgav, file-static, gaecv, gav, static]
+[DEBUG] Shutting down 'file-lock' factory
+[DEBUG] Shutting down 'rwlock-local' factory
+[DEBUG] Shutting down 'semaphore-local' factory
+[DEBUG] Shutting down 'noop' factory

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package uk.co.instanto.client.service.proto;
+
+option java_package = "uk.co.instanto.client.service.proto";
+
+message DiscoveryPacket {
+    enum Type {
+        ANNOUNCE = 0;
+        HEARTBEAT = 1;
+        BYE = 2;
+    }
+    Type type = 1;
+    string nodeId = 2;
+    repeated string serviceIds = 3;
+}

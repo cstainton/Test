@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package uk.co.instanto.client.service.proto;
+
+/**
+ * Envelope for event messages in the publish-subscribe system.
+ */
+message EventPacket {
+    string eventType = 1;        // Fully qualified class name of the event
+    bytes payload = 2;           // Serialized event data
+    string publisherId = 3;      // ID of the publishing node
+    int64 timestamp = 4;         // Event timestamp in milliseconds
+}
