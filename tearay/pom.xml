@@ -13,6 +13,7 @@
     <module>tearay-widgets-bootstrap</module>
     <module>tearay-widgets-material</module>
     <module>tearay-ui</module>
+    <module>tearay-persistence</module>
     <module>tearay-app</module>
   </modules>
 
