@@ -4,7 +4,7 @@
 
   <parent>
     <groupId>uk.co.instanto</groupId>
-    <artifactId>tearay-parent-pom</artifactId>
+    <artifactId>verrai-parent-pom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 

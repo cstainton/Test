@@ -3,27 +3,27 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>uk.co.instanto</groupId>
-  <artifactId>tearay-parent-pom</artifactId>
+  <artifactId>verrai-parent-pom</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
     <module>teavm-stomp</module>
-    <module>tearay-rpc-common</module>
-    <module>tearay-rpc-core</module>
-    <module>tearay-proto-generator</module>
-    <module>tearay-annotation-processor</module>
-    <module>tearay-rpc-teavm</module>
-    <module>tearay-integration-tests</module>
-    <module>tearay-demo</module>
-    <module>tearay-rpc-client</module>
-    <module>tearay-api</module>
-    <module>tearay-processor</module>
-    <module>tearay-widgets-bootstrap</module>
-    <module>tearay-widgets-material</module>
-    <module>tearay-ui</module>
-    <module>tearay-persistence</module>
-    <module>tearay-app</module>
+    <module>verrai-rpc-common</module>
+    <module>verrai-rpc-core</module>
+    <module>verrai-proto-generator</module>
+    <module>verrai-annotation-processor</module>
+    <module>verrai-rpc-teavm</module>
+    <module>verrai-integration-tests</module>
+    <module>verrai-demo</module>
+    <module>verrai-rpc-client</module>
+    <module>verrai-api</module>
+    <module>verrai-processor</module>
+    <module>verrai-widgets-bootstrap</module>
+    <module>verrai-widgets-material</module>
+    <module>verrai-ui</module>
+    <module>verrai-persistence</module>
+    <module>verrai-app</module>
   </modules>
 
   <properties>

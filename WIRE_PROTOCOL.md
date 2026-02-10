@@ -1,14 +1,14 @@
 # Wire Protocol Documentation
 
-This document describes the current "Wire" protocol implementation used in the Tearay project for serialization and deserialization.
+This document describes the current "Wire" protocol implementation used in the Verrai project for serialization and deserialization.
 
 ## Overview
 
 The framework provides a custom serialization mechanism that supports both **JSON** and **Protobuf** formats. It uses annotation processing to generate codecs at compile time, avoiding reflection overhead at runtime (which is crucial for TeaVM).
 
 The core components are located in:
-- `tearay-api`: `uk.co.instanto.tearay.api.wire` (Annotations and Interfaces)
-- `tearay-processor`: `uk.co.instanto.tearay.processor.WireProcessor` (Code Generation)
+- `verrai-api`: `uk.co.instanto.tearay.api.wire` (Annotations and Interfaces)
+- `verrai-processor`: `uk.co.instanto.tearay.processor.WireProcessor` (Code Generation)
 
 ## Annotations
 
