@@ -39,6 +39,9 @@ public class DashboardPage {
     @Inject @DataField
     public Button eventBtn;
 
+    @Inject @DataField
+    public Button compositeBtn;
+
     @EventHandler("qualifierBtn")
     public void onQualifierDemo() {
         navigation.goTo("qualifier");
@@ -47,6 +50,11 @@ public class DashboardPage {
     @EventHandler("eventBtn")
     public void onEventDemo() {
         navigation.goTo("events");
+    }
+
+    @EventHandler("compositeBtn")
+    public void onCompositeDemo() {
+        navigation.goTo("composite");
     }
 
     @PageShowing
