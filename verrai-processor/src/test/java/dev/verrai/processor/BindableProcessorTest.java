@@ -2,6 +2,7 @@ package dev.verrai.processor;
 
 import com.google.testing.compile.Compilation;
 import com.google.testing.compile.JavaFileObjects;
+import dev.verrai.api.binding.Subscription;
 import org.junit.Test;
 import javax.tools.JavaFileObject;
 
@@ -43,5 +44,10 @@ public class BindableProcessorTest {
             .generatedSourceFile("dev.verrai.processor.MyBindableModel_BindableProxy")
             .contentsAsUtf8String()
             .contains("firePropertyChange(\"name\", name)");
+
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.processor.MyBindableModel_BindableProxy")
+            .contentsAsUtf8String()
+            .contains("public Subscription addPropertyChangeHandler");
     }
 }

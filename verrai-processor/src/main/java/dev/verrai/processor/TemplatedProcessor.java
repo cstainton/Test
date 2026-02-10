@@ -445,8 +445,9 @@ public class TemplatedProcessor extends AbstractProcessor {
 
                          // Model Change Listener (One-way sync: Model -> Widget)
                          bindMethod.beginControlFlow("if (target.$L instanceof dev.verrai.api.binding.BindableProxy)", modelField.getSimpleName());
-                         bindMethod.addCode("((dev.verrai.api.binding.BindableProxy) target.$L).addPropertyChangeHandler((p, v) -> {\n", modelField.getSimpleName());
-                         bindMethod.beginControlFlow("if (p.equals($S))", segments[0]);
+                         bindMethod.addStatement("$T subscription = ((dev.verrai.api.binding.BindableProxy) target.$L).addPropertyChangeHandler((p, v) -> {\n" +
+                             "  if (p.equals($S)) {\n",
+                             dev.verrai.api.binding.Subscription.class, modelField.getSimpleName(), segments[0]);
 
                          if (needsConversion) {
                              String modelTypeLiteral = getTypeLiteral(modelPropType);
@@ -458,18 +459,22 @@ public class TemplatedProcessor extends AbstractProcessor {
                                  modelTypeLiteral, widgetTypeLiteral);
 
                              bindMethod.beginControlFlow("if (converter_refresh != null)");
-                             bindMethod.addStatement("target.$L.setValue(($T) converter_refresh.toWidget(target.$L$L.$L()))",
+                             bindMethod.addStatement("    target.$L.setValue(($T) converter_refresh.toWidget(target.$L$L.$L()))",
                                 field.getSimpleName(),
                                 com.squareup.javapoet.TypeName.get(widgetValueType),
                                 modelField.getSimpleName(), getterChain, finalGetter);
                              bindMethod.endControlFlow();
                          } else {
-                             bindMethod.addStatement("target.$L.setValue(target.$L$L.$L())",
+                             bindMethod.addStatement("    target.$L.setValue(target.$L$L.$L())",
                                 field.getSimpleName(), modelField.getSimpleName(), getterChain, finalGetter);
                          }
+                         bindMethod.addCode("  }\n});\n");
 
+                         // Add subscription to lifecycle if applicable
+                         bindMethod.beginControlFlow("if (target instanceof dev.verrai.api.binding.BinderLifecycle)");
+                         bindMethod.addStatement("((dev.verrai.api.binding.BinderLifecycle) target).addBinding(subscription)");
                          bindMethod.endControlFlow();
-                         bindMethod.addCode("});\n");
+
                          bindMethod.endControlFlow();
 
                          // Change Handler

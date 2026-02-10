@@ -70,6 +70,12 @@ public class NavigationImplWriter implements PageVisitor {
                 .addAnnotation(Override.class);
 
         goToMethod.addStatement("$T body = $T.current().getDocument().getBody()", htmlElementClass, windowClass);
+
+        // Check for cleanup
+        goToMethod.beginControlFlow("if (this.currentPage instanceof dev.verrai.api.binding.BinderLifecycle)");
+        goToMethod.addStatement("((dev.verrai.api.binding.BinderLifecycle) this.currentPage).clearBindings()");
+        goToMethod.endControlFlow();
+
         goToMethod.addStatement("body.setInnerText(\"\")"); // Clear body
 
         // Update URL hash

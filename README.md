@@ -7,6 +7,7 @@
 *   **Dependency Injection (IoC)**: Annotation-based DI using `javax.inject` (`@Inject`, `@ApplicationScoped`). Implemented via a custom Annotation Processor (`IOCProcessor`) that generates factories at compile time.
 *   **Templating**: Declarative UI binding using `@Templated` and `@DataField`. HTML templates are parsed at compile time, and Java fields are automatically bound to DOM elements or nested Widgets.
 *   **Navigation**: Type-safe client-side routing using `@Page`, `@PageShowing`, and `@PageState`. Supports browser history management and parameter passing between pages.
+*   **Data Binding**: Two-way data binding between UI components and `@Bindable` models, similar to Errai Data Binding. Automatically handles property changes and updates the UI.
 *   **Widget Library**: A built-in module (`verrai-widgets`) providing wrappers for **Bootstrap 5** components (Buttons, Cards, Navbars, Modals, Forms) that integrate seamlessly with the templating system.
 *   **Security**: Role-based access control for pages using `@RestrictedAccess` and a `SecurityProvider` interface.
 
@@ -89,6 +90,7 @@ MyCustomWidget widget; // Field must be accessible (package-private or public)
 ## Documentation
 
 *   [Comparison with Errai](COMPARISON.md)
+*   [Data Binding Guide](BINDING.md)
 
 ## License
 This project is a Proof of Concept and serves as a technical demonstration.

@@ -3,6 +3,7 @@ package dev.verrai.processor;
 import dev.verrai.api.Bindable;
 import dev.verrai.api.binding.BindableProxy;
 import dev.verrai.api.binding.PropertyChangeHandler;
+import dev.verrai.api.binding.Subscription;
 import com.squareup.javapoet.*;
 import com.google.auto.service.AutoService;
 
@@ -60,8 +61,10 @@ public class BindableProcessor extends AbstractProcessor {
         proxyBuilder.addMethod(MethodSpec.methodBuilder("addPropertyChangeHandler")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
+                .returns(Subscription.class)
                 .addParameter(handlerClass, "handler")
                 .addStatement("this.handlers.add(handler)")
+                .addStatement("return () -> this.handlers.remove(handler)")
                 .build());
 
         // Method: removePropertyChangeHandler
@@ -77,7 +80,8 @@ public class BindableProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PRIVATE)
                 .addParameter(String.class, "property")
                 .addParameter(Object.class, "value")
-                .beginControlFlow("for ($T handler : handlers)", handlerClass)
+                .addStatement("$T copy = new $T(handlers)", ParameterizedTypeName.get(listClass, handlerClass), arrayListClass)
+                .beginControlFlow("for ($T handler : copy)", handlerClass)
                 .addStatement("handler.onPropertyChange(property, value)")
                 .endControlFlow()
                 .build());
