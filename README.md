@@ -91,7 +91,6 @@ MyCustomWidget widget; // Field must be accessible (package-private or public)
 
 *   [Comparison with Errai](COMPARISON.md)
 *   [Data Binding Guide](BINDING.md)
-*   [Internationalization (i18n)](I18N.md)
 
 ## License
 This project is a Proof of Concept and serves as a technical demonstration.
