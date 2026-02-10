@@ -1,6 +1,6 @@
 package uk.co.instanto.client.service.dto;
 
-import uk.co.instanto.tearay.rpc.common.annotation.Event;
+import dev.verrai.rpc.common.annotation.Event;
 
 /**
  * Event published periodically to indicate a node is still alive.

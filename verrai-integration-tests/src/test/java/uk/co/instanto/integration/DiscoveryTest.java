@@ -149,7 +149,7 @@ public class DiscoveryTest {
 
         private <T extends com.squareup.wire.Message<T, ?>> void registerIdentityCodec(EventBus bus, Class<T> cls,
                         com.squareup.wire.ProtoAdapter<T> adapter) {
-                bus.registerCodec(cls, new uk.co.instanto.tearay.rpc.common.codec.Codec<T, T>() {
+                bus.registerCodec(cls, new dev.verrai.rpc.common.codec.Codec<T, T>() {
                         @Override
                         public T toWire(T domain) {
                                 return domain;

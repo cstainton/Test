@@ -1,6 +1,6 @@
 package uk.co.instanto.client.service;
 
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.transport.Transport;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class UnitRegistry {
     private EventBus eventBus;
 
     // Serializer
-    private uk.co.instanto.tearay.rpc.common.serialization.Serializer serializer;
+    private dev.verrai.rpc.common.serialization.Serializer serializer;
 
     public UnitRegistry() {
     }
@@ -55,7 +55,7 @@ public class UnitRegistry {
      * Sets up the local node ID, transport resolver, and starts discovery.
      */
     public void configureStomp(String localNodeId,
-            uk.co.instanto.tearay.rpc.common.transport.stomp.StompClient client) {
+            dev.verrai.rpc.common.transport.stomp.StompClient client) {
         setLocalNodeId(localNodeId);
 
         // Resolver: /topic/{targetNodeId}
@@ -92,7 +92,7 @@ public class UnitRegistry {
 
     private <T extends com.squareup.wire.Message<T, ?>> void registerIdentityCodec(Class<T> cls,
             com.squareup.wire.ProtoAdapter<T> adapter) {
-        this.eventBus.registerCodec(cls, new uk.co.instanto.tearay.rpc.common.codec.Codec<T, T>() {
+        this.eventBus.registerCodec(cls, new dev.verrai.rpc.common.codec.Codec<T, T>() {
             @Override
             public T toWire(T domain) {
                 return domain;
@@ -137,8 +137,8 @@ public class UnitRegistry {
                 Class<?> dtoClass = Class.forName(dto);
                 Class<?> codecClass = Class.forName(dto + "JsonCodec");
                 Object codec = codecClass.getDeclaredConstructor().newInstance();
-                uk.co.instanto.tearay.rpc.common.serialization.JsonCodecRegistry.register(
-                        (Class) dtoClass, (uk.co.instanto.tearay.rpc.common.serialization.JsonCodec) codec);
+                dev.verrai.rpc.common.serialization.JsonCodecRegistry.register(
+                        (Class) dtoClass, (dev.verrai.rpc.common.serialization.JsonCodec) codec);
             } catch (Throwable e) {
                 // Ignore if not found
                 // System.out.println("Could not load JsonCodec for: " + dto);
@@ -199,7 +199,7 @@ public class UnitRegistry {
         this.transportResolver = transportResolver;
     }
 
-    public void setSerializer(uk.co.instanto.tearay.rpc.common.serialization.Serializer serializer) {
+    public void setSerializer(dev.verrai.rpc.common.serialization.Serializer serializer) {
         this.serializer = serializer;
         // Update existing clients?
         for (RpcClient client : nodeClients.values()) {
@@ -377,7 +377,7 @@ public class UnitRegistry {
     }
 
     public void registerDispatcher(String serviceId,
-            uk.co.instanto.tearay.rpc.common.transport.ServiceDispatcher dispatcher) {
+            dev.verrai.rpc.common.transport.ServiceDispatcher dispatcher) {
         if (rpcServer != null) {
             rpcServer.registerDispatcher(serviceId, dispatcher);
         } else {

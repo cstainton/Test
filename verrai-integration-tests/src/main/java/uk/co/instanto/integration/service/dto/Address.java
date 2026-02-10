@@ -1,6 +1,6 @@
 package uk.co.instanto.integration.service.dto;
 
-import uk.co.instanto.tearay.rpc.common.annotation.Portable;
+import dev.verrai.rpc.common.annotation.Portable;
 
 @Portable
 

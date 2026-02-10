@@ -6,7 +6,7 @@ import org.teavm.jso.JSBody;
 import org.teavm.jso.JSObject;
 import org.teavm.junit.TeaVMTestRunner;
 import uk.co.instanto.client.service.RpcClient;
-import uk.co.instanto.tearay.rpc.teavm.WebWorkerTransport;
+import dev.verrai.rpc.teavm.WebWorkerTransport;
 import uk.co.instanto.integration.service.MyDataService;
 import uk.co.instanto.integration.service.dto.MyData;
 

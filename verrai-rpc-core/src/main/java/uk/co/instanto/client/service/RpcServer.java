@@ -1,8 +1,8 @@
 package uk.co.instanto.client.service;
 
 import uk.co.instanto.client.service.proto.RpcPacket;
-import uk.co.instanto.tearay.rpc.common.transport.ServiceDispatcher;
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.transport.ServiceDispatcher;
+import dev.verrai.rpc.common.transport.Transport;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;

@@ -1,7 +1,7 @@
 package uk.co.instanto.client.service;
 
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
-import uk.co.instanto.tearay.rpc.common.codec.Codec;
+import dev.verrai.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.codec.Codec;
 import uk.co.instanto.client.service.proto.RpcPacket;
 import java.util.Map;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class RpcClient {
     private final Transport transport;
     private final String replyTo;
 
-    private uk.co.instanto.tearay.rpc.common.serialization.Serializer serializer = new uk.co.instanto.tearay.rpc.common.serialization.ProtobufSerializer();
+    private dev.verrai.rpc.common.serialization.Serializer serializer = new dev.verrai.rpc.common.serialization.ProtobufSerializer();
 
     private final Map<String, RpcResponseFuture> pendingRequests = new ConcurrentHashMap<>();
     private final Map<String, AsyncStreamResultImpl<?>> pendingStreams = new ConcurrentHashMap<>();
@@ -31,11 +31,11 @@ public class RpcClient {
         this.transport.addMessageHandler(this::handleIncomingBytes);
     }
 
-    public void setSerializer(uk.co.instanto.tearay.rpc.common.serialization.Serializer serializer) {
+    public void setSerializer(dev.verrai.rpc.common.serialization.Serializer serializer) {
         this.serializer = serializer;
     }
 
-    public uk.co.instanto.tearay.rpc.common.serialization.Serializer getSerializer() {
+    public dev.verrai.rpc.common.serialization.Serializer getSerializer() {
         return this.serializer;
     }
 

@@ -7040,7 +7040,7 @@ otp_Platform_lookupClass = var$1 => {
         case "java.lang.ArithmeticException": jl_ArithmeticException.$clinit(); return jl_ArithmeticException;
         case "uk.co.instanto.integration.browser.BrowserEventBusTest$testEventBusWithProtoInBrowser$lambda$_1_0": uciib_BrowserEventBusTest$testEventBusWithProtoInBrowser$lambda$_1_0.$clinit(); return uciib_BrowserEventBusTest$testEventBusWithProtoInBrowser$lambda$_1_0;
         case "okio.ByteString$Companion": o_ByteString$Companion.$clinit(); return o_ByteString$Companion;
-        case "uk.co.instanto.tearay.rpc.common.codec.Codec": ucitrcc_Codec.$clinit(); return ucitrcc_Codec;
+        case "dev.verrai.rpc.common.codec.Codec": ucitrcc_Codec.$clinit(); return ucitrcc_Codec;
         case "org.teavm.classlib.impl.Base46": otci_Base46.$clinit(); return otci_Base46;
         case "java.time.Instant$1": jt_Instant$1.$clinit(); return jt_Instant$1;
         case "kotlin.collections.IntIterator": kc_IntIterator.$clinit(); return kc_IntIterator;
@@ -7154,7 +7154,7 @@ otp_Platform_lookupClass = var$1 => {
         case "com.squareup.wire.ProtoAdapterKt$commonInstant$1": csw_ProtoAdapterKt$commonInstant$1.$clinit(); return csw_ProtoAdapterKt$commonInstant$1;
         case "java.net.ProtocolException": jn_ProtocolException.$clinit(); return jn_ProtocolException;
         case "java.util.TemplateCollections$AbstractImmutableSet": ju_TemplateCollections$AbstractImmutableSet.$clinit(); return ju_TemplateCollections$AbstractImmutableSet;
-        case "uk.co.instanto.tearay.rpc.common.transport.MessageHandler": ucitrct_MessageHandler.$clinit(); return ucitrct_MessageHandler;
+        case "dev.verrai.rpc.common.transport.MessageHandler": ucitrct_MessageHandler.$clinit(); return ucitrct_MessageHandler;
         case "uk.co.instanto.client.service.proto.EventPacket$ProtoAdapter_EventPacket": ucicsp_EventPacket$ProtoAdapter_EventPacket.$clinit(); return ucicsp_EventPacket$ProtoAdapter_EventPacket;
         case "java.lang.Comparable": jl_Comparable.$clinit(); return jl_Comparable;
         case "com.squareup.wire.Message$Builder": csw_Message$Builder.$clinit(); return csw_Message$Builder;
@@ -7206,7 +7206,7 @@ otp_Platform_lookupClass = var$1 => {
         case "java.util.Iterator": ju_Iterator.$clinit(); return ju_Iterator;
         case "kotlin.NoWhenBranchMatchedException": k_NoWhenBranchMatchedException.$clinit(); return k_NoWhenBranchMatchedException;
         case "com.squareup.wire.ProtoAdapterKt$commonStructValue$1": csw_ProtoAdapterKt$commonStructValue$1.$clinit(); return csw_ProtoAdapterKt$commonStructValue$1;
-        case "uk.co.instanto.tearay.rpc.common.transport.Transport": ucitrct_Transport.$clinit(); return ucitrct_Transport;
+        case "dev.verrai.rpc.common.transport.Transport": ucitrct_Transport.$clinit(); return ucitrct_Transport;
         case "kotlin.jvm.functions.Function21": kjf_Function21.$clinit(); return kjf_Function21;
         case "kotlin.jvm.functions.Function22": kjf_Function22.$clinit(); return kjf_Function22;
         case "java.lang.IllegalArgumentException": jl_IllegalArgumentException.$clinit(); return jl_IllegalArgumentException;

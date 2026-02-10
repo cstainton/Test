@@ -1,6 +1,6 @@
 package uk.co.instanto.client.service;
 
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompClient;
+import dev.verrai.rpc.common.transport.stomp.StompClient;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +107,7 @@ public class TearayRunner {
                     String dispatcherName = iface.getName() + "_Dispatcher";
                     Class<?> dispatcherClass = Class.forName(dispatcherName);
                     // Use no-arg constructor if possible, or look for specific one
-                    uk.co.instanto.tearay.rpc.common.transport.ServiceDispatcher dispatcher = (uk.co.instanto.tearay.rpc.common.transport.ServiceDispatcher) dispatcherClass
+                    dev.verrai.rpc.common.transport.ServiceDispatcher dispatcher = (dev.verrai.rpc.common.transport.ServiceDispatcher) dispatcherClass
                             .getDeclaredConstructor().newInstance();
                     registry.registerDispatcher(iface.getName(), dispatcher);
                 } catch (Exception e) {

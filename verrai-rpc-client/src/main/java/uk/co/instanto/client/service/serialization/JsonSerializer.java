@@ -1,6 +1,6 @@
 package uk.co.instanto.client.service.serialization;
 
-import uk.co.instanto.tearay.rpc.common.serialization.Serializer;
+import dev.verrai.rpc.common.serialization.Serializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.nio.charset.StandardCharsets;

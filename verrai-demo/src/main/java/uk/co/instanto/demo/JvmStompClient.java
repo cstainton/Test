@@ -1,8 +1,8 @@
 package uk.co.instanto.demo;
 
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompClient;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompSubscriptionCallback;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompMessage;
+import dev.verrai.rpc.common.transport.stomp.StompClient;
+import dev.verrai.rpc.common.transport.stomp.StompSubscriptionCallback;
+import dev.verrai.rpc.common.transport.stomp.StompMessage;
 
 import java.io.*;
 import java.net.Socket;

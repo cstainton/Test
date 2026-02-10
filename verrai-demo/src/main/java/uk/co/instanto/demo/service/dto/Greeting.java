@@ -2,7 +2,7 @@ package uk.co.instanto.demo.service.dto;
 
 import java.util.Map;
 import java.util.HashMap;
-import uk.co.instanto.tearay.rpc.common.annotation.Portable;
+import dev.verrai.rpc.common.annotation.Portable;
 
 @Portable
 public class Greeting {

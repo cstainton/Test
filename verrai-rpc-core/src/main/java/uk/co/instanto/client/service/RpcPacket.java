@@ -1,6 +1,6 @@
 package uk.co.instanto.client.service;
 
-import uk.co.instanto.tearay.rpc.common.annotation.Portable;
+import dev.verrai.rpc.common.annotation.Portable;
 
 @Portable
 public class RpcPacket {

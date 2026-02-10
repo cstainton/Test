@@ -1,8 +1,8 @@
 package uk.co.instanto.integration;
 
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompClient;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompMessage;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompSubscriptionCallback;
+import dev.verrai.rpc.common.transport.stomp.StompClient;
+import dev.verrai.rpc.common.transport.stomp.StompMessage;
+import dev.verrai.rpc.common.transport.stomp.StompSubscriptionCallback;
 import java.util.HashMap;
 import java.util.Map;
 
