@@ -1,7 +1,7 @@
 package uk.co.instanto.client.service;
 
 import uk.co.instanto.client.service.proto.DiscoveryPacket;
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.transport.Transport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

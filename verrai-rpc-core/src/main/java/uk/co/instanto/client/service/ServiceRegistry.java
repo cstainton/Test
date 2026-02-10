@@ -2,7 +2,7 @@ package uk.co.instanto.client.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.transport.Transport;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

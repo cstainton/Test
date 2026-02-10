@@ -1,7 +1,7 @@
 package uk.co.instanto.integration.transport;
 
-import uk.co.instanto.tearay.rpc.common.transport.MessageHandler;
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.transport.MessageHandler;
+import dev.verrai.rpc.common.transport.Transport;
 
 import java.util.ArrayList;
 import java.util.List;

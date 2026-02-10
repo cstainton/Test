@@ -6,8 +6,8 @@ import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.instanto.client.service.proto.EventPacket;
-import uk.co.instanto.tearay.rpc.common.codec.Codec;
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.codec.Codec;
+import dev.verrai.rpc.common.transport.Transport;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

@@ -8,9 +8,9 @@ import uk.co.instanto.client.service.EventHandler;
 import uk.co.instanto.client.service.dto.proto.NodeAnnouncedEvent;
 import uk.co.instanto.client.service.transport.StompTransport;
 import uk.co.instanto.integration.transport.SimulatedWebWorkerTransport;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompClient;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompMessage;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompSubscriptionCallback;
+import dev.verrai.rpc.common.transport.stomp.StompClient;
+import dev.verrai.rpc.common.transport.stomp.StompMessage;
+import dev.verrai.rpc.common.transport.stomp.StompSubscriptionCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -182,7 +182,7 @@ public class CrossTransportEventTest {
 
     // --- Minimal Codec for Test ---
     public static class NodeAnnouncedEventCodec
-            implements uk.co.instanto.tearay.rpc.common.codec.Codec<NodeAnnouncedEvent, NodeAnnouncedEvent> {
+            implements dev.verrai.rpc.common.codec.Codec<NodeAnnouncedEvent, NodeAnnouncedEvent> {
         @Override
         public NodeAnnouncedEvent toWire(NodeAnnouncedEvent domain) {
             return domain;

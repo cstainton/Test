@@ -107,7 +107,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
-              <mainClass>uk.co.instanto.tearay.sample.App</mainClass>
+              <mainClass>dev.verrai.sample.App</mainClass>
               <targetDirectory>${project.build.directory}/generated/teavm</targetDirectory>
               <minifying>false</minifying>
               <debugInformationGenerated>true</debugInformationGenerated>

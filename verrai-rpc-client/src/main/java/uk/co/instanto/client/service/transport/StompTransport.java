@@ -1,9 +1,9 @@
 package uk.co.instanto.client.service.transport;
 
-import uk.co.instanto.tearay.rpc.common.transport.MessageHandler;
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompClient;
-import uk.co.instanto.tearay.rpc.common.transport.stomp.StompMessage;
+import dev.verrai.rpc.common.transport.MessageHandler;
+import dev.verrai.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.transport.stomp.StompClient;
+import dev.verrai.rpc.common.transport.stomp.StompMessage;
 import java.util.Base64;
 import java.util.ArrayList;
 import java.util.List;

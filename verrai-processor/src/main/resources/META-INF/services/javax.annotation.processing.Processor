@@ -1,5 +1,5 @@
-uk.co.instanto.tearay.processor.TemplatedProcessor
-uk.co.instanto.tearay.processor.IOCProcessor
-uk.co.instanto.tearay.processor.NavigationProcessor
-uk.co.instanto.tearay.processor.WireProcessor
-uk.co.instanto.tearay.processor.PersistenceProcessor
+dev.verrai.processor.TemplatedProcessor
+dev.verrai.processor.IOCProcessor
+dev.verrai.processor.NavigationProcessor
+dev.verrai.processor.WireProcessor
+dev.verrai.processor.PersistenceProcessor

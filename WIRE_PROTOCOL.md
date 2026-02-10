@@ -7,8 +7,8 @@ This document describes the current "Wire" protocol implementation used in the V
 The framework provides a custom serialization mechanism that supports both **JSON** and **Protobuf** formats. It uses annotation processing to generate codecs at compile time, avoiding reflection overhead at runtime (which is crucial for TeaVM).
 
 The core components are located in:
-- `verrai-api`: `uk.co.instanto.tearay.api.wire` (Annotations and Interfaces)
-- `verrai-processor`: `uk.co.instanto.tearay.processor.WireProcessor` (Code Generation)
+- `verrai-api`: `dev.verrai.api.wire` (Annotations and Interfaces)
+- `verrai-processor`: `dev.verrai.processor.WireProcessor` (Code Generation)
 
 ## Annotations
 
@@ -28,7 +28,7 @@ The `WireProcessor` generates two codec classes for each `@Proto` annotated clas
 2.  **`[ClassName]ProtoCodec`**: Handles Protobuf serialization using `ProtoWriter` and `ProtoReader` (from `com.squareup.wire`).
 
 It also generates a central registry:
-- **`uk.co.instanto.tearay.wire.generated.WireCodecRegistryImpl`**: Manages all generated codecs and allows switching between JSON and Proto modes via `setMode(WireMode mode)`.
+- **`dev.verrai.wire.generated.WireCodecRegistryImpl`**: Manages all generated codecs and allows switching between JSON and Proto modes via `setMode(WireMode mode)`.
 
 ## Usage Example
 

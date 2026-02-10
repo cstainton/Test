@@ -16,7 +16,7 @@ import com.squareup.wire.Message;
 
 import okio.ByteString;
 import uk.co.instanto.client.service.proto.RpcPacket;
-import uk.co.instanto.tearay.rpc.common.codec.Codec;
+import dev.verrai.rpc.common.codec.Codec;
 
 public class ServiceClient {
 

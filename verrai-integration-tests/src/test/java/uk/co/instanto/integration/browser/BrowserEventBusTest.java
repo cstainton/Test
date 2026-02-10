@@ -59,7 +59,7 @@ public class BrowserEventBusTest {
 
     private void registerCodec(EventBus bus) {
         bus.registerCodec(NodeAnnouncedEvent.class,
-                new uk.co.instanto.tearay.rpc.common.codec.Codec<NodeAnnouncedEvent, NodeAnnouncedEvent>() {
+                new dev.verrai.rpc.common.codec.Codec<NodeAnnouncedEvent, NodeAnnouncedEvent>() {
                     @Override
                     public NodeAnnouncedEvent toWire(NodeAnnouncedEvent domain) {
                         return domain;

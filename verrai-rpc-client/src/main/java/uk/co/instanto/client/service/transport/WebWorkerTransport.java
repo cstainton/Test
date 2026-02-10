@@ -4,8 +4,8 @@ import org.teavm.jso.JSBody;
 import org.teavm.jso.JSObject;
 import org.teavm.jso.dom.events.MessageEvent;
 import org.teavm.jso.typedarrays.Uint8Array;
-import uk.co.instanto.tearay.rpc.common.transport.MessageHandler;
-import uk.co.instanto.tearay.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.transport.MessageHandler;
+import dev.verrai.rpc.common.transport.Transport;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -49,7 +49,7 @@ public class MultiNodeDemo {
                     if (debug) {
                         System.out.println("[NodeA] Setting ReflectionFreeJsonSerializer");
                         registry.setSerializer(
-                                new uk.co.instanto.tearay.rpc.common.serialization.ReflectionFreeJsonSerializer());
+                                new dev.verrai.rpc.common.serialization.ReflectionFreeJsonSerializer());
                     }
 
                     // NOTE: We don't register Dispatcher manually anymore!
@@ -75,7 +75,7 @@ public class MultiNodeDemo {
                 if (debug) {
                     System.out.println("[NodeB] Setting ReflectionFreeJsonSerializer");
                     registry.setSerializer(
-                            new uk.co.instanto.tearay.rpc.common.serialization.ReflectionFreeJsonSerializer());
+                            new dev.verrai.rpc.common.serialization.ReflectionFreeJsonSerializer());
                 }
 
                 // DEMO: Subscribe to NodeAnnouncedEvent

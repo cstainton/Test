@@ -2,7 +2,7 @@ package uk.co.instanto.integration.service;
 
 import uk.co.instanto.integration.service.dto.*;
 
-import uk.co.instanto.tearay.rpc.common.annotation.Service;
+import dev.verrai.rpc.common.annotation.Service;
 
 import uk.co.instanto.client.service.AsyncResult;
 
