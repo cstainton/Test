@@ -62,7 +62,12 @@ public class FactoryWriter implements BeanVisitor {
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
                 .returns(typeName);
 
-        createMethod.addStatement("$T bean = new $T()", typeName, typeName);
+        if (bean.isBindable()) {
+             ClassName proxyName = ClassName.get(packageName, typeElement.getSimpleName() + "_BindableProxy");
+             createMethod.addStatement("$T bean = new $T()", typeName, proxyName);
+        } else {
+             createMethod.addStatement("$T bean = new $T()", typeName, typeName);
+        }
 
         // Injection
         for (InjectionPoint injectionPoint : bean.getInjectionPoints()) {

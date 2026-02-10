@@ -10,19 +10,21 @@ public class BeanDefinition {
     private final TypeElement typeElement;
     private final boolean isSingleton;
     private final boolean isTemplated;
+    private final boolean isBindable;
     private final List<InjectionPoint> injectionPoints;
     private final List<ExecutableElement> postConstructMethods;
     private final List<ExecutableElement> observerMethods;
     private final Map<String, TypeElement> resolutionMap;
     private final String qualifier;
 
-    public BeanDefinition(TypeElement typeElement, boolean isSingleton, boolean isTemplated,
+    public BeanDefinition(TypeElement typeElement, boolean isSingleton, boolean isTemplated, boolean isBindable,
                           List<InjectionPoint> injectionPoints, List<ExecutableElement> postConstructMethods,
                           List<ExecutableElement> observerMethods,
                           Map<String, TypeElement> resolutionMap, String qualifier) {
         this.typeElement = typeElement;
         this.isSingleton = isSingleton;
         this.isTemplated = isTemplated;
+        this.isBindable = isBindable;
         this.injectionPoints = injectionPoints;
         this.postConstructMethods = postConstructMethods;
         this.observerMethods = observerMethods;
@@ -40,6 +42,10 @@ public class BeanDefinition {
 
     public boolean isTemplated() {
         return isTemplated;
+    }
+
+    public boolean isBindable() {
+        return isBindable;
     }
 
     public List<InjectionPoint> getInjectionPoints() {

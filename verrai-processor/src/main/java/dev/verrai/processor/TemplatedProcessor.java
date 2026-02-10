@@ -443,6 +443,35 @@ public class TemplatedProcessor extends AbstractProcessor {
                          bindMethod.addStatement("target.$L.setValue(target.$L$L.$L())",
                             field.getSimpleName(), modelField.getSimpleName(), getterChain, finalGetter);
 
+                         // Model Change Listener (One-way sync: Model -> Widget)
+                         bindMethod.beginControlFlow("if (target.$L instanceof dev.verrai.api.binding.BindableProxy)", modelField.getSimpleName());
+                         bindMethod.addCode("((dev.verrai.api.binding.BindableProxy) target.$L).addPropertyChangeHandler((p, v) -> {\n", modelField.getSimpleName());
+                         bindMethod.beginControlFlow("if (p.equals($S))", segments[0]);
+
+                         if (needsConversion) {
+                             String modelTypeLiteral = getTypeLiteral(modelPropType);
+                             String widgetTypeLiteral = getTypeLiteral(widgetValueType);
+
+                             bindMethod.addStatement("$T converter_refresh = $T.get($L, $L)",
+                                 dev.verrai.api.binding.Converter.class,
+                                 dev.verrai.api.binding.ConverterRegistry.class,
+                                 modelTypeLiteral, widgetTypeLiteral);
+
+                             bindMethod.beginControlFlow("if (converter_refresh != null)");
+                             bindMethod.addStatement("target.$L.setValue(($T) converter_refresh.toWidget(target.$L$L.$L()))",
+                                field.getSimpleName(),
+                                com.squareup.javapoet.TypeName.get(widgetValueType),
+                                modelField.getSimpleName(), getterChain, finalGetter);
+                             bindMethod.endControlFlow();
+                         } else {
+                             bindMethod.addStatement("target.$L.setValue(target.$L$L.$L())",
+                                field.getSimpleName(), modelField.getSimpleName(), getterChain, finalGetter);
+                         }
+
+                         bindMethod.endControlFlow();
+                         bindMethod.addCode("});\n");
+                         bindMethod.endControlFlow();
+
                          // Change Handler
                          bindMethod.addCode("((dev.verrai.api.IsWidget)target.$L).getElement().addEventListener(\"change\", e -> {\n", field.getSimpleName());
                          bindMethod.addStatement("  target.$L$L.$L(target.$L.getValue())", modelField.getSimpleName(), getterChain, finalSetter, field.getSimpleName());

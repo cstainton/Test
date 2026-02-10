@@ -6,6 +6,7 @@ import dev.verrai.api.EntryPoint;
 import dev.verrai.api.PostConstruct;
 import dev.verrai.api.Templated;
 import dev.verrai.api.Page;
+import dev.verrai.api.Bindable;
 import dev.verrai.api.Named;
 import dev.verrai.api.Observes;
 import dev.verrai.processor.model.BeanDefinition;
@@ -38,7 +39,8 @@ import java.util.stream.Collectors;
     "dev.verrai.api.Dependent",
     "dev.verrai.api.EntryPoint",
     "dev.verrai.api.Templated",
-    "dev.verrai.api.Page"
+    "dev.verrai.api.Page",
+    "dev.verrai.api.Bindable"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class IOCProcessor extends AbstractProcessor {
@@ -64,6 +66,7 @@ public class IOCProcessor extends AbstractProcessor {
         beans.addAll(roundEnv.getElementsAnnotatedWith(EntryPoint.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Templated.class));
         beans.addAll(roundEnv.getElementsAnnotatedWith(Page.class));
+        beans.addAll(roundEnv.getElementsAnnotatedWith(Bindable.class));
 
         // Build Interface Resolution Map (Interface Name + Qualifier -> Implementation)
         Map<String, TypeElement> resolutionMap = new HashMap<>();
@@ -130,6 +133,7 @@ public class IOCProcessor extends AbstractProcessor {
         boolean isSingleton = typeElement.getAnnotation(ApplicationScoped.class) != null ||
                               typeElement.getAnnotation(EntryPoint.class) != null;
         boolean isTemplated = typeElement.getAnnotation(Templated.class) != null;
+        boolean isBindable = typeElement.getAnnotation(Bindable.class) != null;
         String beanQualifier = getQualifier(typeElement);
 
         List<InjectionPoint> injectionPoints = new ArrayList<>();
@@ -159,7 +163,7 @@ public class IOCProcessor extends AbstractProcessor {
             }
         }
 
-        BeanDefinition beanDef = new BeanDefinition(typeElement, isSingleton, isTemplated,
+        BeanDefinition beanDef = new BeanDefinition(typeElement, isSingleton, isTemplated, isBindable,
                 injectionPoints, postConstructMethods, observerMethods, resolutionMap, beanQualifier);
 
         String signature = computeSignature(beanDef);
@@ -178,6 +182,8 @@ public class IOCProcessor extends AbstractProcessor {
         sb.append(beanDef.isSingleton());
         sb.append(":");
         sb.append(beanDef.isTemplated());
+        sb.append(":");
+        sb.append(beanDef.isBindable());
         sb.append("|");
 
         for (InjectionPoint ip : beanDef.getInjectionPoints()) {

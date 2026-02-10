@@ -67,6 +67,76 @@ public class TemplatedProcessorTest {
     }
 
     @Test
+    public void testBindableModelBinding() {
+        JavaFileObject widget = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.MyWidget",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.IsWidget;",
+            "import dev.verrai.api.TakesValue;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "import org.teavm.jso.dom.events.Event;",
+            "",
+            "public class MyWidget implements IsWidget, TakesValue<String> {",
+            "    public HTMLElement getElement() { return null; }",
+            "    public void setValue(String value) {}",
+            "    public String getValue() { return null; }",
+            "    public void onBrowserEvent(Event e) {}",
+            "}"
+        );
+
+        JavaFileObject model = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.MyModel",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Bindable;",
+            "",
+            "@Bindable",
+            "public class MyModel {",
+            "    private String name;",
+            "    public void setName(String name) { this.name = name; }",
+            "    public String getName() { return name; }",
+            "}"
+        );
+
+        JavaFileObject page = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.BindablePage",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Templated;",
+            "import dev.verrai.api.DataField;",
+            "import dev.verrai.api.Model;",
+            "import dev.verrai.api.Bound;",
+            "import javax.inject.Inject;",
+            "",
+            "@Templated(\"SimplePage.html\")",
+            "public class BindablePage {",
+            "    @Inject @Model",
+            "    public MyModel model;",
+            "",
+            "    @Inject @DataField @Bound",
+            "    public MyWidget name;",
+            "}"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new TemplatedProcessor(), new BindableProcessor())
+            .compile(widget, model, page);
+
+        assertThat(compilation).succeeded();
+
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.processor.BindablePage_Binder")
+            .contentsAsUtf8String()
+            .contains("if (target.model instanceof dev.verrai.api.binding.BindableProxy)");
+
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.processor.BindablePage_Binder")
+            .contentsAsUtf8String()
+            .contains("((dev.verrai.api.binding.BindableProxy) target.model).addPropertyChangeHandler");
+    }
+
+    @Test
     public void testElementFieldBinding() {
          JavaFileObject source = JavaFileObjects.forSourceLines(
             "dev.verrai.processor.ElementPage",
