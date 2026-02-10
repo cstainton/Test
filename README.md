@@ -86,6 +86,40 @@ MyCustomWidget widget; // Field must be accessible (package-private or public)
 ```
 *Note: The widget must implement `IsWidget` and override `onBrowserEvent(Event)` to handle the events.*
 
+### Internationalization (i18n)
+
+Verrai supports creating type-safe message bundles backed by `.properties` files.
+
+**1. Define the Bundle Interface:**
+Annotate an interface with `@Bundle`.
+```java
+@Bundle("AppMessages") // Looks for AppMessages.properties in the same package
+public interface AppMessages {
+    String welcomeMessage();
+
+    @TranslationKey("login.error")
+    String loginError(String username);
+}
+```
+
+**2. Create the Properties File:**
+Create `AppMessages.properties` in the same package (src/main/resources or src/main/java):
+```properties
+welcomeMessage=Welcome to Verrai!
+login.error=Login failed for user {0}.
+```
+
+**3. Inject and Use:**
+The processor generates an implementation that can be injected.
+```java
+@Inject
+AppMessages messages;
+
+public void showWelcome() {
+    Window.alert(messages.welcomeMessage());
+}
+```
+
 ## Documentation
 
 *   [Comparison with Errai](COMPARISON.md)
