@@ -74,3 +74,35 @@ This document outlines potential enhancements and features for the Verrai framew
 -   **Proposal**:
     -   Implement "Guards" or "Interceptors" for Navigation.
     -   Allow asynchronous checks (e.g., call server to verify permission before navigation).
+
+## 6. Historical Lessons (from Errai Evolution)
+
+### Code Size & Performance
+**Insight**: Errai users frequently cited slow compilation times and large JavaScript payloads as major pain points.
+-   **Lesson for Verrai**:
+    -   Continuously profile the output of annotation processors.
+    -   Ensure generated code (marshalling, binding) is highly optimizable by TeaVM/ProGuard.
+    -   Avoid reflection-like patterns in generated code that prevent dead-code elimination.
+
+### JS Interop & Web Components
+**Insight**: The community pushed strongly for moving away from GWT Widgets towards direct DOM manipulation and JS Interop (e.g., Polymer integration).
+-   **Lesson for Verrai**:
+    -   Maintain first-class support for `HTMLElement` and JS Interop types in `@DataField` bindings.
+    -   Provide clear patterns for wrapping and binding to Web Components (Custom Elements).
+    -   Avoid creating a heavy "Widget" abstraction layer unless necessary.
+
+### Navigation Customization
+**Insight**: Users needed "Content Delegation" to control how pages are swapped (animations, transitions).
+-   **Lesson for Verrai**:
+    -   Refactor `NavigationImpl` to allow plugging in a `PageTransitionManager`.
+    -   Support asynchronous page loading/unloading hooks.
+
+### Global I18n Keys
+**Insight**: Duplicating common translations (e.g., "Save", "Cancel") across every template file was tedious.
+-   **Lesson for Verrai**:
+    -   Support a global/shared `@Bundle` that can be referenced by key in any template without explicit declaration.
+
+### Security (CSRF)
+**Insight**: Basic security features like CSRF protection on the bus were critical additions.
+-   **Lesson for Verrai**:
+    -   Ensure the RPC layer supports CSRF tokens (e.g., via a meta tag or cookie) out of the box.
