@@ -187,7 +187,15 @@ public class TemplatedProcessor extends AbstractProcessor {
                  } else {
                      // Assume Widget or Component with 'element' field
                      bindMethod.beginControlFlow("if (target.$L != null)", field.getSimpleName());
-                     bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
+
+                     TypeElement isWidgetType = processingEnv.getElementUtils().getTypeElement("dev.verrai.api.IsWidget");
+                     boolean isWidget = isWidgetType != null && processingEnv.getTypeUtils().isAssignable(field.asType(), isWidgetType.asType());
+
+                     if (isWidget) {
+                         bindMethod.addStatement("$T widgetElement = ((dev.verrai.api.IsWidget)target.$L).getElement()", htmlElementClass, field.getSimpleName());
+                     } else {
+                         bindMethod.addStatement("$T widgetElement = target.$L.element", htmlElementClass, field.getSimpleName());
+                     }
 
                      bindMethod.beginControlFlow("if (widgetElement != null)");
                      bindMethod.addStatement("el_$L.getParentNode().replaceChild(widgetElement, el_$L)", field.getSimpleName(), field.getSimpleName());
