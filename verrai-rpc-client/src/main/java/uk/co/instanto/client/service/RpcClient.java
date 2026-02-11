@@ -20,6 +20,7 @@ public class RpcClient {
 
     private final Map<String, RpcResponseFuture> pendingRequests = new ConcurrentHashMap<>();
     private final Map<String, AsyncStreamResultImpl<?>> pendingStreams = new ConcurrentHashMap<>();
+    private final Map<String, String> defaultHeaders = new HashMap<>();
 
     public RpcClient(Transport transport) {
         this(transport, null);
@@ -41,6 +42,10 @@ public class RpcClient {
 
     public <T> void registerCodec(Class<T> type, Codec<T, ?> codec) {
         serializer.register(type, codec);
+    }
+
+    public void setDefaultHeader(String key, String value) {
+        this.defaultHeaders.put(key, value);
     }
 
     private void handleIncomingBytes(byte[] data) {
@@ -86,14 +91,19 @@ public class RpcClient {
         byte[] payload = serializer.encode(requestDto);
 
         String requestId = java.util.UUID.randomUUID().toString();
-        RpcPacket packet = new RpcPacket.Builder()
+        RpcPacket.Builder builder = new RpcPacket.Builder()
                 .serviceId(serviceId)
                 .methodName(methodId)
                 .requestId(requestId)
                 .payload(okio.ByteString.of(payload))
                 .replyTo(replyTo != null ? replyTo : "")
-                .type(RpcPacket.Type.REQUEST)
-                .build();
+                .type(RpcPacket.Type.REQUEST);
+
+        if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
+            builder.headers = defaultHeaders;
+        }
+
+        RpcPacket packet = builder.build();
 
         RpcResponseFuture future = new RpcResponseFuture();
         pendingRequests.put(requestId, future);
@@ -109,14 +119,19 @@ public class RpcClient {
         byte[] payload = serializer.encode(requestDto);
 
         String requestId = java.util.UUID.randomUUID().toString();
-        RpcPacket packet = new RpcPacket.Builder()
+        RpcPacket.Builder builder = new RpcPacket.Builder()
                 .serviceId(serviceId)
                 .methodName(methodId)
                 .requestId(requestId)
                 .payload(okio.ByteString.of(payload))
                 .replyTo(replyTo != null ? replyTo : "")
-                .type(RpcPacket.Type.REQUEST)
-                .build();
+                .type(RpcPacket.Type.REQUEST);
+
+        if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
+            builder.headers = defaultHeaders;
+        }
+
+        RpcPacket packet = builder.build();
 
         AsyncStreamResultImpl<T> result = new AsyncStreamResultImpl<>();
         pendingStreams.put(requestId, result);

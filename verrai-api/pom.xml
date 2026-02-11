@@ -21,8 +21,8 @@
       </dependency>
       <dependency>
           <groupId>com.squareup.wire</groupId>
-          <artifactId>wire-runtime</artifactId>
-          <version>2.3.0-RC1</version>
+          <artifactId>wire-runtime-jvm</artifactId>
+          <version>${wire.version}</version>
       </dependency>
       <dependency>
           <groupId>org.junit.jupiter</groupId>

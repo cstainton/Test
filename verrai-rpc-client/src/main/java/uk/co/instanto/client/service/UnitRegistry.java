@@ -47,6 +47,8 @@ public class UnitRegistry {
     // Serializer
     private dev.verrai.rpc.common.serialization.Serializer serializer;
 
+    private final Map<String, String> defaultHeaders = new HashMap<>();
+
     public UnitRegistry() {
     }
 
@@ -207,6 +209,13 @@ public class UnitRegistry {
         }
     }
 
+    public void setDefaultHeader(String key, String value) {
+        this.defaultHeaders.put(key, value);
+        for (RpcClient client : nodeClients.values()) {
+            client.setDefaultHeader(key, value);
+        }
+    }
+
     public static UnitRegistry getInstance() {
         return INSTANCE;
     }
@@ -322,6 +331,9 @@ public class UnitRegistry {
             RpcClient rpcClient = new RpcClient(transport, replyTo);
             if (serializer != null) {
                 rpcClient.setSerializer(serializer);
+            }
+            for (Map.Entry<String, String> entry : defaultHeaders.entrySet()) {
+                rpcClient.setDefaultHeader(entry.getKey(), entry.getValue());
             }
             return rpcClient;
         });

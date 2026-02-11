@@ -21,4 +21,5 @@ message RpcPacket {
     string replyTo = 5;
     bytes payload = 6;
     string contentType = 7;
+    map<string, string> headers = 8;
 }

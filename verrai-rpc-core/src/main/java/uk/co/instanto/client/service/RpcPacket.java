@@ -25,6 +25,8 @@ public class RpcPacket {
     // New field for content negotiation
     private String contentType;
 
+    private java.util.Map<String, String> headers;
+
     public Type getType() {
         return type;
     }
@@ -79,5 +81,13 @@ public class RpcPacket {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public java.util.Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(java.util.Map<String, String> headers) {
+        this.headers = headers;
     }
 }
