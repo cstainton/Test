@@ -119,37 +119,6 @@ public class FactoryWriter implements BeanVisitor {
                         processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Provider injection requires a type argument: " + field.getSimpleName(), field);
                     }
                 }
-            } else if (rawTypeName.equals("uk.co.instanto.client.service.Caller")) {
-                // Handle Caller<T> injection
-                if (fieldType instanceof DeclaredType) {
-                    DeclaredType declaredType = (DeclaredType) fieldType;
-                    if (!declaredType.getTypeArguments().isEmpty()) {
-                        TypeMirror typeArg = declaredType.getTypeArguments().get(0);
-                        String typeArgName = typeArg.toString();
-                        if (typeArgName.contains("<")) {
-                            typeArgName = typeArgName.substring(0, typeArgName.indexOf("<"));
-                        }
-
-                        ClassName serviceClass = ClassName.bestGuess(typeArgName);
-
-                        // We assume the factory is [Service]_Factory in the same package
-                        String servicePackage = processingEnv.getElementUtils().getPackageOf(processingEnv.getTypeUtils().asElement(typeArg)).getQualifiedName().toString();
-                        String serviceSimpleName = processingEnv.getTypeUtils().asElement(typeArg).getSimpleName().toString();
-                        ClassName factoryClass = ClassName.get(servicePackage, serviceSimpleName + "_Factory");
-
-                        // Register factory
-                        createMethod.addStatement("$T.getInstance().registerFactory($T.class, new $T())",
-                                ClassName.get("uk.co.instanto.client.service", "UnitRegistry"),
-                                serviceClass,
-                                factoryClass);
-
-                        // Instantiate Caller
-                        createMethod.addStatement("bean.$L = new $T<>($T.class)",
-                                field.getSimpleName(),
-                                ClassName.get("uk.co.instanto.client.service", "CallerImpl"),
-                                serviceClass);
-                    }
-                }
             } else if (rawTypeName.equals("dev.verrai.api.Event")) {
                 // Handle Event<T> injection
                 createMethod.addStatement("bean.$L = e -> $T.fire(e)", field.getSimpleName(), ClassName.get("dev.verrai.impl", "EventBus"));
