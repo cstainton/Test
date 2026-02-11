@@ -18,6 +18,9 @@ public class DashboardPage {
     @Inject
     public GreetingService service;
 
+    @Inject
+    public uk.co.instanto.client.service.Caller<RemoteGreetingService> remoteService;
+
     @PageState
     public String username;
 
@@ -121,6 +124,16 @@ public class DashboardPage {
         logoutBtn.setType(Button.Type.DANGER);
         logoutBtn.addClickListener(e -> navigation.goTo("login"));
         col2.element.appendChild(logoutBtn.element);
+
+        Button remoteBtn = new Button();
+        remoteBtn.setText("Call Remote Service");
+        remoteBtn.setType(Button.Type.INFO);
+        remoteBtn.addClickListener(e -> {
+             remoteService.call(s -> s.getGreeting("Remote User")).thenAccept(result -> {
+                Window.alert("Remote Greeting: " + result);
+            });
+        });
+        col2.element.appendChild(remoteBtn.element);
 
         // Slider demo
         Slider slider = new Slider();

@@ -86,8 +86,18 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-           <!-- The processor is on the classpath (scope provided), so it should be picked up automatically
-                However, explicit configuration is often safer. -->
+           <annotationProcessorPaths>
+               <path>
+                   <groupId>uk.co.instanto</groupId>
+                   <artifactId>verrai-processor</artifactId>
+                   <version>${project.version}</version>
+               </path>
+               <path>
+                   <groupId>uk.co.instanto</groupId>
+                   <artifactId>verrai-annotation-processor</artifactId>
+                   <version>${project.version}</version>
+               </path>
+           </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
