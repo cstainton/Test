@@ -24,41 +24,47 @@ public class AsyncStreamResultImpl<T> implements AsyncStreamResult<T> {
     // --- Internal methods to feed data ---
 
     public void onNext(T item) {
+        List<Subscriber<T>> subs;
         synchronized (subscribers) {
-            for (Subscriber<T> sub : subscribers) {
-                try {
-                    sub.onNext.accept(item);
-                } catch (Exception e) {
-                    // Log or handle subscriber error
-                    e.printStackTrace();
-                }
+            subs = new ArrayList<>(subscribers);
+        }
+        for (Subscriber<T> sub : subs) {
+            try {
+                sub.onNext.accept(item);
+            } catch (Exception e) {
+                // Log or handle subscriber error
+                e.printStackTrace();
             }
         }
     }
 
     public void onError(Throwable error) {
+        List<Subscriber<T>> subs;
         synchronized (subscribers) {
-            for (Subscriber<T> sub : subscribers) {
-                try {
-                    sub.onError.accept(error);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            subs = new ArrayList<>(subscribers);
             subscribers.clear();
+        }
+        for (Subscriber<T> sub : subs) {
+            try {
+                sub.onError.accept(error);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void onComplete() {
+        List<Subscriber<T>> subs;
         synchronized (subscribers) {
-            for (Subscriber<T> sub : subscribers) {
-                try {
-                    sub.onComplete.run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            subs = new ArrayList<>(subscribers);
             subscribers.clear();
+        }
+        for (Subscriber<T> sub : subs) {
+            try {
+                sub.onComplete.run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
