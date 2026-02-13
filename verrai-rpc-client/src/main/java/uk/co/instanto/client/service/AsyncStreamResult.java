@@ -1,6 +1,7 @@
 package uk.co.instanto.client.service;
 
 import java.util.function.Consumer;
+import uk.co.instanto.client.service.flow.Publisher;
 
 /**
  * A safe, non-blocking stream result for subscription-style RPC calls.
@@ -8,7 +9,7 @@ import java.util.function.Consumer;
  * 
  * @param <T> The type of data in the stream.
  */
-public interface AsyncStreamResult<T> {
+public interface AsyncStreamResult<T> extends Publisher<T> {
 
     /**
      * Subscribes to the stream.
@@ -21,10 +22,40 @@ public interface AsyncStreamResult<T> {
     Subscription subscribe(Consumer<T> onNext, Consumer<Throwable> onError, Runnable onComplete);
 
     default <R> AsyncStreamResult<R> map(java.util.function.Function<T, R> mapper) {
-        return (onNext, onError, onComplete) -> this.subscribe(
-                item -> onNext.accept(mapper.apply(item)),
-                onError,
-                onComplete);
+        return new AsyncStreamResult<R>() {
+            @Override
+            public Subscription subscribe(Consumer<R> onNext, Consumer<Throwable> onError, Runnable onComplete) {
+                return AsyncStreamResult.this.subscribe(
+                        item -> onNext.accept(mapper.apply(item)),
+                        onError,
+                        onComplete);
+            }
+
+            @Override
+            public void subscribe(uk.co.instanto.client.service.flow.Subscriber<? super R> subscriber) {
+                 AsyncStreamResult.this.subscribe(new uk.co.instanto.client.service.flow.Subscriber<T>() {
+                     @Override
+                     public void onSubscribe(uk.co.instanto.client.service.flow.Subscription subscription) {
+                         subscriber.onSubscribe(subscription);
+                     }
+
+                     @Override
+                     public void onNext(T item) {
+                         subscriber.onNext(mapper.apply(item));
+                     }
+
+                     @Override
+                     public void onError(Throwable throwable) {
+                         subscriber.onError(throwable);
+                     }
+
+                     @Override
+                     public void onComplete() {
+                         subscriber.onComplete();
+                     }
+                 });
+            }
+        };
     }
 
     interface Subscription {

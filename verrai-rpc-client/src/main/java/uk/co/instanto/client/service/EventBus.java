@@ -48,19 +48,49 @@ public class EventBus {
     }
 
     /**
-     * Publish an event to all subscribers.
+     * Publish an event to all subscribers with default GLOBAL scope.
+     */
+    public <T> void publish(T event) {
+        publish(event, Scope.GLOBAL);
+    }
+
+    /**
+     * Publish an event to subscribers within the given scope.
      */
     @SuppressWarnings("unchecked")
-    public <T> void publish(T event) {
+    public <T> void publish(T event, Scope scope) {
         if (event == null) {
             throw new IllegalArgumentException("Event cannot be null");
         }
 
         Class<?> eventClass = event.getClass();
+
+        // 1. Local delivery (fast path)
+        if (scope == Scope.LOCAL || scope == Scope.GLOBAL || scope == Scope.BROWSER || scope == Scope.SESSION) {
+            List<EventHandler<?>> eventHandlers = handlers.get(eventClass.getName());
+            if (eventHandlers != null) {
+                for (EventHandler<?> handler : eventHandlers) {
+                    try {
+                        ((EventHandler<Object>) handler).onEvent(event);
+                    } catch (Exception e) {
+                        logger.error("Error in local event handler for type: {}", eventClass.getName(), e);
+                    }
+                }
+            }
+        }
+
+        // 2. Remote delivery
+        if (scope == Scope.LOCAL) {
+            return;
+        }
+
         Codec<T, ?> codec = (Codec<T, ?>) codecRegistry.get(eventClass);
 
         if (codec == null) {
-            throw new IllegalStateException("No codec registered for event type: " + eventClass.getName());
+             if (scope != Scope.LOCAL) {
+                 throw new IllegalStateException("No codec registered for event type: " + eventClass.getName());
+             }
+             return;
         }
 
         try {

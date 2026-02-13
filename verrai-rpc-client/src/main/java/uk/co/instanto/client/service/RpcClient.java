@@ -119,6 +119,15 @@ public class RpcClient {
         return (AsyncResult<T>) future;
     }
 
+    public void sendStreamRequestN(String requestId, long n) {
+        RpcPacket packet = new RpcPacket.Builder()
+                .type(RpcPacket.Type.STREAM_REQUEST_N)
+                .requestId(requestId)
+                .payload(okio.ByteString.encodeUtf8(String.valueOf(n)))
+                .build();
+        transport.send(RpcPacket.ADAPTER.encode(packet));
+    }
+
     @SuppressWarnings("unchecked")
     public <T> AsyncStreamResult<T> invokeStreamStub(String serviceId, String methodId, Object[] args) {
         Object requestDto = args[0];
@@ -139,7 +148,7 @@ public class RpcClient {
 
         RpcPacket packet = builder.build();
 
-        AsyncStreamResultImpl<T> result = new AsyncStreamResultImpl<>();
+        AsyncStreamResultImpl<T> result = new AsyncStreamResultImpl<>(this, requestId);
         pendingStreams.put(requestId, result);
 
         transport.send(RpcPacket.ADAPTER.encode(packet));
@@ -266,54 +275,6 @@ public class RpcClient {
     public static class RpcResponseFuture extends AsyncResultImpl<Object> {
         public RpcResponseFuture() {
             super();
-        }
-    }
-
-    public static class AsyncStreamResultImpl<T> implements AsyncStreamResult<T> {
-        private final List<SubscriptionRecord<T>> subscribers = new ArrayList<>();
-
-        public void onNextBytes(byte[] bytes) {
-            for (SubscriptionRecord<T> sub : subscribers) {
-                try {
-                    // Safe cast if T is Object/byte[]
-                    sub.onNext.accept((T) bytes);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        public void onError(Throwable t) {
-            for (SubscriptionRecord<T> sub : subscribers) {
-                sub.onError.accept(t);
-            }
-            subscribers.clear();
-        }
-
-        public void onComplete() {
-            for (SubscriptionRecord<T> sub : subscribers) {
-                sub.onComplete.run();
-            }
-            subscribers.clear();
-        }
-
-        @Override
-        public Subscription subscribe(Consumer<T> onNext, Consumer<Throwable> onError, Runnable onComplete) {
-            SubscriptionRecord<T> record = new SubscriptionRecord<>(onNext, onError, onComplete);
-            subscribers.add(record);
-            return () -> subscribers.remove(record);
-        }
-
-        private static class SubscriptionRecord<T> {
-            final Consumer<T> onNext;
-            final Consumer<Throwable> onError;
-            final Runnable onComplete;
-
-            SubscriptionRecord(Consumer<T> onNext, Consumer<Throwable> onError, Runnable onComplete) {
-                this.onNext = onNext;
-                this.onError = onError;
-                this.onComplete = onComplete;
-            }
         }
     }
 }

@@ -13,6 +13,7 @@ public class RpcPacket {
         ERROR,
         STREAM_COMPLETE,
         STREAM_CANCEL,
+        STREAM_REQUEST_N,
         EVENT
     }
 

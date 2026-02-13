@@ -7,6 +7,16 @@ import java.util.function.Consumer;
 public class AsyncStreamResultImpl<T> implements AsyncStreamResult<T> {
 
     private final List<Subscriber<T>> subscribers = new ArrayList<>();
+    private RpcClient client;
+    private String requestId;
+
+    public AsyncStreamResultImpl() {
+    }
+
+    public AsyncStreamResultImpl(RpcClient client, String requestId) {
+        this.client = client;
+        this.requestId = requestId;
+    }
 
     @Override
     public Subscription subscribe(Consumer<T> onNext, Consumer<Throwable> onError, Runnable onComplete) {
@@ -21,7 +31,43 @@ public class AsyncStreamResultImpl<T> implements AsyncStreamResult<T> {
         };
     }
 
+    @Override
+    public void subscribe(uk.co.instanto.client.service.flow.Subscriber<? super T> subscriber) {
+        final Subscription sub = subscribe(
+                subscriber::onNext,
+                subscriber::onError,
+                subscriber::onComplete);
+
+        uk.co.instanto.client.service.flow.Subscription flowSub = new uk.co.instanto.client.service.flow.Subscription() {
+            @Override
+            public void request(long n) {
+                if (client != null && requestId != null) {
+                    client.sendStreamRequestN(requestId, n);
+                }
+            }
+
+            @Override
+            public void cancel() {
+                sub.cancel();
+            }
+        };
+
+        subscriber.onSubscribe(flowSub);
+    }
+
     // --- Internal methods to feed data ---
+
+    @SuppressWarnings("unchecked")
+    public void onNextBytes(byte[] bytes) {
+        // Safe cast if T is Object/byte[] - assuming serializer handling or direct bytes
+        // In reality, we should deserialize here if we had the serializer and class.
+        // For now, we follow existing pattern in RpcClient.
+        try {
+            onNext((T) bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void onNext(T item) {
         List<Subscriber<T>> subs;
