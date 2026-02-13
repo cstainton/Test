@@ -10,6 +10,7 @@ public class RpcPacket {
         RESPONSE,
         STREAM_DATA,
         STREAM_ERROR,
+        ERROR,
         STREAM_COMPLETE,
         STREAM_CANCEL,
         EVENT

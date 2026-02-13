@@ -52,6 +52,14 @@ public class RpcClient {
                 } else {
                     logger.warn("Received RESPONSE for unknown requestId: {}", packet.requestId);
                 }
+            } else if (packet.type == RpcPacket.Type.ERROR) {
+                logger.debug("Received ERROR for requestId: {}", packet.requestId);
+                CompletableFuture<byte[]> future = pendingRequests.remove(packet.requestId);
+                if (future != null) {
+                    future.completeExceptionally(new RuntimeException(packet.payload.utf8()));
+                } else {
+                    logger.warn("Received ERROR for unknown requestId: {}", packet.requestId);
+                }
             } else {
                 logger.debug("Received RPC packet of type: {}", packet.type);
             }

@@ -360,7 +360,10 @@ public class ServiceGenerator {
                                 // Error Callback
                                 dispatch.addCode("asyncResult.exceptionally(ex -> {\n");
                                 dispatch.addStatement("ex.printStackTrace()");
-                                // TODO: Send ERROR packet
+                                dispatch.addStatement("transport.send($T.ADAPTER.encode(" +
+                                        "new $T.Builder().type($T.Type.ERROR).requestId(packet.requestId)" +
+                                        ".payload($T.encodeUtf8(ex.getMessage() != null ? ex.getMessage() : ex.toString())).build()))",
+                                        RPC_PACKET, RPC_PACKET, RPC_PACKET, ByteString.class);
                                 dispatch.addStatement("return null");
                                 dispatch.addStatement("});");
 

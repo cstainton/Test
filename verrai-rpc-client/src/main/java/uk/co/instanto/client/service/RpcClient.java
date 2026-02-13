@@ -57,6 +57,12 @@ public class RpcClient {
                 if (future != null) {
                     future.complete(packet.payload.toByteArray());
                 }
+            } else if (packet.type == RpcPacket.Type.ERROR) {
+                RpcResponseFuture future = pendingRequests.remove(packet.requestId);
+                if (future != null) {
+                    String errorMsg = packet.payload.utf8();
+                    future.completeExceptionally(new RuntimeException(errorMsg));
+                }
             } else if (packet.type == RpcPacket.Type.STREAM_ERROR) {
                 RpcResponseFuture future = pendingRequests.remove(packet.requestId);
                 if (future != null) {
