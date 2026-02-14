@@ -68,6 +68,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>uk.co.instanto</groupId>
+      <artifactId>verrai-rpc-teavm</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.teavm</groupId>
       <artifactId>teavm-junit</artifactId>
       <scope>test</scope>
@@ -114,6 +119,19 @@
             <configuration>
               <mainClass>dev.verrai.sample.App</mainClass>
               <targetDirectory>${project.build.directory}/generated/teavm</targetDirectory>
+              <minifying>false</minifying>
+              <debugInformationGenerated>true</debugInformationGenerated>
+            </configuration>
+          </execution>
+          <execution>
+            <id>web-worker</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <mainClass>dev.verrai.sample.WorkerEntry</mainClass>
+              <targetDirectory>${project.build.directory}/generated/teavm</targetDirectory>
+              <targetFileName>worker.js</targetFileName>
               <minifying>false</minifying>
               <debugInformationGenerated>true</debugInformationGenerated>
             </configuration>
