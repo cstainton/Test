@@ -63,6 +63,16 @@
         <version>${teavm.version}</version>
         <scope>test</scope>
      </dependency>
+     <!-- Testcontainers for Integration Tests -->
+     <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>1.20.1</version>
+        <scope>test</scope>
+     </dependency>
+     <!-- ActiveMQ Container (Generic or specialized) -->
+     <!-- Generic is fine, but having activemq module helps if we want preconfigured -->
+     <!-- We'll use generic container for flexibility with Artemis -->
   </dependencies>
 
   <build>

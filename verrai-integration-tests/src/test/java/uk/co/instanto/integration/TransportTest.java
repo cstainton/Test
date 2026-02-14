@@ -31,8 +31,8 @@ public class TransportTest {
         workerSide.connect(clientSide);
 
         // 2. Setup Client
-        RpcClient client = new RpcClient(clientSide);
-        MyDataService serviceProxy = new MyDataService_Stub(client);
+        UnitRegistry.getInstance().registerRemote(MyDataService.class.getName(), "local-node", clientSide);
+        MyDataService serviceProxy = new MyDataService_Stub();
 
         // 3. Setup Worker (on the same thread for this test)
         WorkerBootstrap worker = new WorkerBootstrap(workerSide);

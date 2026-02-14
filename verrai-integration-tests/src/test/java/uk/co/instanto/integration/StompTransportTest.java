@@ -34,8 +34,8 @@ public class StompTransportTest {
 
         // 2. Setup Client Side
         StompTransport clientTransport = new StompTransport(broker, "/app/rpc", "/user/queue/rpc");
-        RpcClient client = new RpcClient(clientTransport);
-        MyDataService serviceProxy = new MyDataService_Stub(client);
+        UnitRegistry.getInstance().registerRemote(MyDataService.class.getName(), "mock-node", clientTransport);
+        MyDataService serviceProxy = new MyDataService_Stub();
 
         // 3. Setup Worker Side
         StompTransport workerTransport = new StompTransport(broker, "/user/queue/rpc", "/app/rpc");

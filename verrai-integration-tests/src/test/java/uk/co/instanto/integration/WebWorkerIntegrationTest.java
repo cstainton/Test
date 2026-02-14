@@ -79,8 +79,8 @@ public class WebWorkerIntegrationTest {
         new Thread(() -> {
             try {
                 logger.info("[Worker] Starting...");
-                RpcClient client = new RpcClient(workerTransport);
-                MyDataService workerStub = new MyDataService_Stub(client);
+                UnitRegistry.getInstance().registerRemote(MyDataService.class.getName(), "simulated-worker-node", workerTransport);
+                MyDataService workerStub = new MyDataService_Stub();
 
                 MyData req = new MyData();
                 req.setId("worker-1");
