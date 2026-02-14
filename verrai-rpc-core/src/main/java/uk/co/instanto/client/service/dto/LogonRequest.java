@@ -1,4 +1,4 @@
-package uk.co.instanto.integration.service.dto;
+package uk.co.instanto.client.service.dto;
 
 import dev.verrai.rpc.common.annotation.Portable;
 

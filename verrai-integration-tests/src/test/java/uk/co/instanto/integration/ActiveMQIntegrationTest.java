@@ -21,7 +21,7 @@ import uk.co.instanto.integration.service.MyDataService;
 import uk.co.instanto.integration.service.MyDataService_Dispatcher;
 import uk.co.instanto.integration.service.MyDataService_Stub;
 import uk.co.instanto.integration.service.dto.Employee;
-import uk.co.instanto.integration.service.dto.LogonRequest;
+import uk.co.instanto.client.service.dto.LogonRequest;
 import uk.co.instanto.client.service.dto.LogonResponse;
 import uk.co.instanto.integration.service.dto.MyData;
 import uk.co.instanto.integration.service.dto.Organization;

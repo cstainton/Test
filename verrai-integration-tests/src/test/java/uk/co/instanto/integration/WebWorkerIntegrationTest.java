@@ -21,7 +21,7 @@ import uk.co.instanto.integration.service.dto.Organization;
 import uk.co.instanto.integration.service.AuthenticationService;
 import uk.co.instanto.integration.service.AuthenticationService_Stub;
 import uk.co.instanto.integration.service.AuthenticationService_Dispatcher;
-import uk.co.instanto.integration.service.dto.LogonRequest;
+import uk.co.instanto.client.service.dto.LogonRequest;
 import uk.co.instanto.client.service.dto.LogonResponse;
 
 import java.util.HashMap;
