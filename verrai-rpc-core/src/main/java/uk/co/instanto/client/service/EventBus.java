@@ -6,6 +6,7 @@ import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.instanto.client.service.proto.EventPacket;
+import uk.co.instanto.client.service.proto.RpcPacket;
 import dev.verrai.rpc.common.codec.Codec;
 import dev.verrai.rpc.common.transport.Transport;
 
@@ -47,19 +48,49 @@ public class EventBus {
     }
 
     /**
-     * Publish an event to all subscribers.
+     * Publish an event to all subscribers with default GLOBAL scope.
+     */
+    public <T> void publish(T event) {
+        publish(event, Scope.GLOBAL);
+    }
+
+    /**
+     * Publish an event to subscribers within the given scope.
      */
     @SuppressWarnings("unchecked")
-    public <T> void publish(T event) {
+    public <T> void publish(T event, Scope scope) {
         if (event == null) {
             throw new IllegalArgumentException("Event cannot be null");
         }
 
         Class<?> eventClass = event.getClass();
+
+        // 1. Local delivery (fast path)
+        if (scope == Scope.LOCAL || scope == Scope.GLOBAL || scope == Scope.BROWSER || scope == Scope.SESSION) {
+            List<EventHandler<?>> eventHandlers = handlers.get(eventClass.getName());
+            if (eventHandlers != null) {
+                for (EventHandler<?> handler : eventHandlers) {
+                    try {
+                        ((EventHandler<Object>) handler).onEvent(event);
+                    } catch (Exception e) {
+                        logger.error("Error in local event handler for type: {}", eventClass.getName(), e);
+                    }
+                }
+            }
+        }
+
+        // 2. Remote delivery
+        if (scope == Scope.LOCAL) {
+            return;
+        }
+
         Codec<T, ?> codec = (Codec<T, ?>) codecRegistry.get(eventClass);
 
         if (codec == null) {
-            throw new IllegalStateException("No codec registered for event type: " + eventClass.getName());
+             if (scope != Scope.LOCAL) {
+                 throw new IllegalStateException("No codec registered for event type: " + eventClass.getName());
+             }
+             return;
         }
 
         try {
@@ -78,11 +109,20 @@ public class EventBus {
                     .timestamp(System.currentTimeMillis())
                     .build();
 
-            byte[] packetBytes = EventPacket.ADAPTER.encode(packet);
+            byte[] eventPacketBytes = EventPacket.ADAPTER.encode(packet);
+
+            // Wrap in RpcPacket
+            RpcPacket rpcPacket = new RpcPacket.Builder()
+                    .type(RpcPacket.Type.EVENT)
+                    .requestId(UUID.randomUUID().toString())
+                    .payload(ByteString.of(eventPacketBytes))
+                    .build();
+
+            byte[] finalBytes = RpcPacket.ADAPTER.encode(rpcPacket);
 
             // Send via all transports
             for (Transport transport : transports) {
-                transport.send(packetBytes);
+                transport.send(finalBytes);
             }
 
             logger.debug("Published event: {} from {}", eventClass.getSimpleName(), publisherId);
@@ -107,7 +147,15 @@ public class EventBus {
     @SuppressWarnings("unchecked")
     private void handleIncomingBytes(byte[] bytes) {
         try {
-            EventPacket packet = EventPacket.ADAPTER.decode(bytes);
+            // Decode as RpcPacket first
+            RpcPacket rpcPacket = RpcPacket.ADAPTER.decode(bytes);
+
+            // Only process EVENT packets
+            if (rpcPacket.type != RpcPacket.Type.EVENT) {
+                return;
+            }
+
+            EventPacket packet = EventPacket.ADAPTER.decode(rpcPacket.payload);
 
             // Don't process our own events (optional - could be configurable)
             if (publisherId.equals(packet.publisherId)) {

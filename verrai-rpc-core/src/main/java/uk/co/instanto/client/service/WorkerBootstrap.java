@@ -35,7 +35,7 @@ public class WorkerBootstrap {
                 return;
             }
 
-            Object service = ServiceRegistry.getLocalService(packet.serviceId);
+            Object service = UnitRegistry.getLocalService(packet.serviceId);
             if (service == null) {
                 logger.warn("Service implementation not found: {}", packet.serviceId);
                 return;

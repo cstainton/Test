@@ -14,10 +14,15 @@ import uk.co.instanto.client.service.RpcClient;
 import uk.co.instanto.client.service.UnitRegistry;
 import uk.co.instanto.client.service.WorkerBootstrap;
 import uk.co.instanto.client.service.transport.StompTransport;
+import uk.co.instanto.integration.service.AuthenticationService;
+import uk.co.instanto.integration.service.AuthenticationService_Dispatcher;
+import uk.co.instanto.integration.service.AuthenticationService_Stub;
 import uk.co.instanto.integration.service.MyDataService;
 import uk.co.instanto.integration.service.MyDataService_Dispatcher;
 import uk.co.instanto.integration.service.MyDataService_Stub;
 import uk.co.instanto.integration.service.dto.Employee;
+import uk.co.instanto.client.service.dto.LogonRequest;
+import uk.co.instanto.client.service.dto.LogonResponse;
 import uk.co.instanto.integration.service.dto.MyData;
 import uk.co.instanto.integration.service.dto.Organization;
 import uk.co.instanto.integration.support.TestStompClient;
@@ -63,35 +68,52 @@ public class ActiveMQIntegrationTest {
     }
 
     @Test
-    public void testEndToEndRpcOverStomp() throws InterruptedException {
+    public void testDynamicEndpointDiscovery() throws InterruptedException {
         String host = activeMq.getHost();
         Integer port = activeMq.getMappedPort(61613);
 
         logger.info("ActiveMQ started at {}:{}", host, port);
 
         // Define queues
-        String requestQueue = "/queue/rpc.request";
-        String responseQueue = "/queue/rpc.response";
+        String publicAuthQueue = "/queue/auth.public";
+        String secureDataQueue = "/queue/data.secure";
 
         // --- 1. Setup Service Provider (Worker Side) ---
         providerClient = new TestStompClient(host, port, "admin", "admin");
         providerClient.connect();
 
-        // Worker listens on requestQueue, sends responses to responseQueue
-        StompTransport workerTransport = new StompTransport(providerClient, responseQueue, requestQueue);
-        WorkerBootstrap worker = new WorkerBootstrap(workerTransport);
-        worker.registerDispatcher("uk.co.instanto.integration.service.MyDataService", new MyDataService_Dispatcher());
+        // Worker: Public Auth Service
+        StompTransport authTransport = new StompTransport(providerClient, "/queue/rpc.response.auth", publicAuthQueue);
+        WorkerBootstrap authWorker = new WorkerBootstrap(authTransport);
+        authWorker.registerDispatcher(AuthenticationService.class.getName(), new AuthenticationService_Dispatcher());
 
-        // Register Implementation
+        // Register Auth Implementation
+        AuthenticationService authImpl = new AuthenticationService() {
+            @Override
+            public AsyncResult<LogonResponse> login(LogonRequest request) {
+                logger.info("AuthWorker received login: user={}", request.getUsername());
+                AsyncResultImpl<LogonResponse> res = new AsyncResultImpl<>();
+                // Return the secure data queue address
+                res.complete(new LogonResponse("token-" + request.getUsername(), secureDataQueue));
+                return res;
+            }
+        };
+        UnitRegistry.register(AuthenticationService.class.getName(), authImpl);
+
+
+        // Worker: Secure Data Service (Simulated Secure Endpoint)
+        // In reality, this might be on a different topic or require specific headers.
+        StompTransport dataTransport = new StompTransport(providerClient, "/queue/rpc.response.data", secureDataQueue);
+        WorkerBootstrap dataWorker = new WorkerBootstrap(dataTransport);
+        dataWorker.registerDispatcher(MyDataService.class.getName(), new MyDataService_Dispatcher());
+
+        // Register Data Implementation
         AtomicReference<MyData> receivedData = new AtomicReference<>();
-        AtomicBoolean methodCalled = new AtomicBoolean(false);
-
-        MyDataService impl = new MyDataService() {
+        MyDataService dataImpl = new MyDataService() {
             @Override
             public AsyncResult<Void> processData(MyData data) {
-                logger.info("Worker received call: processData({})", data != null ? data.getContent() : "null");
+                logger.info("DataWorker received call: processData({})", data != null ? data.getContent() : "null");
                 receivedData.set(data);
-                methodCalled.set(true);
                 AsyncResultImpl<Void> res = new AsyncResultImpl<>();
                 res.complete(null);
                 return res;
@@ -102,44 +124,63 @@ public class ActiveMQIntegrationTest {
                 return null;
             }
         };
-        UnitRegistry.register("uk.co.instanto.integration.service.MyDataService", impl);
+        UnitRegistry.register(MyDataService.class.getName(), dataImpl);
+
 
         // --- 2. Setup Client (Caller Side) ---
         consumerClient = new TestStompClient(host, port, "admin", "admin");
         consumerClient.connect();
 
-        // Client sends requests to requestQueue, listens on responseQueue
-        StompTransport clientTransport = new StompTransport(consumerClient, requestQueue, responseQueue);
-        // Register remote service location
-        UnitRegistry.getInstance().registerRemote(MyDataService.class.getName(), "activemq-node", clientTransport);
+        // A. Initial "Public" Connection to Auth Service
+        StompTransport publicClientTransport = new StompTransport(consumerClient, publicAuthQueue, "/queue/rpc.response.auth");
+        // Register remote Auth Service
+        UnitRegistry.getInstance().registerRemote(AuthenticationService.class.getName(), "auth-node", publicClientTransport);
 
-        MyDataService serviceProxy = new MyDataService_Stub();
+        AuthenticationService authProxy = new AuthenticationService_Stub();
 
-        // --- 3. Invoke ---
-        MyData input = new MyData();
-        input.setId("integration-test-id");
-        input.setContent("Hello ActiveMQ!");
-
-        logger.info("Client calling processData...");
+        // Call Login
+        LogonRequest loginReq = new LogonRequest("testuser", "password");
+        logger.info("Client calling login...");
         CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<String> secureEndpoint = new AtomicReference<>();
 
-        // Call service
-        serviceProxy.processData(input).thenAccept(v -> {
-            logger.info("Client received RPC response (Void).");
+        authProxy.login(loginReq).thenAccept(response -> {
+            logger.info("Client received LogonResponse: endpoint={}", response.getStompAddress());
+            secureEndpoint.set(response.getStompAddress());
             latch.countDown();
         });
 
-        // --- 4. Verify ---
-        boolean completed = latch.await(15, TimeUnit.SECONDS);
+        assertTrue("Login should complete", latch.await(10, TimeUnit.SECONDS));
+        assertNotNull("Secure endpoint should be returned", secureEndpoint.get());
+        assertEquals(secureDataQueue, secureEndpoint.get());
 
-        if (!completed) {
-            logger.error("RPC call timed out!");
-        }
-        assertTrue("RPC call should complete within timeout", completed);
 
-        assertTrue("Service method should have been called", methodCalled.get());
-        assertNotNull("Worker should have received data object", receivedData.get());
-        assertEquals("Hello ActiveMQ!", receivedData.get().getContent());
-        assertEquals("integration-test-id", receivedData.get().getId());
+        // B. "Secure" Connection to Data Service using the discovered endpoint
+        // Disconnect public transport if needed, or just create a new one.
+        // In a real browser, we might reconnect or subscribe to new topic.
+        // Here, we create a new Transport instance pointing to the new destination.
+
+        StompTransport secureClientTransport = new StompTransport(consumerClient, secureEndpoint.get(), "/queue/rpc.response.data");
+        // Register remote Data Service on this new transport
+        UnitRegistry.getInstance().registerRemote(MyDataService.class.getName(), "data-node", secureClientTransport);
+
+        MyDataService dataProxy = new MyDataService_Stub();
+
+        // Call Data Service
+        MyData input = new MyData();
+        input.setId("secure-123");
+        input.setContent("Secret Data");
+
+        logger.info("Client calling processData on secure endpoint...");
+        CountDownLatch dataLatch = new CountDownLatch(1);
+
+        dataProxy.processData(input).thenAccept(v -> {
+            logger.info("Client received Data response.");
+            dataLatch.countDown();
+        });
+
+        assertTrue("Data call should complete", dataLatch.await(10, TimeUnit.SECONDS));
+        assertNotNull("Worker should have received data", receivedData.get());
+        assertEquals("Secret Data", receivedData.get().getContent());
     }
 }

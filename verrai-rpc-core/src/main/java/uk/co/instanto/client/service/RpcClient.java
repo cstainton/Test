@@ -1,34 +1,29 @@
 package uk.co.instanto.client.service;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.squareup.wire.Message;
-
-import okio.ByteString;
-import uk.co.instanto.client.service.proto.RpcPacket;
-import dev.verrai.rpc.common.codec.Codec;
 import dev.verrai.rpc.common.transport.Transport;
+import dev.verrai.rpc.common.codec.Codec;
+import uk.co.instanto.client.service.proto.RpcPacket;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RpcClient {
-    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
 
     private final Transport transport;
     private final String replyTo;
-    private final Map<Class<?>, Codec<?, ?>> codecRegistry = new HashMap<>();
-    private final Map<String, CompletableFuture<byte[]>> pendingRequests = new ConcurrentHashMap<>();
+
+    private dev.verrai.rpc.common.serialization.Serializer serializer = new dev.verrai.rpc.common.serialization.ProtobufSerializer();
+
+    private final Map<String, RpcResponseFuture> pendingRequests = new ConcurrentHashMap<>();
+    private final Map<String, AsyncStreamResultImpl<?>> pendingStreams = new ConcurrentHashMap<>();
+    private final Map<String, String> defaultHeaders = new HashMap<>();
 
     public RpcClient(Transport transport) {
-        this(transport, "");
+        this(transport, null);
     }
 
     public RpcClient(Transport transport, String replyTo) {
@@ -37,121 +32,249 @@ public class RpcClient {
         this.transport.addMessageHandler(this::handleIncomingBytes);
     }
 
-    public <P, W extends Message<W, ?>> void registerCodec(Class<P> pojoClass, Codec<P, W> codec) {
-        codecRegistry.put(pojoClass, codec);
+    public void setSerializer(dev.verrai.rpc.common.serialization.Serializer serializer) {
+        this.serializer = serializer;
     }
 
-    private void handleIncomingBytes(byte[] bytes) {
+    public dev.verrai.rpc.common.serialization.Serializer getSerializer() {
+        return this.serializer;
+    }
+
+    public <T> void registerCodec(Class<T> type, Codec<T, ?> codec) {
+        serializer.register(type, codec);
+    }
+
+    public void setDefaultHeader(String key, String value) {
+        this.defaultHeaders.put(key, value);
+    }
+
+    private void handleIncomingBytes(byte[] data) {
         try {
-            RpcPacket packet = RpcPacket.ADAPTER.decode(bytes);
+            RpcPacket packet = RpcPacket.ADAPTER.decode(data);
+
             if (packet.type == RpcPacket.Type.RESPONSE) {
-                logger.debug("Received RESPONSE for requestId: {}", packet.requestId);
-                CompletableFuture<byte[]> future = pendingRequests.remove(packet.requestId);
+                RpcResponseFuture future = pendingRequests.remove(packet.requestId);
                 if (future != null) {
                     future.complete(packet.payload.toByteArray());
-                } else {
-                    logger.warn("Received RESPONSE for unknown requestId: {}", packet.requestId);
                 }
             } else if (packet.type == RpcPacket.Type.ERROR) {
-                logger.debug("Received ERROR for requestId: {}", packet.requestId);
-                CompletableFuture<byte[]> future = pendingRequests.remove(packet.requestId);
+                RpcResponseFuture future = pendingRequests.remove(packet.requestId);
                 if (future != null) {
-                    future.completeExceptionally(new RuntimeException(packet.payload.utf8()));
-                } else {
-                    logger.warn("Received ERROR for unknown requestId: {}", packet.requestId);
+                    String errorMsg = packet.payload.utf8();
+                    future.completeExceptionally(new RuntimeException(errorMsg));
                 }
-            } else {
-                logger.debug("Received RPC packet of type: {}", packet.type);
+            } else if (packet.type == RpcPacket.Type.STREAM_ERROR) {
+                RpcResponseFuture future = pendingRequests.remove(packet.requestId);
+                if (future != null) {
+                    String errorMsg = packet.payload.utf8();
+                    future.completeExceptionally(new RuntimeException(errorMsg));
+                }
+                AsyncStreamResultImpl<?> stream = pendingStreams.get(packet.requestId); // assuming requestId ==
+                                                                                        // streamId
+                if (stream != null) {
+                    stream.onError(new RuntimeException(packet.payload.utf8()));
+                    pendingStreams.remove(packet.requestId);
+                }
+            } else if (packet.type == RpcPacket.Type.STREAM_DATA) {
+                AsyncStreamResultImpl<?> stream = pendingStreams.get(packet.requestId);
+                if (stream != null) {
+                    stream.onNextBytes(packet.payload.toByteArray());
+                }
+            } else if (packet.type == RpcPacket.Type.STREAM_COMPLETE) {
+                AsyncStreamResultImpl<?> stream = pendingStreams.remove(packet.requestId);
+                if (stream != null) {
+                    stream.onComplete();
+                }
             }
         } catch (Exception e) {
-            // Ignore if not an RpcPacket or other error
+            e.printStackTrace();
         }
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T create(Class<T> serviceInterface) {
-        // Try to automatically register codecs for method parameters and returns
-        for (Method method : serviceInterface.getMethods()) {
-            for (Class<?> paramType : method.getParameterTypes()) {
-                registerCodecIfPossible(paramType);
-            }
-            registerCodecIfPossible(method.getReturnType());
-        }
+    public <T> AsyncResult<T> invokeStub(String serviceId, String methodId, Object[] args) {
+        Object requestDto = args[0];
+        byte[] payload = serializer.encode(requestDto);
 
-        return (T) Proxy.newProxyInstance(
-                serviceInterface.getClassLoader(),
-                new Class<?>[] { serviceInterface },
-                new ServiceInvocationHandler(serviceInterface));
-    }
-
-    private void registerCodecIfPossible(Class<?> type) {
-        if (type == void.class || type.isPrimitive() || type == String.class || type == byte[].class)
-            return;
-        if (codecRegistry.containsKey(type))
-            return;
-        try {
-            String codecClassName = type.getName() + "Codec";
-            Class<?> codecClass = Class.forName(codecClassName);
-            Codec<?, ?> codec = (Codec<?, ?>) codecClass.getDeclaredConstructor().newInstance();
-            codecRegistry.put(type, codec);
-        } catch (Exception e) {
-            // Probably no codec found, ignore
-        }
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Object invokeStub(String serviceId, String methodName, Object[] args) {
-        ByteString payload = ByteString.EMPTY;
-        if (args != null && args.length > 0) {
-            Object arg = args[0];
-            if (arg instanceof Message) {
-                payload = ByteString.of(((Message<?, ?>) arg).encode());
-            } else if (arg instanceof byte[]) {
-                payload = ByteString.of((byte[]) arg);
-            } else if (codecRegistry.containsKey(arg.getClass())) {
-                Codec codec = codecRegistry.get(arg.getClass());
-                Message wireMsg = (Message) codec.toWire(arg);
-                payload = ByteString.of(codec.getWireAdapter().encode(wireMsg));
-            } else {
-                // For now, support only Wire Messages or raw bytes or registered POJOs
-                logger.error("Unsupported argument type: {}", arg.getClass());
-            }
-        }
-
-        String requestId = UUID.randomUUID().toString();
-        RpcPacket packet = new RpcPacket.Builder()
-                .type(RpcPacket.Type.REQUEST)
+        String requestId = java.util.UUID.randomUUID().toString();
+        RpcPacket.Builder builder = new RpcPacket.Builder()
                 .serviceId(serviceId)
-                .methodName(methodName)
+                .methodName(methodId)
                 .requestId(requestId)
-                .replyTo(replyTo)
-                .payload(payload)
-                .build();
+                .payload(okio.ByteString.of(payload))
+                .replyTo(replyTo != null ? replyTo : "")
+                .type(RpcPacket.Type.REQUEST);
 
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
+            builder.headers = defaultHeaders;
+        }
+
+        RpcPacket packet = builder.build();
+
+        RpcResponseFuture future = new RpcResponseFuture();
         pendingRequests.put(requestId, future);
 
-        byte[] bytes = RpcPacket.ADAPTER.encode(packet);
-        transport.send(bytes);
+        transport.send(RpcPacket.ADAPTER.encode(packet));
 
-        try {
-            // Blocking wait for the demo
-            return future.get(10, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            throw new RuntimeException("RPC failed: " + e.getMessage(), e);
-        }
+        return (AsyncResult<T>) future;
     }
 
-    private class ServiceInvocationHandler implements InvocationHandler {
-        private final String serviceId;
+    public void sendStreamRequestN(String requestId, long n) {
+        RpcPacket packet = new RpcPacket.Builder()
+                .type(RpcPacket.Type.STREAM_REQUEST_N)
+                .requestId(requestId)
+                .payload(okio.ByteString.encodeUtf8(String.valueOf(n)))
+                .build();
+        transport.send(RpcPacket.ADAPTER.encode(packet));
+    }
 
-        public ServiceInvocationHandler(Class<?> serviceInterface) {
-            this.serviceId = serviceInterface.getName();
+    @SuppressWarnings("unchecked")
+    public <T> AsyncStreamResult<T> invokeStreamStub(String serviceId, String methodId, Object[] args) {
+        Object requestDto = args[0];
+        byte[] payload = serializer.encode(requestDto);
+
+        String requestId = java.util.UUID.randomUUID().toString();
+        RpcPacket.Builder builder = new RpcPacket.Builder()
+                .serviceId(serviceId)
+                .methodName(methodId)
+                .requestId(requestId)
+                .payload(okio.ByteString.of(payload))
+                .replyTo(replyTo != null ? replyTo : "")
+                .type(RpcPacket.Type.REQUEST);
+
+        if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
+            builder.headers = defaultHeaders;
+        }
+
+        RpcPacket packet = builder.build();
+
+        AsyncStreamResultImpl<T> result = new AsyncStreamResultImpl<>(this, requestId);
+        pendingStreams.put(requestId, result);
+
+        transport.send(RpcPacket.ADAPTER.encode(packet));
+
+        return result;
+    }
+
+    // Inner classes
+    public static class AsyncResultImpl<T> implements AsyncResult<T> {
+        private T result;
+        private Throwable error;
+        private boolean completed;
+        private final List<Consumer<T>> successCallbacks = new ArrayList<>();
+        private final List<Consumer<Throwable>> errorCallbacks = new ArrayList<>();
+
+        public AsyncResultImpl() {
+        }
+
+        public void complete(T value) {
+            if (completed)
+                return;
+            this.result = value;
+            this.completed = true;
+            for (Consumer<T> cb : successCallbacks) {
+                cb.accept(value);
+            }
+            successCallbacks.clear();
+            errorCallbacks.clear();
+        }
+
+        public void completeExceptionally(Throwable ex) {
+            if (completed)
+                return;
+            this.error = ex;
+            this.completed = true;
+            for (Consumer<Throwable> cb : errorCallbacks) {
+                cb.accept(ex);
+            }
+            successCallbacks.clear();
+            errorCallbacks.clear();
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            return invokeStub(serviceId, method.getName(), args);
+        public <U> AsyncResult<U> thenApply(Function<T, U> fn) {
+            AsyncResultImpl<U> next = new AsyncResultImpl<>();
+            if (completed) {
+                if (error != null) {
+                    next.completeExceptionally(error);
+                } else {
+                    try {
+                        next.complete(fn.apply(result));
+                    } catch (Throwable t) {
+                        next.completeExceptionally(t);
+                    }
+                }
+            } else {
+                this.successCallbacks.add(val -> {
+                    try {
+                        next.complete(fn.apply(val));
+                    } catch (Throwable t) {
+                        next.completeExceptionally(t);
+                    }
+                });
+                this.errorCallbacks.add(next::completeExceptionally);
+            }
+            return next;
+        }
+
+        @Override
+        public AsyncResult<Void> thenAccept(Consumer<T> action) {
+            AsyncResultImpl<Void> next = new AsyncResultImpl<>();
+            if (completed) {
+                if (error != null) {
+                    next.completeExceptionally(error);
+                } else {
+                    try {
+                        action.accept(result);
+                        next.complete(null);
+                    } catch (Throwable t) {
+                        next.completeExceptionally(t);
+                    }
+                }
+            } else {
+                this.successCallbacks.add(val -> {
+                    try {
+                        action.accept(val);
+                        next.complete(null);
+                    } catch (Throwable t) {
+                        next.completeExceptionally(t);
+                    }
+                });
+                this.errorCallbacks.add(next::completeExceptionally);
+            }
+            return next;
+        }
+
+        @Override
+        public AsyncResult<T> exceptionally(Function<Throwable, T> fn) {
+            AsyncResultImpl<T> next = new AsyncResultImpl<>();
+            if (completed) {
+                if (error != null) {
+                    try {
+                        next.complete(fn.apply(error));
+                    } catch (Throwable t) {
+                        next.completeExceptionally(t);
+                    }
+                } else {
+                    next.complete(result);
+                }
+            } else {
+                this.successCallbacks.add(next::complete);
+                this.errorCallbacks.add(err -> {
+                    try {
+                        next.complete(fn.apply(err));
+                    } catch (Throwable t) {
+                        next.completeExceptionally(t);
+                    }
+                });
+            }
+            return next;
+        }
+    }
+
+    public static class RpcResponseFuture extends AsyncResultImpl<Object> {
+        public RpcResponseFuture() {
+            super();
         }
     }
 }

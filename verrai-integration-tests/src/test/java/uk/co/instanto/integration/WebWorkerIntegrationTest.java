@@ -18,9 +18,16 @@ import uk.co.instanto.integration.service.MyDataService_Dispatcher;
 import uk.co.instanto.integration.service.dto.MyData;
 import uk.co.instanto.integration.service.dto.Employee;
 import uk.co.instanto.integration.service.dto.Organization;
+import uk.co.instanto.integration.service.AuthenticationService;
+import uk.co.instanto.integration.service.AuthenticationService_Stub;
+import uk.co.instanto.integration.service.AuthenticationService_Dispatcher;
+import uk.co.instanto.client.service.dto.LogonRequest;
+import uk.co.instanto.client.service.dto.LogonResponse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,10 +52,21 @@ public class WebWorkerIntegrationTest {
         MockStompClient broker = new MockStompClient();
 
         // Server Side (JVM)
-        // Uses StompTransport directly connected to Broker
-        StompTransport serverTransport = new StompTransport(broker, "/user/queue/rpc", "/app/rpc");
-        WorkerBootstrap serverBootstrap = new WorkerBootstrap(serverTransport);
-        serverBootstrap.registerDispatcher("uk.co.instanto.integration.service.MyDataService",
+
+        // Public Auth Service
+        // Listens on /queue/auth
+        // Sends responses to /topic/replies
+        StompTransport authTransport = new StompTransport(broker, "/topic/replies", "/queue/auth");
+        WorkerBootstrap authBootstrap = new WorkerBootstrap(authTransport);
+        authBootstrap.registerDispatcher("uk.co.instanto.integration.service.AuthenticationService",
+                new AuthenticationService_Dispatcher());
+
+        // Secure Data Service
+        // Listens on /queue/data
+        // Sends responses to /topic/replies (shared reply topic for simplicity)
+        StompTransport dataTransport = new StompTransport(broker, "/topic/replies", "/queue/data");
+        WorkerBootstrap dataBootstrap = new WorkerBootstrap(dataTransport);
+        dataBootstrap.registerDispatcher("uk.co.instanto.integration.service.MyDataService",
                 new MyDataService_Dispatcher());
 
         // Register Implementation
@@ -67,6 +85,17 @@ public class WebWorkerIntegrationTest {
             }
         });
 
+        UnitRegistry.register("uk.co.instanto.integration.service.AuthenticationService", new AuthenticationService() {
+            @Override
+            public AsyncResult<LogonResponse> login(LogonRequest request) {
+                logger.info("JVM Server received login for: " + request.getUsername());
+                uk.co.instanto.client.service.AsyncResultImpl<LogonResponse> res = new uk.co.instanto.client.service.AsyncResultImpl<>();
+                // Return the secure endpoint address
+                res.complete(new LogonResponse("signed-jwt-token-" + request.getUsername(), "/queue/data"));
+                return res;
+            }
+        });
+
         // --- 2. Client Setup (Simulated WebWorker) ---
 
         // The transport inside the Worker
@@ -79,27 +108,63 @@ public class WebWorkerIntegrationTest {
         new Thread(() -> {
             try {
                 logger.info("[Worker] Starting...");
-                UnitRegistry.getInstance().registerRemote(MyDataService.class.getName(), "simulated-worker-node", workerTransport);
-                MyDataService workerStub = new MyDataService_Stub();
+
+                // 1. Register Public Auth Service
+                UnitRegistry.getInstance().registerRemote(AuthenticationService.class.getName(), "auth-node", workerTransport);
+                AuthenticationService authStub = new AuthenticationService_Stub();
+
+                LogonRequest loginReq = new LogonRequest("user123", "secret");
+                logger.info("[Worker] Calling AuthenticationService.login...");
+
+                AsyncResult<LogonResponse> loginResult = authStub.login(loginReq);
+
+                final CountDownLatch loginLatch = new CountDownLatch(1);
+                final AtomicReference<String> secureEndpoint = new AtomicReference<>();
+
+                loginResult.thenAccept(response -> {
+                    try {
+                        logger.info("[Worker] Login Success! Endpoint: " + response.getStompAddress());
+                        secureEndpoint.set(response.getStompAddress());
+                        loginLatch.countDown();
+                    } catch (Exception e) {
+                        workerError.set(e);
+                        loginLatch.countDown();
+                    }
+                });
+
+                if (!loginLatch.await(5000, TimeUnit.MILLISECONDS)) {
+                     throw new RuntimeException("Login timed out");
+                }
+
+                if (workerError.get() != null) throw workerError.get();
+
+                // 2. Register Secure Data Service using the discovered endpoint
+                // In this test, the Bridge handles routing, so we just use the same transport.
+                // But logically, we have discovered the new address "/queue/data".
+
+                UnitRegistry.getInstance().registerRemote(MyDataService.class.getName(), "data-node", workerTransport);
+                MyDataService dataStub = new MyDataService_Stub();
 
                 MyData req = new MyData();
                 req.setId("worker-1");
                 req.setContent("Hello from Worker");
 
-                logger.info("[Worker] Calling service...");
-                // Note: Integration tests might be using synchronous stub methods if not
-                // updated to AsyncResult?
-                // Checking StompTransportTest passed suggests Stub generation works.
-                // If it returns void, we can't wait for completion easily unless we check side
-                // effects.
-                // Assuming processData is void for now based on previous file view.
+                logger.info("[Worker] Calling MyDataService...");
 
-                workerStub.processData(req);
+                // We need to wait for this too
+                final CountDownLatch dataLatch = new CountDownLatch(1);
+                dataStub.processData(req).thenAccept(v -> {
+                    logger.info("[Worker] MyDataService Call returned.");
+                    dataLatch.countDown();
+                });
 
-                logger.info("[Worker] Call returned (Async/Void).");
+                if (!dataLatch.await(5000, TimeUnit.MILLISECONDS)) {
+                     throw new RuntimeException("Data call timed out");
+                }
+
                 doneLatch.countDown();
 
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
                 workerError.set(e);
                 doneLatch.countDown();
@@ -107,47 +172,10 @@ public class WebWorkerIntegrationTest {
         }, "Worker-Thread").start();
 
         // --- 3. Main Thread Bridge (The Browser Main Thread) ---
-        // This simulates the JS code that bridges postMessage <-> WebSocket/STOMP
 
-        MockStompClient bridgeStompClient = new MockStompClient();
-        // In reality, Main Thread connects to same broker as Server.
-        // Note: MockStompClient is currently isolated instances. We need them to share
-        // state or be the same instance.
-        // Let's use the SAME broker instance for simulated network.
-
-        StompClient bridgeWithNetwork = new ForwardingStompClient(broker);
-        // Actually, StompTransport takes a StompClient.
-        // We need a custom logic to bridge.
-
-        // Subscribe Bridge to Server Responses (/user/queue/rpc for the client)
-        broker.subscribe("/user/queue/rpc", message -> {
-            // Received response from Server via STOMP
-            logger.info("[Bridge] Received STOMP message from Server. Forwarding to Worker.");
-            byte[] payload = message.getBody().getBytes(java.nio.charset.StandardCharsets.UTF_8);
-            // STOMP body is string, but RPC payload is base64 encoded by StompTransport?
-            // Let's check StompTransport implementation.
-            // StompTransport.send() encodes to Base64 String if using Text STOMP?
-            // Or does it send bytes? StompClient.send takes String.
-            // So StompTransport likely encodes to Base64.
-            // RpcClient expects bytes.
-
-            // Wait, StompTransport on the Server side will decode/encode.
-            // Bridge needs to behave like the Browser Stomp Client (stomp.js).
-            // stomp.js receives text.
-
-            // If the packet is Base64 encoded in the STOMP body, we just pass the bytes of
-            // the body?
-            // No, the Worker expects the RAW RPC bytes (Proto).
-            // So if STOMP payload is Base64, Bridge must Decode Base64 -> Bytes -> Worker.
-
-            // Let's assume StompTransport uses Base64.
-            // We need to decode it.
-            // Since we don't have the Base64 utility handy in test, let's verify
-            // assumptions.
-            // StompTransport.java in the codebase:
-            // "client.send(destination, Base64.getEncoder().encodeToString(data));"
-
-            try {
+        // Subscribe Bridge to Server Responses (/topic/replies)
+        broker.subscribe("/topic/replies", message -> {
+             try {
                 byte[] decoded = java.util.Base64.getDecoder().decode(message.getBody());
                 workerTransport.injectIncoming(decoded);
             } catch (Exception e) {
@@ -155,19 +183,16 @@ public class WebWorkerIntegrationTest {
             }
         });
 
-        // Loop to forward Worker -> Server
         long start = System.currentTimeMillis();
-        boolean success = false;
 
-        while (System.currentTimeMillis() - start < 5000) {
+        while (System.currentTimeMillis() - start < 10000) {
             byte[] msg = workerTransport.pollOutgoing(100, TimeUnit.MILLISECONDS);
             if (msg != null) {
-                logger.info("[Bridge] Received bytes from Worker. Wrapping in STOMP and sending to Server.");
-                // Encode bytes -> Base64
                 String base64 = java.util.Base64.getEncoder().encodeToString(msg);
-                // Send to Server destination
-                broker.send("/app/rpc", base64);
-                success = true; // At least we sent something
+
+                // Broadcast to potential service queues
+                broker.send("/queue/auth", base64);
+                broker.send("/queue/data", base64);
             }
             if (doneLatch.getCount() == 0)
                 break;
@@ -177,81 +202,50 @@ public class WebWorkerIntegrationTest {
             throw new RuntimeException("Worker failed", workerError.get());
         }
 
-        // Assert we actually verified the loop
-        // We can't easily verify the server *received* it unless we mock the server
-        // impl with a latch.
-        // Let's update the Server Implementation to countdown too.
+        if (doneLatch.getCount() > 0) {
+             throw new RuntimeException("Test Timed Out - Worker did not finish");
+        }
     }
 
     // --- Helpers ---
-
-    // Simplified Mock Client sharing subscriptions via static or reference?
-    // The MockStompClient in StompTransportTest was isolated.
-    // We need a "Network" (Broker) that both connect to.
-
     private static class MockStompClient implements StompClient {
-        // Shared state for this test instance?
-        // Ideally pass a 'Router' object.
-        private final Map<String, StompSubscriptionCallback> subscriptions = new HashMap<>();
-        // In a real broker, many clients connect.
-        // Here, we act as the Singleton Broker.
-        // But the StompTransport needs a StompClient instance to call.
-        // If we pass the SAME MockStompClient instance to both Server side and Bridge
-        // side,
-        // calling 'send' triggers 'subscriptions' on that instance.
-        // That works for a simple in-memory bus!
+        // Support multiple subscribers per destination for test robustness?
+        // Or just use a List.
+        private final Map<String, List<StompSubscriptionCallback>> subscriptions = new HashMap<>();
 
         @Override
-        public boolean isConnected() {
-            return true;
-        }
+        public boolean isConnected() { return true; }
 
         @Override
         public void send(String destination, String body) {
-            logger.info("[Network] SEND dest={} bodyLen={}", destination, body.length());
-            StompSubscriptionCallback callback = subscriptions.get(destination);
-            if (callback != null) {
-                callback.onMessage(new StompMessage() {
-                    @Override
-                    public String getBody() {
-                        return body;
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        return new HashMap<>();
-                    }
-                });
-            } else {
-                logger.warn("[Network] No subscribers for {}", destination);
+            logger.info("MockStompClient SEND dest={}", destination);
+            List<StompSubscriptionCallback> callbacks = subscriptions.get(destination);
+            if (callbacks != null) {
+                for (StompSubscriptionCallback cb : callbacks) {
+                    cb.onMessage(new StompMessage() {
+                        @Override public String getBody() { return body; }
+                        @Override public Map<String, String> getHeaders() {
+                            Map<String, String> h = new HashMap<>();
+                            h.put("destination", destination);
+                            return h;
+                        }
+                    });
+                }
             }
         }
 
         @Override
         public void subscribe(String destination, StompSubscriptionCallback callback) {
-            logger.info("[Network] SUBSCRIBE dest={}", destination);
-            subscriptions.put(destination, callback);
+            logger.info("MockStompClient SUBSCRIBE dest={}", destination);
+            subscriptions.computeIfAbsent(destination, k -> new ArrayList<>()).add(callback);
         }
     }
 
     private static class ForwardingStompClient implements StompClient {
         private final MockStompClient delegate;
-
-        public ForwardingStompClient(MockStompClient delegate) {
-            this.delegate = delegate;
-        }
-
-        public boolean isConnected() {
-            return true;
-        }
-
-        public void send(String d, String b) {
-            delegate.send(d, b);
-        }
-
-        public void subscribe(String d, StompSubscriptionCallback c) {
-            delegate.subscribe(d, c);
-        }
+        public ForwardingStompClient(MockStompClient delegate) { this.delegate = delegate; }
+        public boolean isConnected() { return true; }
+        public void send(String d, String b) { delegate.send(d, b); }
+        public void subscribe(String d, StompSubscriptionCallback c) { delegate.subscribe(d, c); }
     }
-
 }

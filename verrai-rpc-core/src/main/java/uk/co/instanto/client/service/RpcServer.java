@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 public class RpcServer {
     private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
     private final Transport transport;
-    private final ServiceRegistry registry;
+    private final UnitRegistry registry;
     private final Map<String, ServiceDispatcher> dispatchers = new HashMap<>();
 
-    public RpcServer(Transport transport, ServiceRegistry registry) {
+    public RpcServer(Transport transport, UnitRegistry registry) {
         this.transport = transport;
         this.registry = registry;
         this.transport.addMessageHandler(this::handleIncomingBytes);
