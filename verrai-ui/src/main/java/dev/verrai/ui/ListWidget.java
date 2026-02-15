@@ -18,26 +18,43 @@ public abstract class ListWidget<M, W extends IsWidget & HasModel<M>> extends Wi
     public Provider<W> itemWidgetProvider;
 
     private List<M> items = new ArrayList<>();
+    private final List<W> activeWidgets = new ArrayList<>();
 
     public ListWidget() {
         this("ul");
     }
 
     public ListWidget(String tagName) {
-        this.listElement = Window.current().getDocument().createElement(tagName);
+        this.listElement = createListElement(tagName);
         this.element = this.listElement;
+    }
+
+    protected HTMLElement createListElement(String tagName) {
+        return Window.current().getDocument().createElement(tagName);
     }
 
     @Override
     public void setValue(List<M> value) {
         this.items = value;
-        listElement.setInnerText(""); // Clear DOM
-        if (value != null) {
-            for (M item : value) {
-                W widget = itemWidgetProvider.get();
-                widget.setModel(item);
+        List<M> listToRender = value != null ? value : new ArrayList<>();
+
+        int index = 0;
+        for (M item : listToRender) {
+            W widget;
+            if (index < activeWidgets.size()) {
+                widget = activeWidgets.get(index);
+            } else {
+                widget = itemWidgetProvider.get();
+                activeWidgets.add(widget);
                 listElement.appendChild(widget.getElement());
             }
+            widget.setModel(item);
+            index++;
+        }
+
+        while (activeWidgets.size() > listToRender.size()) {
+            W widget = activeWidgets.remove(activeWidgets.size() - 1);
+            listElement.removeChild(widget.getElement());
         }
     }
 
