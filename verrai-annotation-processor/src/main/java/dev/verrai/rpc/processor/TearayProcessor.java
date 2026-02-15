@@ -31,8 +31,10 @@ public class TearayProcessor extends AbstractProcessor {
     private final ServiceGenerator serviceGenerator = new ServiceGenerator();
     private final JsonCodecGenerator jsonCodecGenerator = new JsonCodecGenerator();
     private WireGenerator wireGenerator;
+    private CodecRegistryGenerator codecRegistryGenerator;
     private Filer filer;
     private Messager messager;
+    private final Set<String> generatedLoaders = new HashSet<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -41,10 +43,15 @@ public class TearayProcessor extends AbstractProcessor {
         this.filer = processingEnv.getFiler();
         this.messager = processingEnv.getMessager();
         this.wireGenerator = new WireGenerator(processingEnv);
+        this.codecRegistryGenerator = new CodecRegistryGenerator(processingEnv.getFiler());
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        if (roundEnv.processingOver()) {
+            generateServiceFile();
+            return false;
+        }
 
         try {
             Set<Element> portableElements = new HashSet<>();
@@ -74,6 +81,18 @@ public class TearayProcessor extends AbstractProcessor {
                         jsonCodecFile.writeTo(filer);
                     }
                 }
+
+                // Generate CodecLoader for this batch
+                Set<TypeElement> portableTypeElements = new HashSet<>();
+                for (Element element : portableElements) {
+                    if (element instanceof TypeElement) {
+                        portableTypeElements.add((TypeElement) element);
+                    }
+                }
+                String loaderName = codecRegistryGenerator.generate(portableTypeElements);
+                if (loaderName != null) {
+                    generatedLoaders.add(loaderName);
+                }
             }
 
             // 4. Generate Services (Stubs/Dispatchers)
@@ -97,6 +116,21 @@ public class TearayProcessor extends AbstractProcessor {
         }
 
         return true;
+    }
+
+    private void generateServiceFile() {
+        if (generatedLoaders.isEmpty()) return;
+        try {
+            String path = "META-INF/services/dev.verrai.rpc.common.serialization.CodecLoader";
+            javax.tools.FileObject file = filer.createResource(javax.tools.StandardLocation.CLASS_OUTPUT, "", path);
+            try (java.io.Writer writer = file.openWriter()) {
+                for (String loader : generatedLoaders) {
+                    writer.write(loader + "\n");
+                }
+            }
+        } catch (IOException e) {
+            messager.printMessage(Diagnostic.Kind.ERROR, "Error generating service file: " + e.getMessage());
+        }
     }
 
     private void generateProto(TypeElement typeElement) throws IOException {
