@@ -2,7 +2,6 @@ package uk.co.instanto.client.service;
 
 import dev.verrai.rpc.common.transport.Transport;
 import dev.verrai.rpc.common.codec.Codec;
-import uk.co.instanto.client.service.proto.RpcPacket;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -50,20 +49,20 @@ public class RpcClient {
 
     private void handleIncomingBytes(byte[] data) {
         try {
-            RpcPacket packet = RpcPacket.ADAPTER.decode(data);
+            uk.co.instanto.client.service.proto.RpcPacket packet = uk.co.instanto.client.service.proto.RpcPacket.ADAPTER.decode(data);
 
-            if (packet.type == RpcPacket.Type.RESPONSE) {
+            if (packet.type == uk.co.instanto.client.service.proto.RpcPacket.Type.RESPONSE) {
                 RpcResponseFuture future = pendingRequests.remove(packet.requestId);
                 if (future != null) {
                     future.complete(packet.payload.toByteArray());
                 }
-            } else if (packet.type == RpcPacket.Type.ERROR) {
+            } else if (packet.type == uk.co.instanto.client.service.proto.RpcPacket.Type.ERROR) {
                 RpcResponseFuture future = pendingRequests.remove(packet.requestId);
                 if (future != null) {
                     String errorMsg = packet.payload.utf8();
                     future.completeExceptionally(new RuntimeException(errorMsg));
                 }
-            } else if (packet.type == RpcPacket.Type.STREAM_ERROR) {
+            } else if (packet.type == uk.co.instanto.client.service.proto.RpcPacket.Type.STREAM_ERROR) {
                 RpcResponseFuture future = pendingRequests.remove(packet.requestId);
                 if (future != null) {
                     String errorMsg = packet.payload.utf8();
@@ -75,12 +74,12 @@ public class RpcClient {
                     stream.onError(new RuntimeException(packet.payload.utf8()));
                     pendingStreams.remove(packet.requestId);
                 }
-            } else if (packet.type == RpcPacket.Type.STREAM_DATA) {
+            } else if (packet.type == uk.co.instanto.client.service.proto.RpcPacket.Type.STREAM_DATA) {
                 AsyncStreamResultImpl<?> stream = pendingStreams.get(packet.requestId);
                 if (stream != null) {
                     stream.onNextBytes(packet.payload.toByteArray());
                 }
-            } else if (packet.type == RpcPacket.Type.STREAM_COMPLETE) {
+            } else if (packet.type == uk.co.instanto.client.service.proto.RpcPacket.Type.STREAM_COMPLETE) {
                 AsyncStreamResultImpl<?> stream = pendingStreams.remove(packet.requestId);
                 if (stream != null) {
                     stream.onComplete();
@@ -97,35 +96,35 @@ public class RpcClient {
         byte[] payload = serializer.encode(requestDto);
 
         String requestId = java.util.UUID.randomUUID().toString();
-        RpcPacket.Builder builder = new RpcPacket.Builder()
+        uk.co.instanto.client.service.proto.RpcPacket.Builder builder = new uk.co.instanto.client.service.proto.RpcPacket.Builder()
                 .serviceId(serviceId)
                 .methodName(methodId)
                 .requestId(requestId)
                 .payload(okio.ByteString.of(payload))
                 .replyTo(replyTo != null ? replyTo : "")
-                .type(RpcPacket.Type.REQUEST);
+                .type(uk.co.instanto.client.service.proto.RpcPacket.Type.REQUEST);
 
         if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
             builder.headers = defaultHeaders;
         }
 
-        RpcPacket packet = builder.build();
+        uk.co.instanto.client.service.proto.RpcPacket packet = builder.build();
 
         RpcResponseFuture future = new RpcResponseFuture();
         pendingRequests.put(requestId, future);
 
-        transport.send(RpcPacket.ADAPTER.encode(packet));
+        transport.send(uk.co.instanto.client.service.proto.RpcPacket.ADAPTER.encode(packet));
 
         return (AsyncResult<T>) future;
     }
 
     public void sendStreamRequestN(String requestId, long n) {
-        RpcPacket packet = new RpcPacket.Builder()
-                .type(RpcPacket.Type.STREAM_REQUEST_N)
+        uk.co.instanto.client.service.proto.RpcPacket packet = new uk.co.instanto.client.service.proto.RpcPacket.Builder()
+                .type(uk.co.instanto.client.service.proto.RpcPacket.Type.STREAM_REQUEST_N)
                 .requestId(requestId)
                 .payload(okio.ByteString.encodeUtf8(String.valueOf(n)))
                 .build();
-        transport.send(RpcPacket.ADAPTER.encode(packet));
+        transport.send(uk.co.instanto.client.service.proto.RpcPacket.ADAPTER.encode(packet));
     }
 
     @SuppressWarnings("unchecked")
@@ -134,24 +133,24 @@ public class RpcClient {
         byte[] payload = serializer.encode(requestDto);
 
         String requestId = java.util.UUID.randomUUID().toString();
-        RpcPacket.Builder builder = new RpcPacket.Builder()
+        uk.co.instanto.client.service.proto.RpcPacket.Builder builder = new uk.co.instanto.client.service.proto.RpcPacket.Builder()
                 .serviceId(serviceId)
                 .methodName(methodId)
                 .requestId(requestId)
                 .payload(okio.ByteString.of(payload))
                 .replyTo(replyTo != null ? replyTo : "")
-                .type(RpcPacket.Type.REQUEST);
+                .type(uk.co.instanto.client.service.proto.RpcPacket.Type.REQUEST);
 
         if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
             builder.headers = defaultHeaders;
         }
 
-        RpcPacket packet = builder.build();
+        uk.co.instanto.client.service.proto.RpcPacket packet = builder.build();
 
         AsyncStreamResultImpl<T> result = new AsyncStreamResultImpl<>(this, requestId);
         pendingStreams.put(requestId, result);
 
-        transport.send(RpcPacket.ADAPTER.encode(packet));
+        transport.send(uk.co.instanto.client.service.proto.RpcPacket.ADAPTER.encode(packet));
 
         return result;
     }

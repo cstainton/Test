@@ -34,7 +34,6 @@ public class TearayProcessor extends AbstractProcessor {
     private final JsonCodecGenerator jsonCodecGenerator = new JsonCodecGenerator();
     private CodecRegistryGenerator codecRegistryGenerator;
     private WireGenerator wireGenerator;
-    private CodecRegistryGenerator codecRegistryGenerator;
     private Filer filer;
     private Messager messager;
     private final Set<String> generatedLoaders = new HashSet<>();
