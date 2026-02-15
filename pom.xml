@@ -81,17 +81,6 @@
     </dependencies>
   </dependencyManagement>
 
-  <repositories>
-    <repository>
-      <id>tos-releases</id>
-      <url>https://artifacts.tonofstain.co.uk/repository/tos-releases</url>
-    </repository>
-    <repository>
-      <id>tos-snapshots</id>
-      <url>https://artifacts.tonofstain.co.uk/repository/tos-snapshots</url>
-    </repository>
-  </repositories>
-
   <build>
     <pluginManagement>
       <plugins>
