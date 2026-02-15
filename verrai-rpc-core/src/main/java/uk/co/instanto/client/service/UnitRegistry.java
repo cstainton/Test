@@ -430,4 +430,24 @@ public class UnitRegistry {
         // We should also invalidate stubs if needed, but for now simple removal
         // suffices
     }
+
+    public void reset() {
+        localServices.clear();
+        serviceToNode.clear();
+        nodeToTransport.clear();
+        lastHeartbeats.clear();
+        localNodeId = null;
+        transportResolver = null;
+        factories.clear();
+        serviceStubs.clear();
+        nodeClients.clear();
+        synchronized (pendingCallbacks) {
+            pendingCallbacks.clear();
+        }
+        discoveryService = null;
+        eventBus = null;
+        serializer = null;
+        defaultHeaders.clear();
+        rpcServer = null;
+    }
 }
