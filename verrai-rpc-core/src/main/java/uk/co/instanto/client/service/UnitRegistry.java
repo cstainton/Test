@@ -7,9 +7,12 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UnitRegistry {
     private static final UnitRegistry INSTANCE = new UnitRegistry();
+    private static final Logger logger = LoggerFactory.getLogger(UnitRegistry.class);
 
     private final Map<String, Object> localServices = new HashMap<>();
 
@@ -275,7 +278,7 @@ public class UnitRegistry {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Error processing pending callbacks for service: {}", serviceId, e);
             }
         }
     }
@@ -417,7 +420,7 @@ public class UnitRegistry {
         }
 
         for (String nodeId : staleNodes) {
-            System.out.println("Cleaning up stale node: " + nodeId);
+            logger.info("Cleaning up stale node: {}", nodeId);
             removeNode(nodeId);
         }
     }
