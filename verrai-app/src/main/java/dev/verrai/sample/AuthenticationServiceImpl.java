@@ -9,7 +9,6 @@ import org.teavm.jso.JSBody;
 import org.teavm.jso.JSObject;
 import org.teavm.jso.JSFunctor;
 
-@Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override

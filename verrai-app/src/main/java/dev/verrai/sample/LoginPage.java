@@ -108,14 +108,7 @@ public class LoginPage {
         UnitRegistry.getInstance().registerRemote(AuthenticationService.class.getName(), "auth-worker", debugTransport);
 
         // Register Factory manually as it might not be picked up by Bootstrapper for interfaces in the same module
-        try {
-            Class<?> factoryClass = Class.forName("dev.verrai.sample.AuthenticationService_Factory");
-            Object factory = factoryClass.newInstance();
-            UnitRegistry.getInstance().registerFactory(AuthenticationService.class, (uk.co.instanto.client.service.ServiceFactory) factory);
-        } catch (Exception e) {
-             System.out.println("Failed to register factory: " + e.getMessage());
-             e.printStackTrace();
-        }
+        UnitRegistry.getInstance().registerFactory(AuthenticationService.class, new AuthenticationService_Factory());
     }
 
     @org.teavm.jso.JSBody(params = "url", script = "return new Worker(url);")
