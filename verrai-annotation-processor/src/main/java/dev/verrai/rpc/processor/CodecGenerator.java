@@ -193,20 +193,13 @@ public class CodecGenerator {
             javax.lang.model.element.TypeElement typeElement = (javax.lang.model.element.TypeElement) ((javax.lang.model.type.DeclaredType) typeMirror)
                     .asElement();
 
-            // This logic is slightly flawed for inner enums where enclosing is not package
-            // Find package
-            Element enclosing = typeElement.getEnclosingElement();
-            while (enclosing.getKind() != ElementKind.PACKAGE) {
-                enclosing = enclosing.getEnclosingElement();
-            }
-            String packageName = ((javax.lang.model.element.PackageElement) enclosing).getQualifiedName().toString();
+            ClassName original = ClassName.get(typeElement);
+            String newPackage = original.packageName() + ".proto";
+            List<String> simpleNames = original.simpleNames();
+            ClassName wireType = ClassName.get(newPackage, simpleNames.get(0),
+                    simpleNames.subList(1, simpleNames.size()).toArray(new String[0]));
 
-            String simpleName = typeElement.getSimpleName().toString();
-            // reconstruct simple name for nested types? e.g. RpcPacket.Type
-            // For now simple fix: typeMirror.toString() is FQCN. Use replace to inject
-            // .proto
-            String fqcn = typeElement.getQualifiedName().toString();
-            return fqcn.replace(packageName, packageName + ".proto");
+            return wireType.canonicalName();
         }
         return typeMirror.toString();
     }
