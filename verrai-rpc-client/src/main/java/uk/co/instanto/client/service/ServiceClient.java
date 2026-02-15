@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.teavm.jso.JSBody;
 import org.teavm.jso.JSObject;
 import org.teavm.jso.dom.events.MessageEvent;
@@ -19,6 +21,8 @@ import uk.co.instanto.client.service.proto.RpcPacket;
 import dev.verrai.rpc.common.codec.Codec;
 
 public class ServiceClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServiceClient.class);
 
     private final JSObject worker;
     private final Map<Class<?>, Codec<?, ?>> codecRegistry = new HashMap<>();
@@ -53,9 +57,9 @@ public class ServiceClient {
             try {
                 RpcPacket packet = RpcPacket.ADAPTER.decode(bytes);
                 // Handle response...
-                System.out.println("Received RPC response for: " + packet.requestId);
+                logger.debug("Received RPC response for: {}", packet.requestId);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Error processing RPC packet", e);
             }
         }
     }
@@ -95,7 +99,7 @@ public class ServiceClient {
                     payload = ByteString.of(codec.getWireAdapter().encode(wireMsg));
                 } else {
                     // For now, support only Wire Messages or raw bytes or registered POJOs
-                    System.err.println("Unsupported argument type: " + arg.getClass());
+                    logger.error("Unsupported argument type: {}", arg.getClass());
                 }
             }
 
