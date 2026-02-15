@@ -7,9 +7,12 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UnitRegistry {
     private static final UnitRegistry INSTANCE = new UnitRegistry();
+    private static final Logger logger = LoggerFactory.getLogger(UnitRegistry.class);
 
     private final Map<String, Object> localServices = new HashMap<>();
 
@@ -115,18 +118,16 @@ public class UnitRegistry {
     }
 
     private void loadGeneratedCodecs() {
-        // Use ServiceLoader to find all registered CodecLoader implementations.
-        // This avoids manual registration and reflection on hardcoded strings.
-        java.util.ServiceLoader<dev.verrai.rpc.common.serialization.CodecLoader> loader = java.util.ServiceLoader
-                .load(dev.verrai.rpc.common.serialization.CodecLoader.class);
+        try {
+            java.util.ServiceLoader<dev.verrai.rpc.common.serialization.CodecLoader> loader =
+                    java.util.ServiceLoader.load(dev.verrai.rpc.common.serialization.CodecLoader.class);
 
-        for (dev.verrai.rpc.common.serialization.CodecLoader codecLoader : loader) {
-            try {
-                codecLoader.load();
-            } catch (Exception e) {
-                // Log error but continue
-                logger.error("Failed to load codecs from loader: " + codecLoader.getClass().getName(), e);
+            for (dev.verrai.rpc.common.serialization.CodecLoader cl : loader) {
+                cl.load();
             }
+        } catch (Throwable e) {
+            // Log error properly in real app
+            e.printStackTrace();
         }
     }
 
@@ -257,7 +258,7 @@ public class UnitRegistry {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Error processing pending callbacks for service: {}", serviceId, e);
             }
         }
     }
@@ -371,6 +372,10 @@ public class UnitRegistry {
     // Optional RpcServer for handling inbound requests
     private RpcServer rpcServer;
 
+    public RpcServer getRpcServer() {
+        return rpcServer;
+    }
+
     public void initRpcServer(Transport transport) {
         if (this.rpcServer == null) {
             this.rpcServer = new RpcServer(transport, this);
@@ -399,7 +404,7 @@ public class UnitRegistry {
         }
 
         for (String nodeId : staleNodes) {
-            System.out.println("Cleaning up stale node: " + nodeId);
+            logger.info("Cleaning up stale node: {}", nodeId);
             removeNode(nodeId);
         }
     }

@@ -18,8 +18,9 @@ public class EventBus {
 
     public static void fire(Object event) {
         Class<?> eventType = event.getClass();
-        if (observers.containsKey(eventType)) {
-            for (Consumer<Object> observer : observers.get(eventType)) {
+        List<Consumer<Object>> eventObservers = observers.get(eventType);
+        if (eventObservers != null) {
+            for (Consumer<Object> observer : eventObservers) {
                 observer.accept(event);
             }
         }

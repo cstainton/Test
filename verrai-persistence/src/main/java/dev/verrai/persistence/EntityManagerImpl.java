@@ -216,6 +216,73 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     @Override
+    public <T> void findAll(Class<T> type, int offset, int limit, Consumer<List<T>> callback) {
+         execute(db -> {
+            EntityMapper<T> mapper = persistenceUnit.getMapper(type);
+            IDBTransaction tx = db.transaction(mapper.getEntityName(), "readonly");
+            IDBObjectStore store = tx.objectStore(mapper.getEntityName());
+
+            IDBRequest request = store.openCursor();
+            List<T> list = new ArrayList<>();
+            final boolean[] advanced = { offset <= 0 };
+
+            setOnSuccess(request, evt -> {
+                IDBCursor cursor = (IDBCursor) ((IDBRequestResult) (Object) request).getResult();
+                if (cursor != null && !JSObjects.isUndefined(cursor)) {
+                    if (!advanced[0]) {
+                        advanced[0] = true;
+                        advanceCursor(cursor, offset);
+                        return;
+                    }
+
+                    IDBCursorWithValue valueCursor = (IDBCursorWithValue) (Object) cursor;
+                    JSObject value = valueCursor.getValue();
+                    list.add(mapper.fromJSO(value));
+
+                    if (list.size() < limit) {
+                        continueCursor(cursor);
+                    } else {
+                        callback.accept(list);
+                    }
+                } else {
+                    callback.accept(list);
+                }
+            });
+
+             setOnError(request, evt -> {
+                 callback.accept(new ArrayList<>());
+            });
+        });
+    }
+
+    @Override
+    public <T> void forEach(Class<T> type, Consumer<T> consumer, Consumer<Void> onComplete) {
+         execute(db -> {
+            EntityMapper<T> mapper = persistenceUnit.getMapper(type);
+            IDBTransaction tx = db.transaction(mapper.getEntityName(), "readonly");
+            IDBObjectStore store = tx.objectStore(mapper.getEntityName());
+
+            IDBRequest request = store.openCursor();
+
+            setOnSuccess(request, evt -> {
+                IDBCursor cursor = (IDBCursor) ((IDBRequestResult) (Object) request).getResult();
+                if (cursor != null && !JSObjects.isUndefined(cursor)) {
+                    IDBCursorWithValue valueCursor = (IDBCursorWithValue) (Object) cursor;
+                    JSObject value = valueCursor.getValue();
+                    consumer.accept(mapper.fromJSO(value));
+                    continueCursor(cursor);
+                } else {
+                    if (onComplete != null) onComplete.accept(null);
+                }
+            });
+
+             setOnError(request, evt -> {
+                 if (onComplete != null) onComplete.accept(null);
+            });
+        });
+    }
+
+    @Override
     public <T> void merge(T entity) {
         persist(entity);
     }
@@ -238,6 +305,9 @@ public class EntityManagerImpl implements EntityManager {
 
     @JSBody(params = {"autoIncrement"}, script = "return { autoIncrement: autoIncrement };")
     private static native IDBObjectStoreParameters createParams(boolean autoIncrement);
+
+    @JSBody(params = {"cursor", "count"}, script = "cursor.advance(count);")
+    private static native void advanceCursor(IDBCursor cursor, int count);
 
     @JSBody(params = "cursor", script = "cursor.continue();")
     private static native void continueCursor(IDBCursor cursor);

@@ -27,6 +27,10 @@ public class EventBus {
     private final Map<String, List<EventHandler<?>>> handlers = new ConcurrentHashMap<>();
     private final List<Transport> transports = new ArrayList<>();
 
+    // Security registries
+    private final Map<Class<?>, Scope> eventScopes = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Set<String>> authorizedPublishers = new ConcurrentHashMap<>();
+
     public EventBus(String publisherId) {
         this.publisherId = publisherId;
     }
@@ -45,6 +49,24 @@ public class EventBus {
     public <P, W extends Message<W, ?>> void registerCodec(Class<P> eventClass, Codec<P, W> codec) {
         codecRegistry.put(eventClass, codec);
         logger.debug("Registered codec for event type: {}", eventClass.getName());
+    }
+
+    /**
+     * Registers the allowed scope for an event type.
+     * Events marked as LOCAL will be rejected if received from a transport.
+     */
+    public void registerEventScope(Class<?> eventClass, Scope scope) {
+        eventScopes.put(eventClass, scope);
+        logger.debug("Registered scope {} for event type: {}", scope, eventClass.getName());
+    }
+
+    /**
+     * Adds an authorized publisher for a specific event type.
+     * If any publishers are registered for an event type, only those in the list are allowed.
+     */
+    public void addAuthorizedPublisher(Class<?> eventClass, String publisherId) {
+        authorizedPublishers.computeIfAbsent(eventClass, k -> ConcurrentHashMap.newKeySet()).add(publisherId);
+        logger.debug("Authorized publisher {} for event type: {}", publisherId, eventClass.getName());
     }
 
     /**
@@ -172,6 +194,23 @@ public class EventBus {
 
             // Find codec for this event type
             Class<?> eventClass = Class.forName(eventType);
+
+            // SECURITY CHECK: Scope
+            Scope registeredScope = eventScopes.get(eventClass);
+            if (registeredScope == Scope.LOCAL) {
+                logger.warn("Security Alert: Received LOCAL-only event from remote publisher {}. Event: {}", packet.publisherId, eventType);
+                return;
+            }
+
+            // SECURITY CHECK: Authorized Publishers
+            Set<String> allowedPublishers = authorizedPublishers.get(eventClass);
+            if (allowedPublishers != null && !allowedPublishers.isEmpty()) {
+                if (!allowedPublishers.contains(packet.publisherId)) {
+                    logger.warn("Security Alert: Unauthorized publisher {} attempted to publish event: {}", packet.publisherId, eventType);
+                    return;
+                }
+            }
+
             Codec<?, ?> codec = codecRegistry.get(eventClass);
 
             if (codec == null) {

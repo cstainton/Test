@@ -15,12 +15,4 @@ public class SinkNativeTestComponent {
     @DataField
     @SinkNative({"click", "mouseover"})
     public MyWidget myWidget;
-
-    public static class MyWidget implements IsWidget {
-        public HTMLElement element;
-        @Override
-        public HTMLElement getElement() { return element; }
-        @Override
-        public void onBrowserEvent(Event e) {}
-    }
 }
