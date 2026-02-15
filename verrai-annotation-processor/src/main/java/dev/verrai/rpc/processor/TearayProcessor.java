@@ -5,6 +5,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import dev.verrai.rpc.common.annotation.Portable;
 import dev.verrai.rpc.common.annotation.Service;
+import dev.verrai.rpc.common.serialization.CodecLoader;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({
@@ -30,6 +32,7 @@ public class TearayProcessor extends AbstractProcessor {
     private final CodecGenerator codecGenerator = new CodecGenerator();
     private final ServiceGenerator serviceGenerator = new ServiceGenerator();
     private final JsonCodecGenerator jsonCodecGenerator = new JsonCodecGenerator();
+    private CodecRegistryGenerator codecRegistryGenerator;
     private WireGenerator wireGenerator;
     private CodecRegistryGenerator codecRegistryGenerator;
     private Filer filer;
@@ -54,6 +57,11 @@ public class TearayProcessor extends AbstractProcessor {
         }
 
         try {
+            if (roundEnv.processingOver()) {
+                generateSpiFile();
+                return true;
+            }
+
             Set<Element> portableElements = new HashSet<>();
             portableElements.addAll(roundEnv.getElementsAnnotatedWith(Portable.class));
             portableElements
@@ -154,6 +162,22 @@ public class TearayProcessor extends AbstractProcessor {
          "", relativePath);
         try (java.io.Writer writer = fileObject.openWriter()) {
          writer.write(protoContent);
+        }
+    }
+
+    private void generateSpiFile() {
+        if (generatedLoaders.isEmpty()) return;
+
+        try {
+            javax.tools.FileObject resource = filer.createResource(javax.tools.StandardLocation.CLASS_OUTPUT, "",
+                    "META-INF/services/" + CodecLoader.class.getName());
+            try (java.io.Writer writer = resource.openWriter()) {
+                for (String loader : generatedLoaders) {
+                    writer.write(loader + "\n");
+                }
+            }
+        } catch (IOException e) {
+            messager.printMessage(Diagnostic.Kind.ERROR, "Error generating SPI file: " + e.getMessage());
         }
     }
 }

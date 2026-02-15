@@ -52,6 +52,8 @@ public class UnitRegistry {
 
     private final Map<String, String> defaultHeaders = new HashMap<>();
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UnitRegistry.class);
+
     public UnitRegistry() {
     }
 
