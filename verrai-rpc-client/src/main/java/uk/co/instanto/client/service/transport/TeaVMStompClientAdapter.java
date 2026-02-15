@@ -5,6 +5,7 @@ import dev.verrai.rpc.common.transport.stomp.StompSubscriptionCallback;
 import dev.verrai.rpc.common.transport.stomp.StompMessage;
 import java.util.HashMap;
 import java.util.Map;
+import org.teavm.jso.JSBody;
 import org.teavm.jso.JSObject;
 import org.teavm.jso.core.JSString;
 import org.teavm.jso.core.JSObjects;
@@ -49,8 +50,21 @@ public class TeaVMStompClientAdapter implements StompClient {
         @Override
         public Map<String, String> getHeaders() {
             Map<String, String> headers = new HashMap<>();
-            // TODO: Implement header iteration if needed
+            JSObject jsoHeaders = jsoMessage.getHeaders();
+            if (!JSObjects.isUndefined(jsoHeaders) && jsoHeaders != null) {
+                String[] keys = getKeys(jsoHeaders);
+                for (String key : keys) {
+                    String value = getValue(jsoHeaders, key);
+                    headers.put(key, value);
+                }
+            }
             return headers;
         }
+
+        @JSBody(params = "obj", script = "return Object.keys(obj);")
+        private static native String[] getKeys(JSObject obj);
+
+        @JSBody(params = { "obj", "key" }, script = "return obj[key];")
+        private static native String getValue(JSObject obj, String key);
     }
 }
