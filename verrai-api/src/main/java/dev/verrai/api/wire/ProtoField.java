@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ProtoField {
     int id() default 0; // Protobuf tag id
+    boolean packed() default false; // Whether repeated primitive field should be packed
 }
