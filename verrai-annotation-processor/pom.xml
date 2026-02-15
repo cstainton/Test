@@ -25,14 +25,8 @@
      </dependency>
         <dependency>
             <groupId>uk.co.instanto</groupId>
-            <artifactId>verrai-rpc-common</artifactId>
+            <artifactId>verrai-rpc-spi</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.squareup.wire</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
      <dependency>
         <groupId>com.squareup.wire</groupId>

@@ -52,72 +52,10 @@ public class UnitRegistry {
 
     private final Map<String, String> defaultHeaders = new HashMap<>();
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UnitRegistry.class);
-
     public UnitRegistry() {
     }
 
-    /**
-     * Auto-configures the registry for STOMP-based RPC.
-     * Sets up the local node ID, transport resolver, and starts discovery.
-     */
-    public void configureStomp(String localNodeId,
-            dev.verrai.rpc.common.transport.stomp.StompClient client) {
-        setLocalNodeId(localNodeId);
-
-        // Resolver: /topic/{targetNodeId}
-        setTransportResolver(targetNodeId -> new uk.co.instanto.client.service.transport.StompTransport(client,
-                "/topic/" + targetNodeId, "/topic/" + localNodeId));
-
-        // Setup EventBus
-        this.eventBus = new EventBus(localNodeId);
-        // Use a dedicated topic for cross-node events, e.g., /topic/events
-        // NOTE: Ideally all nodes subscribe to a common topic for announcements.
-        // Or we broadcast to a well-known topic.
-        uk.co.instanto.client.service.transport.StompTransport eventTransport = new uk.co.instanto.client.service.transport.StompTransport(
-                client, "/topic/discovery", "/topic/discovery");
-        this.eventBus.addTransport(eventTransport);
-
-        // Register Codecs (Identity Codecs for Protos)
-        registerIdentityCodec(uk.co.instanto.client.service.dto.proto.NodeAnnouncedEvent.class,
-                uk.co.instanto.client.service.dto.proto.NodeAnnouncedEvent.ADAPTER);
-        registerIdentityCodec(uk.co.instanto.client.service.dto.proto.NodeHeartbeatEvent.class,
-                uk.co.instanto.client.service.dto.proto.NodeHeartbeatEvent.ADAPTER);
-        registerIdentityCodec(uk.co.instanto.client.service.dto.proto.NodeDepartedEvent.class,
-                uk.co.instanto.client.service.dto.proto.NodeDepartedEvent.ADAPTER);
-
-        startDiscovery(localNodeId);
-
-        loadGeneratedCodecs();
-
-        // Init RpcServer for inbound requests (listening on /topic/localNodeId)
-        uk.co.instanto.client.service.transport.StompTransport serverTransport = new uk.co.instanto.client.service.transport.StompTransport(
-                client, null, "/topic/" + localNodeId);
-
-        initRpcServer(serverTransport);
-    }
-
-    private <T extends com.squareup.wire.Message<T, ?>> void registerIdentityCodec(Class<T> cls,
-            com.squareup.wire.ProtoAdapter<T> adapter) {
-        this.eventBus.registerCodec(cls, new dev.verrai.rpc.common.codec.Codec<T, T>() {
-            @Override
-            public T toWire(T domain) {
-                return domain;
-            }
-
-            @Override
-            public T fromWire(T wire) {
-                return wire;
-            }
-
-            @Override
-            public com.squareup.wire.ProtoAdapter<T> getWireAdapter() {
-                return adapter;
-            }
-        });
-    }
-
-    private void loadGeneratedCodecs() {
+    public void loadGeneratedCodecs() {
         try {
             java.util.ServiceLoader<dev.verrai.rpc.common.serialization.CodecLoader> loader =
                     java.util.ServiceLoader.load(dev.verrai.rpc.common.serialization.CodecLoader.class);

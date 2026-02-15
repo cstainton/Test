@@ -24,6 +24,8 @@
     <module>verrai-ui</module>
     <module>verrai-persistence</module>
     <module>verrai-app</module>
+    <module>verrai-rpc-spi</module>
+    <module>verrai-rpc-pojos</module>
   </modules>
 
   <properties>
