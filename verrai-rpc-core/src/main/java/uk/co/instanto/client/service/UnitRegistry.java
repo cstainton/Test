@@ -392,6 +392,10 @@ public class UnitRegistry {
     // Optional RpcServer for handling inbound requests
     private RpcServer rpcServer;
 
+    public RpcServer getRpcServer() {
+        return rpcServer;
+    }
+
     public void initRpcServer(Transport transport) {
         if (this.rpcServer == null) {
             this.rpcServer = new RpcServer(transport, this);

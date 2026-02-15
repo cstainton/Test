@@ -18,6 +18,7 @@ public class RpcServer {
     private final Transport transport;
     private final UnitRegistry registry;
     private final Map<String, ServiceDispatcher> dispatchers = new HashMap<>();
+    private Authenticator authenticator;
 
     public RpcServer(Transport transport, UnitRegistry registry) {
         this.transport = transport;
@@ -29,10 +30,19 @@ public class RpcServer {
         dispatchers.put(serviceId, dispatcher);
     }
 
+    public void setAuthenticator(Authenticator authenticator) {
+        this.authenticator = authenticator;
+    }
+
     private void handleIncomingBytes(byte[] bytes) {
         try {
             RpcPacket packet = RpcPacket.ADAPTER.decode(bytes);
             if (packet.type == RpcPacket.Type.REQUEST) {
+                if (authenticator != null && !authenticator.authenticate(packet)) {
+                    logger.warn("Authentication failed for service: {}", packet.serviceId);
+                    return;
+                }
+
                 Object impl = registry.getLocalServiceInstance(packet.serviceId);
                 if (impl != null) {
                     ServiceDispatcher dispatcher = dispatchers.get(packet.serviceId);
