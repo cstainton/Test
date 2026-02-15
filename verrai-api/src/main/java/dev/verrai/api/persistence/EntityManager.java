@@ -13,6 +13,8 @@ public interface EntityManager {
     <T> void remove(T entity, Consumer<Void> callback);
 
     <T> void findAll(Class<T> type, Consumer<List<T>> callback);
+    <T> void findAll(Class<T> type, int offset, int limit, Consumer<List<T>> callback);
+    <T> void forEach(Class<T> type, Consumer<T> consumer, Consumer<Void> onComplete);
 
     <T> void merge(T entity);
     <T> void merge(T entity, Consumer<T> callback);
