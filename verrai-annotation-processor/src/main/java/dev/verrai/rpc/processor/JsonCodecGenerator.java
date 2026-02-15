@@ -9,6 +9,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class JsonCodecGenerator {
 
@@ -55,6 +58,21 @@ public class JsonCodecGenerator {
                     toJson.addStatement("sb.append(object.$L())", getterName);
                 } else if (isEnum(type)) {
                     toJson.addStatement("sb.append(\"\\\"\").append(object.$L().name()).append(\"\\\"\")", getterName);
+                } else if (type.toString().contains("java.util.Map") && type.toString().replace(" ", "").contains("<java.lang.String,java.lang.String>")) {
+                     // Map<String, String> support only for MVP
+                    toJson.addStatement("sb.append(\"{\")");
+                    toJson.addStatement("boolean firstMap = true");
+                    toJson.addStatement("if (object.$L() != null) {", getterName);
+                    ParameterizedTypeName entryType = ParameterizedTypeName.get(Map.Entry.class, String.class, String.class);
+                    toJson.addStatement("  for ($T entry : object.$L().entrySet()) {", entryType, getterName);
+                    toJson.addStatement("    if (!firstMap) sb.append(\",\")");
+                    toJson.addStatement("    sb.append(\"\\\"\").append(entry.getKey()).append(\"\\\":\")");
+                    // Escape quotes in value
+                    toJson.addStatement("    sb.append(\"\\\"\").append(entry.getValue().replace(\"\\\"\", \"\\\\\\\"\")).append(\"\\\"\")");
+                    toJson.addStatement("    firstMap = false");
+                    toJson.addStatement("  }");
+                    toJson.addStatement("}");
+                    toJson.addStatement("sb.append(\"}\")");
                 } else {
                     // Complex type or Collection
                     toJson.addStatement("sb.append(\"null\")"); // Skip serialization for MVP
@@ -87,8 +105,10 @@ public class JsonCodecGenerator {
         fromJson.addStatement("if (json.startsWith(\"{\")) json = json.substring(1)");
         fromJson.addStatement("if (json.endsWith(\"}\")) json = json.substring(0, json.length() - 1)");
 
-        fromJson.addStatement("String[] pairs = json.split(\",\")");
+        // Use splitJson instead of split(",")
+        fromJson.addStatement("$T<$T> pairs = splitJson(json)", List.class, String.class);
         fromJson.addStatement("for (String pair : pairs) {");
+
         fromJson.addStatement("  String[] parts = pair.split(\":\", 2)");
         fromJson.addStatement("  if (parts.length < 2) continue");
         fromJson.addStatement("  String key = parts[0].trim().replace(\"\\\"\", \"\")");
@@ -104,6 +124,7 @@ public class JsonCodecGenerator {
 
                 String valueParse = "null";
                 boolean supported = true;
+                boolean isMap = false;
 
                 if (type.toString().equals("java.lang.String")) {
                     valueParse = "value.replace(\"\\\"\", \"\")";
@@ -115,18 +136,40 @@ public class JsonCodecGenerator {
                     valueParse = "Long.parseLong(value)";
                 } else if (isEnum(type)) {
                     valueParse = ClassName.bestGuess(type.toString()) + ".valueOf(value.replace(\"\\\"\", \"\"))";
+                } else if (type.toString().contains("java.util.Map") && type.toString().replace(" ", "").contains("<java.lang.String,java.lang.String>")) {
+                    isMap = true;
+                    fromJson.addStatement("value = value.trim()");
+                     fromJson.addStatement("if (value.startsWith(\"{\")) value = value.substring(1)");
+                     fromJson.addStatement("if (value.endsWith(\"}\")) value = value.substring(0, value.length() - 1)");
+
+                     fromJson.addStatement("$T<$T, $T> map = new $T<>()", Map.class, String.class, String.class, HashMap.class);
+                     fromJson.addStatement("$T<$T> entries = splitJson(value)", List.class, String.class);
+                     fromJson.addCode("for (String entry : entries) {\n");
+                     fromJson.addStatement("  String[] kv = entry.split(\":\", 2)");
+                     fromJson.addStatement("  if (kv.length < 2) continue");
+                     fromJson.addStatement("  String k = kv[0].trim().replace(\"\\\"\", \"\")");
+                     fromJson.addStatement("  String v = kv[1].trim().replace(\"\\\"\", \"\")");
+                     fromJson.addStatement("  map.put(k, v)");
+                     fromJson.addCode("}\n");
+
+                     if (hasBuilder) {
+                        fromJson.addStatement("builder.$L(map)", setterName);
+                     } else {
+                        String setMethod = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+                        fromJson.addStatement("object.$L(map)", setMethod);
+                     }
                 } else {
                     supported = false;
                 }
 
-                if (supported) {
+                if (supported && !isMap) {
                     if (hasBuilder) {
                         fromJson.addStatement("builder.$L($L)", setterName, valueParse);
                     } else {
                         String setMethod = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
                         fromJson.addStatement("object.$L($L)", setMethod, valueParse);
                     }
-                } else {
+                } else if (!supported) {
                     fromJson.addComment("Skipping complex type $L", fieldName);
                 }
                 fromJson.endControlFlow();
@@ -142,7 +185,50 @@ public class JsonCodecGenerator {
         }
         typeSpec.addMethod(fromJson.build());
 
+        typeSpec.addMethod(generateSplitJsonMethod());
+
         return JavaFile.builder(packageName, typeSpec.build()).build();
+    }
+
+    private MethodSpec generateSplitJsonMethod() {
+        MethodSpec.Builder splitJson = MethodSpec.methodBuilder("splitJson")
+                .addModifiers(Modifier.PRIVATE)
+                .returns(ParameterizedTypeName.get(List.class, String.class))
+                .addParameter(String.class, "json");
+
+        splitJson.addStatement("$T<$T> result = new $T<>()", List.class, String.class, java.util.ArrayList.class);
+        splitJson.addStatement("int braceCount = 0");
+        splitJson.addStatement("boolean inQuote = false");
+        splitJson.addStatement("$T current = new $T()", StringBuilder.class, StringBuilder.class);
+
+        splitJson.addCode("boolean escaped = false;\n");
+        splitJson.addCode("for (char c : json.toCharArray()) {\n");
+        splitJson.addCode("    if (escaped) {\n");
+        splitJson.addCode("        escaped = false;\n");
+        splitJson.addCode("        current.append(c);\n");
+        splitJson.addCode("        continue;\n");
+        splitJson.addCode("    }\n");
+        splitJson.addCode("    if (c == '\\\\') {\n");
+        splitJson.addCode("        escaped = true;\n");
+        splitJson.addCode("        current.append(c);\n");
+        splitJson.addCode("        continue;\n");
+        splitJson.addCode("    }\n");
+        splitJson.addCode("    if (c == '\"') inQuote = !inQuote;\n");
+        splitJson.addCode("    if (!inQuote) {\n");
+        splitJson.addCode("        if (c == '{' || c == '[') braceCount++;\n");
+        splitJson.addCode("        if (c == '}' || c == ']') braceCount--;\n");
+        splitJson.addCode("    }\n");
+        splitJson.addCode("    if (c == ',' && braceCount == 0 && !inQuote) {\n");
+        splitJson.addCode("        result.add(current.toString());\n");
+        splitJson.addCode("        current.setLength(0);\n");
+        splitJson.addCode("    } else {\n");
+        splitJson.addCode("        current.append(c);\n");
+        splitJson.addCode("    }\n");
+        splitJson.addCode("}\n");
+        splitJson.addStatement("result.add(current.toString())");
+        splitJson.addStatement("return result");
+
+        return splitJson.build();
     }
 
     private boolean isPrimitiveOrWrapper(TypeMirror type) {

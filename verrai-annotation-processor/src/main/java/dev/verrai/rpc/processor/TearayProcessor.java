@@ -34,7 +34,6 @@ public class TearayProcessor extends AbstractProcessor {
     private final JsonCodecGenerator jsonCodecGenerator = new JsonCodecGenerator();
     private CodecRegistryGenerator codecRegistryGenerator;
     private WireGenerator wireGenerator;
-    private CodecRegistryGenerator codecRegistryGenerator;
     private Filer filer;
     private Messager messager;
     private final Set<String> generatedLoaders = new HashSet<>();
@@ -51,6 +50,8 @@ public class TearayProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        messager.printMessage(Diagnostic.Kind.NOTE, "TearayProcessor: Started processing round. Annotations: " + annotations);
+
         if (roundEnv.processingOver()) {
             generateServiceFile();
             return false;
@@ -66,6 +67,8 @@ public class TearayProcessor extends AbstractProcessor {
             portableElements.addAll(roundEnv.getElementsAnnotatedWith(Portable.class));
             portableElements
                     .addAll(roundEnv.getElementsAnnotatedWith(dev.verrai.rpc.common.annotation.Event.class));
+
+            messager.printMessage(Diagnostic.Kind.NOTE, "TearayProcessor: Found " + portableElements.size() + " portable elements.");
 
             if (!portableElements.isEmpty()) {
                 // 1. Generate all .proto files

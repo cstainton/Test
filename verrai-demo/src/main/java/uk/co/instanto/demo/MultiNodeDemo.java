@@ -134,14 +134,14 @@ public class MultiNodeDemo {
                 logger.info("Node B calling echo via injected service...");
 
                 Greeting request = new Greeting("Hello World", "NodeB-JVM");
-                // Skipping complex map for JSON Debug Mode MVP
-                // request.getTranslations().put("fr", "Bonjour le monde");
+                // Map support is now enabled!
+                request.getTranslations().put("fr", "Bonjour le monde");
 
                 echoService.echo(request).thenAccept(response -> {
                     logger.info("\n--- RPC SUCCESS ---");
                     logger.info("Response Sender: {}", response.getSenderNodeId());
                     logger.info("Response Text: {}", response.getMessage());
-                    // logger.info("Translations: {}", response.getTranslations());
+                    logger.info("Translations: {}", response.getTranslations());
 
                     logger.info("Starting Stream Test...");
                     echoService.streamGreetings(request).subscribe(
