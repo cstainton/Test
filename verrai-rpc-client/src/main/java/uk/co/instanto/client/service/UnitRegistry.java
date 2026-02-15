@@ -1,6 +1,8 @@
 package uk.co.instanto.client.service;
 
 import dev.verrai.rpc.common.transport.Transport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UnitRegistry {
+    private static final Logger logger = LoggerFactory.getLogger(UnitRegistry.class);
     private static final UnitRegistry INSTANCE = new UnitRegistry();
 
     private final Map<String, Object> localServices = new HashMap<>();
@@ -275,7 +278,7 @@ public class UnitRegistry {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Error during service resolution", e);
             }
         }
     }
@@ -417,7 +420,7 @@ public class UnitRegistry {
         }
 
         for (String nodeId : staleNodes) {
-            System.out.println("Cleaning up stale node: " + nodeId);
+            logger.info("Cleaning up stale node: {}", nodeId);
             removeNode(nodeId);
         }
     }
