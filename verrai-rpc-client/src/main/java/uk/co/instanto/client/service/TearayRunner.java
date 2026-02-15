@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TearayRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(TearayRunner.class);
 
     public interface Configurer {
         void configure(UnitRegistry registry);
@@ -112,7 +116,7 @@ public class TearayRunner {
                     String dispatcherName = iface.getName() + "_Dispatcher";
                     Class<?> dispatcherClass = Class.forName(dispatcherName);
 
-                    System.out.println("Auto-registering local service: " + iface.getName());
+                    logger.info("Auto-registering local service: {}", iface.getName());
                     registry.registerLocal(iface.getName(), value);
 
                     // Use no-arg constructor if possible, or look for specific one
@@ -122,7 +126,7 @@ public class TearayRunner {
                 } catch (Exception e) {
                     // Dispatcher not found, so maybe not a service or not generated yet.
                     if (ifaceAnnotated) {
-                        System.out.println("Warning: Service dispatcher not found for " + iface.getName());
+                        logger.warn("Service dispatcher not found for {}", iface.getName());
                     }
                 }
             }
