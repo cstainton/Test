@@ -21,6 +21,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +65,15 @@ public class NavigationProcessor extends AbstractProcessor {
                 List<VariableElement> pageStateFields = new ArrayList<>();
                 for (VariableElement field : ElementFilter.fieldsIn(typeElement.getEnclosedElements())) {
                     if (field.getAnnotation(PageState.class) != null) {
+                        // Gap 12: @PageState fields must be String — values come from URL hash segments
+                        String typeName = field.asType().toString();
+                        if (!typeName.equals("java.lang.String")) {
+                            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                    "@PageState field '" + field.getSimpleName() + "' in "
+                                    + typeElement.getSimpleName() + " must be of type String "
+                                    + "(got " + typeName + "). Values are extracted from the URL hash.",
+                                    field);
+                        }
                         pageStateFields.add(field);
                     }
                 }
@@ -88,8 +98,33 @@ public class NavigationProcessor extends AbstractProcessor {
                         pageHiddenMethods, isStartingPage));
             }
 
-            boolean hasStartingPage = pageDefinitions.stream().anyMatch(PageDefinition::isStartingPage);
-            if (!hasStartingPage) {
+            // Gap 1: Multiple startingPage=true is a compile error — last one would silently win
+            // Gap 2: Duplicate role names — both pages would be unreachable except the last
+            Set<String> seenRoles = new HashSet<>();
+            int startingPageCount = 0;
+            boolean validationFailed = false;
+            for (PageDefinition pd : pageDefinitions) {
+                if (pd.isStartingPage()) {
+                    startingPageCount++;
+                    if (startingPageCount > 1) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Multiple @Page classes declare startingPage=true. " +
+                                "Only one page may be the starting page.",
+                                pd.getTypeElement());
+                        validationFailed = true;
+                    }
+                }
+                if (!seenRoles.add(pd.getRole())) {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            "Duplicate @Page role \"" + pd.getRole() + "\" on "
+                            + pd.getTypeElement().getSimpleName() + ". Each page must have a unique role.",
+                            pd.getTypeElement());
+                    validationFailed = true;
+                }
+            }
+            if (validationFailed) return false;
+
+            if (startingPageCount == 0) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
                         "No @Page with startingPage=true found. " +
                         "navigation.start() will show an alert if the URL has no hash.");

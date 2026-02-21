@@ -339,4 +339,158 @@ public class NavigationProcessorTest {
             .contentsAsUtf8String()
             .contains("No starting page declared");
     }
+
+    @Test
+    public void testMultipleStartingPagesIsCompileError() {
+        JavaFileObject source = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.MultiStart",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Page;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Page(role = \"pageA\", startingPage = true)",
+            "class PageA { public HTMLElement element; }",
+            "",
+            "@Page(role = \"pageB\", startingPage = true)",
+            "class PageB { public HTMLElement element; }"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new NavigationProcessor(), new IOCProcessor())
+            .compile(source);
+
+        assertThat(compilation).hadErrorContaining("Multiple @Page classes declare startingPage=true");
+    }
+
+    @Test
+    public void testDuplicateRoleIsCompileError() {
+        JavaFileObject source = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.DupeRole",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Page;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Page(role = \"home\")",
+            "class HomeA { public HTMLElement element; }",
+            "",
+            "@Page(role = \"home\")",
+            "class HomeB { public HTMLElement element; }"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new NavigationProcessor(), new IOCProcessor())
+            .compile(source);
+
+        assertThat(compilation).hadErrorContaining("Duplicate @Page role");
+    }
+
+    @Test
+    public void testPageStateOnNonStringFieldIsCompileError() {
+        JavaFileObject source = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.BadStatePage",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Page;",
+            "import dev.verrai.api.PageState;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Page(role = \"bad\")",
+            "public class BadStatePage {",
+            "    public HTMLElement element;",
+            "    @PageState",
+            "    public int userId;",
+            "}"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new NavigationProcessor(), new IOCProcessor())
+            .compile(source);
+
+        assertThat(compilation).hadErrorContaining("must be of type String");
+    }
+
+    @Test
+    public void testHashEncodingForSemicolonInStateValue() {
+        JavaFileObject source = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.SimplePage",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Page;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Page(role = \"home\", startingPage = true)",
+            "public class SimplePage {",
+            "    public HTMLElement element;",
+            "}"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new NavigationProcessor(), new IOCProcessor())
+            .compile(source);
+
+        assertThat(compilation).succeeded();
+
+        // Values must be encoded with %3B so ';' separators stay unambiguous
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+            .contentsAsUtf8String()
+            .contains("replace(\";\", \"%3B\")");
+
+        // Parser must decode %3B back to ';'
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+            .contentsAsUtf8String()
+            .contains("replace(\"%3B\", \";\")");
+    }
+
+    @Test
+    public void testCurrentPageSetBeforePageShowing() {
+        JavaFileObject source = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.ShowingPage",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Page;",
+            "import dev.verrai.api.PageShowing;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Page(role = \"home\", startingPage = true)",
+            "public class ShowingPage {",
+            "    public HTMLElement element;",
+            "    @PageShowing",
+            "    public void onShow() {}",
+            "}"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new NavigationProcessor(), new IOCProcessor())
+            .compile(source);
+
+        assertThat(compilation).succeeded();
+
+        String nav;
+        try {
+            nav = compilation
+                .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+                .get()
+                .getCharContent(false)
+                .toString();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // currentPage must be assigned before @PageShowing fires
+        int currentPagePos = nav.indexOf("this.currentPage = page_");
+        int onShowPos = nav.indexOf(".onShow()");
+        org.junit.Assert.assertTrue(
+            "currentPage must be assigned before @PageShowing fires",
+            currentPagePos != -1 && onShowPos != -1 && currentPagePos < onShowPos);
+
+        // Mount must be guarded with identity check
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+            .contentsAsUtf8String()
+            .contains("this.currentPage == page_");
+    }
 }

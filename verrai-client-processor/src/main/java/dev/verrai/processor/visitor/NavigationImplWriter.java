@@ -133,10 +133,13 @@ public class NavigationImplWriter implements PageVisitor {
         method.addStatement("body.setInnerText(\"\")");
 
         // 4. Build URL hash for the new page
+        // Encode ';' in keys/values so the separator is unambiguous when parsing
         method.addStatement("$T hash = new $T(\"#\" + role)", StringBuilder.class, StringBuilder.class);
         method.beginControlFlow("for ($T entry : state.entrySet())",
                 ParameterizedTypeName.get(Map.Entry.class, String.class, String.class));
-        method.addStatement("hash.append(\";\").append(entry.getKey()).append(\"=\").append(entry.getValue())");
+        method.addStatement(
+                "hash.append(\";\").append(entry.getKey().replace(\";\", \"%3B\"))" +
+                ".append(\"=\").append(entry.getValue().replace(\";\", \"%3B\"))");
         method.endControlFlow();
 
         // Only push to history when navigating programmatically (not from popstate)
@@ -194,14 +197,18 @@ public class NavigationImplWriter implements PageVisitor {
             method.addCode("  }\n");
         }
 
+        // Update currentPage before @PageShowing so that if @PageShowing calls goTo(),
+        // the outgoing lifecycle fires on the correct page and not on the stale old one.
+        method.addStatement("  this.currentPage = page_$L", varName);
+
         // @PageShowing lifecycle
         for (ExecutableElement m : page.getPageShowingMethods()) {
             method.addStatement("  page_$L.$L()", varName, m.getSimpleName());
         }
 
-        // Mount to DOM
-        method.addStatement("  if (page_$L.element != null) body.appendChild(page_$L.element)", varName, varName);
-        method.addStatement("  this.currentPage = page_$L", varName);
+        // Only mount if @PageShowing did not navigate away (currentPage identity check)
+        method.addStatement("  if (this.currentPage == page_$L && page_$L.element != null) body.appendChild(page_$L.element)",
+                varName, varName, varName);
         method.addStatement("  break");
     }
 
@@ -252,7 +259,7 @@ public class NavigationImplWriter implements PageVisitor {
         method.beginControlFlow("for (int i = 1; i < parts.length; i++)");
         method.addStatement("$T[] kv = parts[i].split($S, 2)", String.class, "=");
         method.beginControlFlow("if (kv.length == 2)");
-        method.addStatement("state.put(kv[0], kv[1])");
+        method.addStatement("state.put(kv[0].replace(\"%3B\", \";\"), kv[1].replace(\"%3B\", \";\"))");
         method.endControlFlow();
         method.endControlFlow();
         method.addStatement("goTo(role, state)");
