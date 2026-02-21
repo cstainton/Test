@@ -144,7 +144,13 @@ public class NavigationProcessorTest {
 
         assertThat(compilation).succeeded();
 
-        // callPageHiding and callPageHidden helper methods must be generated
+        // Lifecycle calls are null-guarded so the first navigation is clean
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+            .contentsAsUtf8String()
+            .contains("if (this.currentPage != null)");
+
+        // callPageHiding and callPageHidden are invoked inside the null guard
         assertThat(compilation)
             .generatedSourceFile("dev.verrai.impl.NavigationImpl")
             .contentsAsUtf8String()
@@ -255,5 +261,82 @@ public class NavigationProcessorTest {
             .generatedSourceFile("dev.verrai.impl.NavigationImpl")
             .contentsAsUtf8String()
             .contains("((dev.verrai.api.binding.BinderLifecycle) this.currentPage).clearBindings()");
+    }
+
+    @Test
+    public void testUnknownRoleAlertsBeforeDomMutation() {
+        JavaFileObject source = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.SimplePage",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Page;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Page(role = \"home\")",
+            "public class SimplePage {",
+            "    public HTMLElement element;",
+            "}"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new NavigationProcessor(), new IOCProcessor())
+            .compile(source);
+
+        assertThat(compilation).succeeded();
+
+        String nav;
+        try {
+            nav = compilation
+                .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+                .get()
+                .getCharContent(false)
+                .toString();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Pre-validation switch must appear before setInnerText so the DOM is
+        // never cleared for an unknown role
+        int alertPos = nav.indexOf("Unknown page role: ");
+        int clearPos  = nav.indexOf("setInnerText");
+        org.junit.Assert.assertTrue(
+            "Pre-validation alert must appear before DOM clear",
+            alertPos != -1 && clearPos != -1 && alertPos < clearPos);
+
+        // goTo must return early for unknown role (before any DOM mutation)
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+            .contentsAsUtf8String()
+            .contains("Unknown page role: ");
+    }
+
+    @Test
+    public void testNoStartingPageEmitsWarningAndRuntimeAlert() {
+        JavaFileObject source = JavaFileObjects.forSourceLines(
+            "dev.verrai.processor.SimplePage",
+            "package dev.verrai.processor;",
+            "",
+            "import dev.verrai.api.Page;",
+            "import org.teavm.jso.dom.html.HTMLElement;",
+            "",
+            "@Page(role = \"home\")",
+            "public class SimplePage {",
+            "    public HTMLElement element;",
+            "}"
+        );
+
+        Compilation compilation = javac()
+            .withProcessors(new NavigationProcessor(), new IOCProcessor())
+            .compile(source);
+
+        // Compilation succeeds but with a warning
+        assertThat(compilation).succeeded();
+        assertThat(compilation).hadWarningContaining("startingPage=true");
+
+        // start() must emit a runtime alert rather than silently doing nothing
+        assertThat(compilation)
+            .generatedSourceFile("dev.verrai.impl.NavigationImpl")
+            .contentsAsUtf8String()
+            .contains("No starting page declared");
     }
 }

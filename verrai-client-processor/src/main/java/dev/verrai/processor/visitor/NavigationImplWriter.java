@@ -1,7 +1,5 @@
 package dev.verrai.processor.visitor;
 
-import dev.verrai.api.Navigation;
-import dev.verrai.api.PageShowing;
 import dev.verrai.api.PageState;
 import dev.verrai.security.RestrictedAccess;
 import dev.verrai.processor.model.PageDefinition;
@@ -24,7 +22,6 @@ public class NavigationImplWriter implements PageVisitor {
 
     private final ProcessingEnvironment processingEnv;
     private final TypeSpec.Builder navBuilder;
-    private final MethodSpec.Builder goToMethod;
     private final TypeElement securityProviderImpl;
     private final List<PageDefinition> collectedPages = new ArrayList<>();
     private String startingPageRole = null;
@@ -35,8 +32,6 @@ public class NavigationImplWriter implements PageVisitor {
 
         ClassName navigationInterface = ClassName.get("dev.verrai.api", "Navigation");
         ClassName securityProviderInterface = ClassName.get("dev.verrai.security", "SecurityProvider");
-        ClassName htmlElementClass = ClassName.get("org.teavm.jso.dom.html", "HTMLElement");
-        ClassName windowClass = ClassName.get("org.teavm.jso.browser", "Window");
 
         navBuilder = TypeSpec.classBuilder("NavigationImpl")
                 .addModifiers(Modifier.PUBLIC)
@@ -70,108 +65,21 @@ public class NavigationImplWriter implements PageVisitor {
                 .addAnnotation(Override.class)
                 .addStatement("goTo(role, $T.emptyMap())", Collections.class);
         navBuilder.addMethod(goToSimple.build());
-
-        // goTo(role, state)
-        goToMethod = MethodSpec.methodBuilder("goTo")
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(String.class, "role")
-                .addParameter(ParameterizedTypeName.get(Map.class, String.class, String.class), "state")
-                .addAnnotation(Override.class);
-
-        goToMethod.addStatement("$T body = $T.current().getDocument().getBody()", htmlElementClass, windowClass);
-
-        // @PageHiding — fires while old page is still in the DOM
-        goToMethod.addStatement("callPageHiding(this.currentPage)");
-
-        // BinderLifecycle cleanup
-        goToMethod.beginControlFlow("if (this.currentPage instanceof dev.verrai.api.binding.BinderLifecycle)");
-        goToMethod.addStatement("((dev.verrai.api.binding.BinderLifecycle) this.currentPage).clearBindings()");
-        goToMethod.endControlFlow();
-
-        // @PageHidden — fires after subscriptions cleared, before DOM is wiped
-        goToMethod.addStatement("callPageHidden(this.currentPage)");
-
-        // Clear the DOM
-        goToMethod.addStatement("body.setInnerText(\"\")");
-
-        // Build URL hash for the new page
-        goToMethod.addStatement("$T hash = new $T(\"#\" + role)", StringBuilder.class, StringBuilder.class);
-        goToMethod.beginControlFlow("for ($T entry : state.entrySet())",
-                ParameterizedTypeName.get(Map.Entry.class, String.class, String.class));
-        goToMethod.addStatement("hash.append(\";\").append(entry.getKey()).append(\"=\").append(entry.getValue())");
-        goToMethod.endControlFlow();
-
-        // Only push to history when navigating programmatically (not from popstate)
-        goToMethod.beginControlFlow("if (!this.isPopstate)");
-        goToMethod.addStatement("$T.current().getHistory().pushState(null, null, hash.toString())", windowClass);
-        goToMethod.endControlFlow();
-
-        goToMethod.beginControlFlow("switch (role)");
     }
 
     @Override
     public void visit(PageDefinition page) {
         collectedPages.add(page);
-
         if (page.isStartingPage()) {
             this.startingPageRole = page.getRole();
         }
-
-        String role = page.getRole();
-        String varName = page.getVarName();
-        TypeElement typeElement = page.getTypeElement();
-        ClassName windowClass = ClassName.get("org.teavm.jso.browser", "Window");
-
-        goToMethod.addCode("case $S:\n", role);
-
-        // Security check
-        RestrictedAccess restricted = page.getRestrictedAccess();
-        if (restricted != null && securityProviderImpl != null) {
-            goToMethod.addCode("  if (this.securityProvider != null) {\n");
-            for (String reqRole : restricted.roles()) {
-                goToMethod.addStatement("    if (!this.securityProvider.hasRole($S)) { $T.alert($S); return; }",
-                        reqRole, windowClass, "Access Denied: Missing role " + reqRole);
-            }
-            goToMethod.addCode("  }\n");
-        }
-
-        // Instantiate
-        ClassName factoryClass = ClassName.bestGuess(typeElement.getQualifiedName().toString() + "_Factory");
-        ClassName pageClass = ClassName.get(typeElement);
-        goToMethod.addStatement("  $T page_$L = $T.getInstance()", pageClass, varName, factoryClass);
-
-        // @PageState injection
-        for (VariableElement field : page.getPageStateFields()) {
-            PageState pageState = field.getAnnotation(PageState.class);
-            String paramName = pageState.value();
-            if (paramName.isEmpty())
-                paramName = field.getSimpleName().toString();
-
-            goToMethod.addCode("  {\n");
-            goToMethod.addStatement("    String val = state.get($S)", paramName);
-            goToMethod.addStatement("    if (val != null) page_$L.$L = val", varName, field.getSimpleName());
-            goToMethod.addCode("  }\n");
-        }
-
-        // @PageShowing lifecycle
-        for (ExecutableElement method : page.getPageShowingMethods()) {
-            goToMethod.addStatement("  page_$L.$L()", varName, method.getSimpleName());
-        }
-
-        // Mount to DOM
-        goToMethod.addStatement("  if (page_$L.element != null) body.appendChild(page_$L.element)", varName, varName);
-        goToMethod.addStatement("  this.currentPage = page_$L", varName);
-        goToMethod.addStatement("  break");
     }
 
     public void write(Filer filer) throws IOException {
         ClassName windowClass = ClassName.get("org.teavm.jso.browser", "Window");
+        ClassName htmlElementClass = ClassName.get("org.teavm.jso.dom.html", "HTMLElement");
 
-        goToMethod.addCode("default:\n");
-        goToMethod.addStatement("  $T.alert($S + role)", windowClass, "Unknown page role: ");
-        goToMethod.endControlFlow();
-
-        navBuilder.addMethod(goToMethod.build());
+        navBuilder.addMethod(buildGoToMethod(windowClass, htmlElementClass));
         navBuilder.addMethod(buildStartMethod(windowClass));
         navBuilder.addMethod(buildNavigateToHashMethod());
         navBuilder.addMethod(buildRegisterPopstateListenerMethod(windowClass));
@@ -184,8 +92,123 @@ public class NavigationImplWriter implements PageVisitor {
     }
 
     /**
+     * Generates the full goTo(role, state) method.
+     *
+     * Order of operations:
+     *  1. Pre-validate role — return early (before any DOM mutation) for unknown roles.
+     *  2. Null-guarded outgoing lifecycle: @PageHiding → clearBindings → @PageHidden.
+     *  3. Clear the DOM.
+     *  4. Build hash URL and conditionally push history entry.
+     *  5. Instantiate and mount the new page.
+     */
+    private MethodSpec buildGoToMethod(ClassName windowClass, ClassName htmlElementClass) {
+        MethodSpec.Builder method = MethodSpec.methodBuilder("goTo")
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(String.class, "role")
+                .addParameter(ParameterizedTypeName.get(Map.class, String.class, String.class), "state")
+                .addAnnotation(Override.class);
+
+        // 1. Pre-validate role before any DOM mutation or lifecycle calls
+        method.beginControlFlow("switch (role)");
+        for (PageDefinition page : collectedPages) {
+            method.addCode("case $S:\n", page.getRole());
+            method.addStatement("  break");
+        }
+        method.addCode("default:\n");
+        method.addStatement("  $T.alert($S + role)", windowClass, "Unknown page role: ");
+        method.addStatement("  return");
+        method.endControlFlow();
+
+        // 2. Outgoing page lifecycle — null-guarded so the first navigation is clean
+        method.addStatement("$T body = $T.current().getDocument().getBody()", htmlElementClass, windowClass);
+        method.beginControlFlow("if (this.currentPage != null)");
+        method.addStatement("callPageHiding(this.currentPage)");
+        method.beginControlFlow("if (this.currentPage instanceof dev.verrai.api.binding.BinderLifecycle)");
+        method.addStatement("((dev.verrai.api.binding.BinderLifecycle) this.currentPage).clearBindings()");
+        method.endControlFlow();
+        method.addStatement("callPageHidden(this.currentPage)");
+        method.endControlFlow();
+
+        // 3. Clear the DOM
+        method.addStatement("body.setInnerText(\"\")");
+
+        // 4. Build URL hash for the new page
+        method.addStatement("$T hash = new $T(\"#\" + role)", StringBuilder.class, StringBuilder.class);
+        method.beginControlFlow("for ($T entry : state.entrySet())",
+                ParameterizedTypeName.get(Map.Entry.class, String.class, String.class));
+        method.addStatement("hash.append(\";\").append(entry.getKey()).append(\"=\").append(entry.getValue())");
+        method.endControlFlow();
+
+        // Only push to history when navigating programmatically (not from popstate)
+        method.beginControlFlow("if (!this.isPopstate)");
+        method.addStatement("$T.current().getHistory().pushState(null, null, hash.toString())", windowClass);
+        method.endControlFlow();
+
+        // 5. Instantiate and mount the new page
+        method.beginControlFlow("switch (role)");
+        for (PageDefinition page : collectedPages) {
+            generatePageCase(page, method, windowClass);
+        }
+        // default is unreachable — pre-validation above already returned
+        method.addCode("default:\n");
+        method.addStatement("  break");
+        method.endControlFlow();
+
+        return method.build();
+    }
+
+    private void generatePageCase(PageDefinition page, MethodSpec.Builder method, ClassName windowClass) {
+        String role = page.getRole();
+        String varName = page.getVarName();
+        TypeElement typeElement = page.getTypeElement();
+        ClassName htmlElementClass = ClassName.get("org.teavm.jso.dom.html", "HTMLElement");
+
+        method.addCode("case $S:\n", role);
+
+        // Security check
+        RestrictedAccess restricted = page.getRestrictedAccess();
+        if (restricted != null && securityProviderImpl != null) {
+            method.addCode("  if (this.securityProvider != null) {\n");
+            for (String reqRole : restricted.roles()) {
+                method.addStatement("    if (!this.securityProvider.hasRole($S)) { $T.alert($S); return; }",
+                        reqRole, windowClass, "Access Denied: Missing role " + reqRole);
+            }
+            method.addCode("  }\n");
+        }
+
+        // Instantiate
+        ClassName factoryClass = ClassName.bestGuess(typeElement.getQualifiedName().toString() + "_Factory");
+        ClassName pageClass = ClassName.get(typeElement);
+        method.addStatement("  $T page_$L = $T.getInstance()", pageClass, varName, factoryClass);
+
+        // @PageState injection
+        for (VariableElement field : page.getPageStateFields()) {
+            PageState pageState = field.getAnnotation(PageState.class);
+            String paramName = pageState.value();
+            if (paramName.isEmpty())
+                paramName = field.getSimpleName().toString();
+
+            method.addCode("  {\n");
+            method.addStatement("    String val = state.get($S)", paramName);
+            method.addStatement("    if (val != null) page_$L.$L = val", varName, field.getSimpleName());
+            method.addCode("  }\n");
+        }
+
+        // @PageShowing lifecycle
+        for (ExecutableElement m : page.getPageShowingMethods()) {
+            method.addStatement("  page_$L.$L()", varName, m.getSimpleName());
+        }
+
+        // Mount to DOM
+        method.addStatement("  if (page_$L.element != null) body.appendChild(page_$L.element)", varName, varName);
+        method.addStatement("  this.currentPage = page_$L", varName);
+        method.addStatement("  break");
+    }
+
+    /**
      * Generates the start() method required by the Navigation interface.
      * Navigates to the current URL hash if present, otherwise to the declared startingPage.
+     * Emits a runtime alert if no startingPage was declared and no hash is present.
      */
     private MethodSpec buildStartMethod(ClassName windowClass) {
         MethodSpec.Builder method = MethodSpec.methodBuilder("start")
@@ -198,6 +221,9 @@ public class NavigationImplWriter implements PageVisitor {
         method.nextControlFlow("else");
         if (startingPageRole != null) {
             method.addStatement("goTo($S)", startingPageRole);
+        } else {
+            method.addStatement("$T.alert($S)", windowClass,
+                    "No starting page declared. Annotate a @Page with startingPage=true.");
         }
         method.endControlFlow();
 

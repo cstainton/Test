@@ -88,6 +88,13 @@ public class NavigationProcessor extends AbstractProcessor {
                         pageHiddenMethods, isStartingPage));
             }
 
+            boolean hasStartingPage = pageDefinitions.stream().anyMatch(PageDefinition::isStartingPage);
+            if (!hasStartingPage) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                        "No @Page with startingPage=true found. " +
+                        "navigation.start() will show an alert if the URL has no hash.");
+            }
+
             NavigationImplWriter writer = new NavigationImplWriter(processingEnv, securityProviderImpl);
             for (PageDefinition pageDef : pageDefinitions) {
                 writer.visit(pageDef);
